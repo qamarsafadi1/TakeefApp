@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
+import com.selsela.takeefapp.navigation.NavigationHost
 import com.selsela.takeefapp.ui.splash.SplashView
 import com.selsela.takeefapp.ui.theme.TakeefAppTheme
 import com.selsela.takeefapp.utils.LocalData
@@ -32,26 +33,10 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = Color.White
                     ) {
-                        SplashView()
+                        NavigationHost()
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TakeefAppTheme {
-        Greeting("Android")
     }
 }

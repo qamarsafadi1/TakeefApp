@@ -28,9 +28,12 @@ import com.selsela.takeefapp.ui.theme.TakeefAppTheme
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.sloganStyle
 import com.selsela.takeefapp.ui.theme.textMeduim
+import com.selsela.takeefapp.utils.Extentions.Companion.withDelay
 
 @Composable
-fun SplashView() {
+fun SplashView(
+    onFinish: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -63,7 +66,10 @@ fun SplashView() {
                 color = LightBlue,
                 fontSize = 19.sp
             )
-        }
+        };
+        {
+            onFinish()
+        }.withDelay(3000)
     }
 }
 
@@ -76,13 +82,4 @@ fun ConditionAnimation() {
             .padding(top = 42.dp),
         iterations = LottieConstants.IterateForever
     )
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TakeefAppTheme {
-        SplashView()
-    }
 }

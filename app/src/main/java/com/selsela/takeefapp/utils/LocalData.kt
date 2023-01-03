@@ -10,6 +10,12 @@ open class LocalData {
                 field = value
                 Hawk.put("appLocal", value)
             }
+
+        var firstLaunch: Boolean = Hawk.get("firstLaunch", true)
+            set(value) {
+                field = value
+                Hawk.put("firstLaunch", value)
+            }
     }
 
 }

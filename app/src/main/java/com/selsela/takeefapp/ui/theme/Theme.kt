@@ -56,11 +56,10 @@ fun TakeefAppTheme(
         }
     }
     val systemUiController = rememberSystemUiController()
-    val useDarkIcons = !isSystemInDarkTheme()
     SideEffect {
-        systemUiController.setSystemBarsColor(
-            color = Color.White,
-            darkIcons = useDarkIcons
+        systemUiController.setStatusBarColor(
+            color = TextColor,
+            darkIcons = false
         )
     }
 

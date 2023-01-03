@@ -4,4 +4,8 @@
     <string name="quality">جودة</string>
     <string name="speed">سرعة</string>
     <string name="safty">أمــــــــان</string>
+    <string name="Skip">تخطي</string>
+    <string name="glad_to_serve">يسعدنا خدمتك</string>
+    <string name="serve_lbl">اخبرنا ما هي نوع الخدمة التي تحتاج لها</string>
+    <string name="condation_type">نوع وعدد المكيفات</string>
 </resources>

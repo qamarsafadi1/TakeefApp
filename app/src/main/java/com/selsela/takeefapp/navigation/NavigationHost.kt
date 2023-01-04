@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.selsela.takeefapp.ui.auth.LoginView
 import com.selsela.takeefapp.ui.home.HomeView
 import com.selsela.takeefapp.ui.intro.IntroView
 import com.selsela.takeefapp.ui.splash.SplashView
@@ -29,7 +30,12 @@ fun NavigationHost(
             }
         }
         composable(Destinations.HOME_SCREEN) {
-            HomeView()
+            HomeView(){
+                NavigationActions(navController).navigateToLogin()
+            }
+        }
+        composable(Destinations.LOGIN_SCREEN){
+            LoginView()
         }
     }
 }

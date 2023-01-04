@@ -7,6 +7,7 @@ object Destinations {
     const val SPLASH_SCREEN = "splash"
     const val INTRO_SCREEN = "intro"
     const val HOME_SCREEN = "home"
+    const val LOGIN_SCREEN = "login"
 }
 
 class NavigationActions(private val navController: NavController) {
@@ -20,5 +21,8 @@ class NavigationActions(private val navController: NavController) {
         navController.navigate(Destinations.HOME_SCREEN) {
             navigateWithClearBackStack(navController)
         }
+    }
+    fun navigateToLogin(){
+        navController.navigate(Destinations.LOGIN_SCREEN)
     }
 }

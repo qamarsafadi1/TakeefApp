@@ -3,7 +3,6 @@ package com.selsela.takeefapp.ui.theme
 import androidx.compose.material3.Typography
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.sp
@@ -54,6 +53,12 @@ val text14 = TextStyle(
     fontSize = 14.sp,
     color = TextColor
 )
+val text14Meduim = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.Medium,
+    fontSize = 14.sp,
+    color = TextColor
+)
 val text18 = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.Bold,
@@ -63,12 +68,31 @@ val text18 = TextStyle(
 val text12 = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.SemiBold,
-    fontSize = 12.sp)
+    fontSize = 12.sp,
+    lineHeight = 22.sp,
+    letterSpacing = 0.5.sp,
+    lineHeightStyle = LineHeightStyle(
+        alignment = LineHeightStyle.Alignment.Center,
+        trim = LineHeightStyle.Trim.Both
+    )
+)
+val text16Medium = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.Medium,
+    fontSize = 16.sp
+)
+val text12Meduim = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.Medium,
+    fontSize = 12.sp
+)
+
 val text20 = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.Bold,
-    fontSize = 20.sp)
-val buttonText  = TextStyle(
+    fontSize = 20.sp
+)
+val buttonText = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.Medium,
     fontSize = 13.sp,

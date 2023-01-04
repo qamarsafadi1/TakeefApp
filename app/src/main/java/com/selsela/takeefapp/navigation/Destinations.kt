@@ -8,6 +8,7 @@ object Destinations {
     const val INTRO_SCREEN = "intro"
     const val HOME_SCREEN = "home"
     const val LOGIN_SCREEN = "login"
+    const val VERIFY_SCREEN = "verify"
 }
 
 class NavigationActions(private val navController: NavController) {
@@ -24,5 +25,8 @@ class NavigationActions(private val navController: NavController) {
     }
     fun navigateToLogin(){
         navController.navigate(Destinations.LOGIN_SCREEN)
+    }
+    fun navigateToVerify(){
+        navController.navigate(Destinations.VERIFY_SCREEN)
     }
 }

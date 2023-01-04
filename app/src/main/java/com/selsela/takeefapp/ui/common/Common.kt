@@ -4,14 +4,21 @@ import android.widget.EditText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -26,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -37,9 +45,11 @@ import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextFieldBg
+import com.selsela.takeefapp.ui.theme.VerifiedBg
 import com.selsela.takeefapp.ui.theme.buttonText
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14White
+import com.selsela.takeefapp.ui.theme.text14WhiteCenter
 import kotlin.math.sin
 
 @Composable
@@ -65,8 +75,10 @@ fun ElasticButton(
 
             onClick = {},
             modifier = modifier,
-            elevation = ButtonDefaults.elevation(defaultElevation = 0.dp,
-            pressedElevation = 0.dp),
+            elevation = ButtonDefaults.elevation(
+                defaultElevation = 0.dp,
+                pressedElevation = 0.dp
+            ),
             shape = RoundedCornerShape(24.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Purple40)
         ) {
@@ -143,5 +155,74 @@ fun EditText(
             trailing()
         },
         keyboardOptions = KeyboardOptions(keyboardType = inputType)
+    )
+}
+
+
+@Composable
+fun OtpTextField(
+    modifier: Modifier = Modifier,
+    otpText: String,
+    otpCount: Int = 4,
+    onOtpTextChange: (String, Boolean) -> Unit
+) {
+    BasicTextField(
+        value = otpText,
+        textStyle = text14WhiteCenter,
+        onValueChange = {
+            if (it.length <= otpCount) {
+                onOtpTextChange.invoke(it, it.length == otpCount)
+            }
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+        decorationBox = {
+            Row(horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.height(48.dp)) {
+                repeat(otpCount) { index ->
+                    CharView(
+                        index = index,
+                        text = otpText
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+            }
+        }
+    )
+}
+
+@Composable
+private fun CharView(
+    index: Int,
+    text: String
+) {
+    val isFocused = text.length == index
+    val char = when {
+        index == text.length -> ""
+        index > text.length -> ""
+        else -> text[index].toString()
+    }
+    Text(
+        modifier = Modifier
+            .width(54.dp)
+            .fillMaxHeight()
+            .background(color = VerifiedBg, shape = RoundedCornerShape(11.dp))
+            .border(
+                1.dp, when {
+                    isFocused -> BorderColor
+
+                    else -> BorderColor
+
+                }, RoundedCornerShape(11.dp)
+            )
+            .padding(2.dp),
+        text = char,
+        style = text14WhiteCenter,
+        color = if (isFocused) {
+            Color.White
+        } else {
+            Color.White
+
+        },
     )
 }

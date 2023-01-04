@@ -89,7 +89,9 @@ fun ConditionAnimation() {
 }
 
 @Composable
-fun Color.ChangeStatusBarColor() {
+fun Color.ChangeStatusBarColor(
+    isDark: Boolean = false
+) {
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
         color = this,
@@ -97,6 +99,6 @@ fun Color.ChangeStatusBarColor() {
     )
     systemUiController.setNavigationBarColor(
         color = this,
-        darkIcons = false
+        darkIcons = isDark
     )
 }

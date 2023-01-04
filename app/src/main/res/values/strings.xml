@@ -18,4 +18,5 @@
     <string name="facing_problem">تواجه مشكلة ؟</string>
     <string name="support_lbl">الدعم الفني</string>
     <string name="select">تحديد</string>
+    <string name="verify_code">رمز التحقق</string>
 </resources>

@@ -67,6 +67,19 @@ val text14White = TextStyle(
     ),
     textAlign = TextAlign.Start
 )
+val text14WhiteCenter = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 14.sp,
+    color = Color.White,
+    textAlign = TextAlign.Center,
+    lineHeight = 0.sp,
+    letterSpacing = 0.sp,
+    lineHeightStyle = LineHeightStyle(
+        alignment = LineHeightStyle.Alignment.Center,
+        trim = LineHeightStyle.Trim.Both
+    ),
+)
 val text14Meduim = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.Medium,

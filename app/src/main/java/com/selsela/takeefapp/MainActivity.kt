@@ -6,15 +6,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -25,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.selsela.takeefapp.navigation.Destinations
 import com.selsela.takeefapp.navigation.NavigationHost
@@ -39,12 +38,15 @@ import com.selsela.takeefapp.utils.Extensions.Companion.showingBackButton
 import com.selsela.takeefapp.utils.LocalData
 
 class MainActivity : ComponentActivity() {
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    @OptIn(ExperimentalMaterial3Api::class)
+    @SuppressLint(
+        "UnusedMaterial3ScaffoldPaddingParameter",
+        "UnusedMaterialScaffoldPaddingParameter"
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             TakeefAppTheme {
+                // Handle layout direction based on language
                 CompositionLocalProvider(
                     LocalLayoutDirection provides
                             if (LocalData.appLocal == "ar") LayoutDirection.Rtl
@@ -56,7 +58,7 @@ class MainActivity : ComponentActivity() {
                     )
                     Scaffold(
                         topBar = {
-                            if (currentRoute.value?.destination?.route != Destinations.HOME_SCREEN && currentRoute.value?.destination?.route != Destinations.SPLASH_SCREEN) {
+                            if (currentRoute.value?.destination?.route != Destinations.HOME_SCREEN && currentRoute.value?.destination?.route != Destinations.SPLASH_SCREEN && currentRoute.value?.destination?.route != Destinations.INTRO_SCREEN) {
                                 Color.White.ChangeStatusBarColor()
                                 TopAppBar(
                                     title = {
@@ -92,9 +94,7 @@ class MainActivity : ComponentActivity() {
                                         }
 
                                     },
-                                    colors = TopAppBarDefaults.mediumTopAppBarColors(
-                                        containerColor = Color.White
-                                    )
+                                    backgroundColor = Color.White, elevation = 0.dp
                                 )
                             }
                         }

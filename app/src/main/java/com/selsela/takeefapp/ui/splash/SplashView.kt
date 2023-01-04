@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.material3.Text
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,6 +23,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.AppLogoImage
+import com.selsela.takeefapp.ui.common.LottieAnimationView
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.TextColor
@@ -79,18 +80,23 @@ fun SplashView(
 
 @Composable
 fun ConditionAnimation() {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splashanimation))
-    LottieAnimation(
-        composition,
+    LottieAnimationView(
         modifier = Modifier
             .requiredHeight(184.dp)
             .padding(top = 42.dp),
-        iterations = LottieConstants.IterateForever
+        raw = R.raw.splashanimation
     )
 }
+
 @Composable
 fun Color.ChangeStatusBarColor() {
     val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(color = this,
-        darkIcons = false)
+    systemUiController.setStatusBarColor(
+        color = this,
+        darkIcons = false
+    )
+    systemUiController.setNavigationBarColor(
+        color = this,
+        darkIcons = false
+    )
 }

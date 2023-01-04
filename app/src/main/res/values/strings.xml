@@ -8,4 +8,14 @@
     <string name="glad_to_serve">يسعدنا خدمتك</string>
     <string name="serve_lbl">اخبرنا ما هي نوع الخدمة التي تحتاج لها</string>
     <string name="condation_type">نوع وعدد المكيفات</string>
+    <string name="welcome_lbl">"مرحبا بك "</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="register">انشاء حساب</string>
+    <string name="mobile">رقم الجوال</string>
+    <string name="when_you_register">عند متابعة التسجيل</string>
+    <string name="you_accept">أنت توافق على</string>
+    <string name="terms_condition">" الشروط والاحكام"</string>
+    <string name="facing_problem">تواجه مشكلة ؟</string>
+    <string name="support_lbl">الدعم الفني</string>
+    <string name="select">تحديد</string>
 </resources>

@@ -22,11 +22,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -46,6 +45,7 @@ import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.AppLogoImage
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
+import com.selsela.takeefapp.ui.theme.CardColor
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.NoRippleTheme
 import com.selsela.takeefapp.ui.theme.Purple40
@@ -74,7 +74,7 @@ fun HomeView(
         mutableStateOf(13)
     }
     Color.White.ChangeStatusBarColor()
-    // Handle layout direction based on language
+    // hide ripple effect
     CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
         Box(
             modifier = Modifier
@@ -109,10 +109,10 @@ fun HomeView(
                 LazyColumn(modifier = Modifier.padding(top = 24.dp)) {
                     items(3) {
                         AnimContent {
-                            if (it){
+                            if (it) {
                                 paddingTitle = 12.0
                                 paddingLabel = 5
-                            }else{
+                            } else {
                                 paddingTitle = 27.3
                                 paddingLabel = 13
                             }
@@ -120,8 +120,14 @@ fun HomeView(
                     }
                 }
 
-                Row(modifier = Modifier.fillMaxWidth().padding(top = 25.dp), horizontalArrangement = Arrangement.End) {
-                    ElasticButton(onClick = { goToLogin() }, title = "   +  طلب خاص",
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 25.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    ElasticButton(
+                        onClick = { goToLogin() }, title = "   +  طلب خاص",
                     )
                 }
             }
@@ -144,7 +150,7 @@ private fun TitleView(paddingTitle: Double, paddingLabel: Int) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class)
 @ExperimentalAnimationApi
 @Composable
 fun AnimContent(onExpand: (Boolean) -> Unit) {
@@ -155,10 +161,9 @@ fun AnimContent(onExpand: (Boolean) -> Unit) {
         modifier = Modifier
             .padding(bottom = 9.dp)
             .fillMaxWidth(),
+        backgroundColor = CardColor,
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Purple40.copy(0.10f),
-        ),
+        elevation = 0.dp,
         onClick = { itemExpanded = !itemExpanded }
     ) {
         Column(
@@ -260,8 +265,8 @@ private fun DetailsView(onCollapse: () -> Unit) {
                 }
 
                 ElasticButton(
-                    onClick = {onCollapse() },
-                    title = "تحديد",
+                    onClick = { onCollapse() },
+                    title = stringResource(R.string.select),
                     modifier = Modifier
                         .width(167.dp)
                         .requiredHeight(48.dp)
@@ -360,10 +365,7 @@ private fun ServiceItem(arrowVisibility: Boolean) {
                 style = text12,
                 color = TextColor.copy(0.44f)
             )
-
-
         }
-
         Column(
             modifier = Modifier
                 .fillMaxHeight()
@@ -376,7 +378,7 @@ private fun ServiceItem(arrowVisibility: Boolean) {
                 contentDescription = ""
             )
 
-            AnimatedVisibility(visible = arrowVisibility) {
+            if (arrowVisibility) {
                 Image(
                     painter = painterResource(id = R.drawable.backward_arrow),
                     contentDescription = ""

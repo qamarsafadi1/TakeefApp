@@ -19,7 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,6 +45,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.common.NextPageButton
 import com.selsela.takeefapp.ui.model.intro.Intro
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
@@ -158,21 +159,6 @@ fun IntroView(
     }
 }
 
-@Composable
-private fun NextPageButton() {
-    Box(
-        modifier = Modifier
-            .size(56.dp)
-            .clip(CircleShape)
-            .background(Purple40),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.forward_arrow),
-            contentDescription = "arrow"
-        )
-    }
-}
 
 @Composable
 private fun StartNowButton() {
@@ -335,6 +321,10 @@ fun Color.ChangeStatusBarColor() {
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
         color = this,
+        darkIcons = false
+    )
+    systemUiController.setNavigationBarColor(
+        color = Color.White,
         darkIcons = false
     )
 }

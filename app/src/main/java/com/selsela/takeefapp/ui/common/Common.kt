@@ -2,36 +2,48 @@ package com.selsela.takeefapp.ui.common
 
 import android.os.CountDownTimer
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,25 +54,27 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.SecondaryColor
+import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.TextFieldBg
 import com.selsela.takeefapp.ui.theme.VerifiedBg
 import com.selsela.takeefapp.ui.theme.buttonText
+import com.selsela.takeefapp.ui.theme.text11
+import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text14White
 import com.selsela.takeefapp.ui.theme.text14WhiteCenter
-import com.selsela.takeefapp.utils.Extensions.Companion.log
-import kotlinx.coroutines.delay
-import java.util.Calendar
+import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Composable
@@ -81,21 +95,53 @@ fun ElasticButton(
         .width(167.dp)
         .requiredHeight(48.dp)
 ) {
-    ElasticView(onClick = { onClick() }) {
-        Button(
-
-            onClick = {},
-            modifier = modifier,
-            elevation = ButtonDefaults.elevation(
-                defaultElevation = 0.dp,
-                pressedElevation = 0.dp
-            ),
-            shape = RoundedCornerShape(24.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Purple40)
-        ) {
+    // ElasticView(onClick = { onClick() }) {
+    Button(
+        onClick = {
+            onClick()
+        },
+        modifier = modifier,
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp
+        ),
+        shape = RoundedCornerShape(24.dp),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Purple40)
+    ) {
+        Text(text = title, style = buttonText)
+    }
+    // }
+}
+@Composable
+fun ElasticButton(
+    onClick: () -> Unit,
+    title: String,
+    icon: Int,
+    modifier: Modifier = Modifier
+        .width(167.dp)
+        .requiredHeight(48.dp)
+) {
+    // ElasticView(onClick = { onClick() }) {
+    Button(
+        onClick = {
+            onClick()
+        },
+        modifier = modifier,
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp
+        ),
+        shape = RoundedCornerShape(24.dp),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Purple40)
+    ) {
+        Row(horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically) {
             Text(text = title, style = buttonText)
+            Image(painter = painterResource(id = icon), contentDescription = "",
+            modifier = Modifier.padding(start = 12.dp))
         }
     }
+    // }
 }
 
 @Composable
@@ -169,6 +215,90 @@ fun EditText(
     )
 }
 
+@Composable
+fun EditTextAddress(
+    onValueChange: (String) -> Unit, text: String,
+    hint: String = "",
+    inputType: KeyboardType = KeyboardType.Text,
+    singleLine: Boolean = true,
+    modifier: Modifier = Modifier,
+    trailing: @Composable (() -> Unit)? = null
+) {
+    TextField(
+        value = text, onValueChange = {
+            onValueChange(it)
+        },
+        modifier = modifier.then(
+            Modifier
+                .fillMaxWidth()
+                .requiredHeight(46.dp)
+                .border(1.dp, color = BorderColor, RoundedCornerShape(8.dp))
+        ),
+        textStyle = text11,
+        shape = RoundedCornerShape(8.dp),
+        colors = TextFieldDefaults.textFieldColors(
+            Color.White,
+            backgroundColor = TextFieldBg,
+            cursorColor = Color.White,
+            disabledLabelColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+
+        ),
+        singleLine = singleLine,
+        placeholder = {
+            Text(
+                text = hint, style = text11,
+                color = SecondaryColor
+            )
+        },
+        trailingIcon = {
+            if (trailing != null) {
+                trailing()
+            }
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = inputType)
+    )
+}
+
+@Composable
+fun SearchBar(
+    text: String,
+    onValueChange: (String) -> Unit
+) {
+    TextField(
+        value =
+        text, onValueChange =
+        {
+            onValueChange(it)
+        },
+        singleLine = true,
+        colors = TextFieldDefaults.textFieldColors(
+            TextColor,
+            backgroundColor = Color.Transparent,
+            cursorColor = SecondaryColor,
+            disabledLabelColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        ),
+        textStyle = text12,
+        placeholder = {
+            Text(
+                text = "بحث عن عنوان او تحديد عنوان سابق",
+                style = text12,
+                color = SecondaryColor
+            )
+        },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.search),
+                contentDescription = "",
+                tint = SecondaryColor
+            )
+        }
+
+    )
+}
 
 @Composable
 fun OtpTextField(
@@ -293,3 +423,107 @@ fun Countdown(seconds: Long, modifier: Modifier) {
         modifier = modifier
     )
 }
+
+@Composable
+fun Spinner(
+    placeHolder: String,
+    items: List<String> = listOf("اسم المنطقة", "اسم المنطقة", "اسم المنطقة", "اسم المنطقة", "اسم المنطقة", "اسم المنطقة"),
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedIndex by remember { mutableStateOf(-1) }
+    Box(
+        modifier = Modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth()
+            .requiredHeight(46.dp)
+            .background(TextFieldBg, RoundedCornerShape(8.dp))
+            .border(1.dp, color = BorderColor, RoundedCornerShape(8.dp))
+            .clickable(onClick = { expanded = true })
+            .padding(horizontal = 16.dp)
+
+    ) {
+        Text(
+            if (selectedIndex != -1)
+            items[selectedIndex]
+            else placeHolder,
+            style = text11,
+            color = Color.White,
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+
+        )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .wrapContentSize(Alignment.BottomStart)
+                .border(1.dp, color = Color.Transparent, RoundedCornerShape(8.dp))
+                .background(
+                    Color.White
+                )
+        ) {
+            items.forEachIndexed { index, s ->
+                DropdownMenuItem(onClick = {
+                    selectedIndex = index
+                    expanded = false
+                }) {
+                    Text(text = s,
+                    style = text11,
+                    color = TextColor)
+                }
+            }
+        }
+
+        Image(
+            painter = painterResource(id = R.drawable.spinnerarrow),
+            contentDescription = "",
+            modifier = Modifier.align(Alignment.CenterEnd)
+
+        )
+    }
+}
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun BottomSheet(
+    color: Color? = null,
+    sheetState: ModalBottomSheetState,
+    content: @Composable () -> Unit
+    ) {
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded }
+    )
+    val coroutineScope = rememberCoroutineScope()
+
+    BackHandler(sheetState.isVisible) {
+        coroutineScope.launch { sheetState.hide() }
+    }
+
+    ModalBottomSheetLayout(
+        sheetState = sheetState,
+        sheetBackgroundColor = color ?: MaterialTheme.colors.surface,
+        sheetContent = { content() },
+        modifier = Modifier.fillMaxSize(),
+        sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+    ) {
+    }
+}
+
+
+@Composable
+fun BottomSheetContent() {
+    Column(
+        modifier = Modifier.padding(32.dp)
+    ) {
+        Text(
+            text = "Bottom sheet",
+            style = MaterialTheme.typography.h6
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        Text(
+            text = "Click outside the bottom sheet to hide it",
+            style = MaterialTheme.typography.body1
+        )
+    }
+}
+

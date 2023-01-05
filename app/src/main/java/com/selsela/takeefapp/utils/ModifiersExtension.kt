@@ -16,9 +16,9 @@ import androidx.compose.ui.unit.dp
 @SuppressLint("ModifierFactoryUnreferencedReceiver")
 object ModifiersExtension {
 
-    fun Modifier.paddingTop(num: Double) = Modifier.padding(top = num.dp)
+    fun Modifier.paddingTop(value: Double) = Modifier.padding(top = value.dp)
 
-    fun Modifier.paddingTop(num: Int) = Modifier.padding(top = num.dp)
+    fun Modifier.paddingTop(value: Int) = Modifier.padding(top = value.dp)
 
     fun Modifier.widthMatchParent(height: Int) = Modifier.fillMaxWidth(1f).requiredHeight(height = height.dp)
 

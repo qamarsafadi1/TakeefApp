@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.selsela.takeefapp.ui.address.AddressView
 import com.selsela.takeefapp.ui.auth.LoginView
 import com.selsela.takeefapp.ui.auth.VerifyView
 import com.selsela.takeefapp.ui.home.HomeView
@@ -41,7 +42,12 @@ fun NavigationHost(
             }
         }
         composable(Destinations.VERIFY_SCREEN) {
-            VerifyView()
+            VerifyView(){
+                NavigationActions(navController).navigateToAddress()
+            }
+        }
+        composable(Destinations.ADDRESS_SCREEN) {
+            AddressView()
         }
     }
 }

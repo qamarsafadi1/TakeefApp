@@ -71,5 +71,8 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:$nav_version"
     implementation "com.google.accompanist:accompanist-pager:0.28.0"
     implementation 'com.github.qamarelsafadi:ElasticView:v0.2'
+    implementation 'com.google.maps.android:maps-compose:2.7.2'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+
 
 }

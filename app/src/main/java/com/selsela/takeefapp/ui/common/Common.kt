@@ -1,6 +1,7 @@
 package com.selsela.takeefapp.ui.common
 
-import android.widget.EditText
+import android.os.CountDownTimer
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,23 +16,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,9 +55,13 @@ import com.selsela.takeefapp.ui.theme.TextFieldBg
 import com.selsela.takeefapp.ui.theme.VerifiedBg
 import com.selsela.takeefapp.ui.theme.buttonText
 import com.selsela.takeefapp.ui.theme.text14
+import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text14White
 import com.selsela.takeefapp.ui.theme.text14WhiteCenter
-import kotlin.math.sin
+import com.selsela.takeefapp.utils.Extensions.Companion.log
+import kotlinx.coroutines.delay
+import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun AppLogoImage(
@@ -167,34 +178,40 @@ fun OtpTextField(
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
     BasicTextField(
+        modifier = modifier,
         value = otpText,
-        textStyle = text14WhiteCenter,
         onValueChange = {
             if (it.length <= otpCount) {
                 onOtpTextChange.invoke(it, it.length == otpCount)
             }
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next
+        ),
         decorationBox = {
-            Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.height(48.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 repeat(otpCount) { index ->
-                    CharView(
+                    OtpView(
                         index = index,
-                        text = otpText
+                        text = otpText,
+                        modifier = modifier
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
             }
-        }
+        },
     )
 }
 
 @Composable
-private fun CharView(
+private fun OtpView(
     index: Int,
-    text: String
+    text: String,
+    modifier: Modifier = Modifier
 ) {
     val isFocused = text.length == index
     val char = when {
@@ -202,27 +219,77 @@ private fun CharView(
         index > text.length -> ""
         else -> text[index].toString()
     }
-    Text(
+    Box(
         modifier = Modifier
             .width(54.dp)
-            .fillMaxHeight()
+            .height(48.dp)
             .background(color = VerifiedBg, shape = RoundedCornerShape(11.dp))
             .border(
                 1.dp, when {
                     isFocused -> BorderColor
-
                     else -> BorderColor
-
-                }, RoundedCornerShape(11.dp)
+                },
+                RoundedCornerShape(11.dp)
             )
             .padding(2.dp),
-        text = char,
-        style = text14WhiteCenter,
-        color = if (isFocused) {
-            Color.White
-        } else {
-            Color.White
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
 
-        },
+            text = char,
+            style = text14WhiteCenter,
+            textAlign = TextAlign.Center,
+            color = if (isFocused) {
+                Color.White
+            } else {
+                Color.White
+
+            },
+        )
+    }
+
+}
+
+@Composable
+fun Countdown(seconds: Long, modifier: Modifier) {
+    val millisInFuture: Long = seconds * 1000
+
+    var timeData by remember {
+        mutableStateOf(millisInFuture)
+    }
+
+    val countDownTimer =
+        object : CountDownTimer(millisInFuture, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                Log.d("TAG", "onTick: ")
+                timeData = millisUntilFinished
+            }
+
+            override fun onFinish() {
+
+            }
+        }
+
+    DisposableEffect(key1 = "key") {
+        countDownTimer.start()
+        onDispose {
+            countDownTimer.cancel()
+        }
+    }
+    val secMilSec: Long = 1000
+    val minMilSec = 60 * secMilSec
+    val hourMilSec = 60 * minMilSec
+    val dayMilSec = 24 * hourMilSec
+    val minutes = (timeData % dayMilSec % hourMilSec / minMilSec).toInt()
+    val seconds = (timeData % dayMilSec % hourMilSec % minMilSec / secMilSec).toInt()
+
+    Text(
+        text = String.format(
+            Locale.ENGLISH,
+            "%02d:%02d", minutes, seconds
+        ),
+        style = text14Meduim,
+        color = Color.White,
+        modifier = modifier
     )
 }

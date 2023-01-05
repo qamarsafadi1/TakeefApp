@@ -19,4 +19,6 @@
     <string name="support_lbl">الدعم الفني</string>
     <string name="select">تحديد</string>
     <string name="verify_code">رمز التحقق</string>
+    <string name="you_will_recive_code_in">سيتم استلام الرمز خلال</string>
+    <string name="confirm">تأكيد</string>
 </resources>

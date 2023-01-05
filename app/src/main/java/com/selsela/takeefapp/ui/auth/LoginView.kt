@@ -156,7 +156,7 @@ fun LoginView(
                 .wrapContentSize()
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 43.dp),
-            verticalAlignment = Alignment.Bottom
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = painterResource(id = R.drawable.mjloho),

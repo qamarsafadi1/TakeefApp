@@ -28,4 +28,9 @@
     <string name="city_name">اسم المدينة</string>
     <string name="district">الحي</string>
     <string name="add_note">اضافة ملاحظة</string>
+    <string name="back">رجوع</string>
+    <string name="address_name_exmaple">اسم العنوان مثال ( المنزل , المكتب , الخ)</string>
+    <string name="address_name">اسم العناون</string>
+    <string name="search_result">نتائح البحث</string>
+    <string name="fav_addresses">" العناوين المفضلة"</string>
 </resources>

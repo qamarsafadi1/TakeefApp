@@ -2,7 +2,6 @@ package com.selsela.takeefapp.ui.common
 
 import android.os.CountDownTimer
 import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,7 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,9 +19,11 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -30,31 +31,27 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.PopupProperties
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -73,8 +70,8 @@ import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text14White
 import com.selsela.takeefapp.ui.theme.text14WhiteCenter
+import com.selsela.takeefapp.ui.theme.text18
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Composable
@@ -112,6 +109,7 @@ fun ElasticButton(
     }
     // }
 }
+
 @Composable
 fun ElasticButton(
     onClick: () -> Unit,
@@ -134,11 +132,15 @@ fun ElasticButton(
         shape = RoundedCornerShape(24.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = Purple40)
     ) {
-        Row(horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(text = title, style = buttonText)
-            Image(painter = painterResource(id = icon), contentDescription = "",
-            modifier = Modifier.padding(start = 12.dp))
+            Image(
+                painter = painterResource(id = icon), contentDescription = "",
+                modifier = Modifier.padding(start = 12.dp)
+            )
         }
     }
     // }
@@ -222,7 +224,7 @@ fun EditTextAddress(
     inputType: KeyboardType = KeyboardType.Text,
     singleLine: Boolean = true,
     modifier: Modifier = Modifier,
-    trailing: @Composable (() -> Unit)? = null
+    trailing: @Composable (() -> Unit)? = null,
 ) {
     TextField(
         value = text, onValueChange = {
@@ -257,6 +259,53 @@ fun EditTextAddress(
                 trailing()
             }
         },
+
+        keyboardOptions = KeyboardOptions(keyboardType = inputType)
+    )
+}
+@Composable
+fun EditTextLeadingIcon(
+    onValueChange: (String) -> Unit, text: String,
+    hint: String = "",
+    inputType: KeyboardType = KeyboardType.Text,
+    singleLine: Boolean = true,
+    modifier: Modifier = Modifier,
+    leading: @Composable (() -> Unit)? = null,
+) {
+    TextField(
+        value = text, onValueChange = {
+            onValueChange(it)
+        },
+        modifier = modifier.then(
+            Modifier
+                .fillMaxWidth()
+                .requiredHeight(46.dp)
+                .border(1.dp, color = BorderColor, RoundedCornerShape(8.dp))
+        ),
+        textStyle = text11,
+        shape = RoundedCornerShape(8.dp),
+        colors = TextFieldDefaults.textFieldColors(
+            Color.White,
+            backgroundColor = TextFieldBg,
+            cursorColor = Color.White,
+            disabledLabelColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+
+        ),
+        singleLine = singleLine,
+        placeholder = {
+            Text(
+                text = hint, style = text11,
+                color = SecondaryColor
+            )
+        },
+        leadingIcon = {
+            if (leading != null) {
+                leading()
+            }
+        },
+
         keyboardOptions = KeyboardOptions(keyboardType = inputType)
     )
 }
@@ -264,6 +313,7 @@ fun EditTextAddress(
 @Composable
 fun SearchBar(
     text: String,
+    onSearch: (String) -> Unit,
     onValueChange: (String) -> Unit
 ) {
     TextField(
@@ -295,7 +345,62 @@ fun SearchBar(
                 contentDescription = "",
                 tint = SecondaryColor
             )
-        }
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(onSearch = {
+            if (text.isEmpty())
+            onSearch("")
+            else onSearch(text)
+        })
+
+    )
+}
+
+@Composable
+fun SearchAddressBar(
+    text: String,
+    onValueChange: (String) -> Unit
+) {
+    TextField(
+        value =
+        text, onValueChange =
+        {
+            onValueChange(it)
+        },
+        singleLine = true,
+        colors = TextFieldDefaults.textFieldColors(
+            TextColor,
+            backgroundColor = Color.Transparent,
+            cursorColor = SecondaryColor,
+            disabledLabelColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        ),
+        textStyle = text12,
+        placeholder = {
+            Text(
+                text = "بحث عن عنوان ",
+                style = text12,
+                color = SecondaryColor
+            )
+        },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.search),
+                contentDescription = "",
+                tint = SecondaryColor
+            )
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(onSearch = {
+          //  onSearch(text)
+        })
 
     )
 }
@@ -427,7 +532,14 @@ fun Countdown(seconds: Long, modifier: Modifier) {
 @Composable
 fun Spinner(
     placeHolder: String,
-    items: List<String> = listOf("اسم المنطقة", "اسم المنطقة", "اسم المنطقة", "اسم المنطقة", "اسم المنطقة", "اسم المنطقة"),
+    items: List<String> = listOf(
+        "اسم المنطقة",
+        "اسم المنطقة",
+        "اسم المنطقة",
+        "اسم المنطقة",
+        "اسم المنطقة",
+        "اسم المنطقة"
+    ),
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableStateOf(-1) }
@@ -444,7 +556,7 @@ fun Spinner(
     ) {
         Text(
             if (selectedIndex != -1)
-            items[selectedIndex]
+                items[selectedIndex]
             else placeHolder,
             style = text11,
             color = Color.White,
@@ -467,9 +579,11 @@ fun Spinner(
                     selectedIndex = index
                     expanded = false
                 }) {
-                    Text(text = s,
-                    style = text11,
-                    color = TextColor)
+                    Text(
+                        text = s,
+                        style = text11,
+                        color = TextColor
+                    )
                 }
             }
         }
@@ -482,48 +596,78 @@ fun Spinner(
         )
     }
 }
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BottomSheet(
-    color: Color? = null,
-    sheetState: ModalBottomSheetState,
-    content: @Composable () -> Unit
-    ) {
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded }
-    )
-    val coroutineScope = rememberCoroutineScope()
+fun ListedBottomSheet(sheetState: ModalBottomSheetState){
+    Box(){
+        ModalBottomSheetLayout(
+            sheetState = sheetState,
+            sheetShape = RoundedCornerShape(topEnd = 42.dp, topStart = 42.dp),
+            sheetBackgroundColor = TextColor,
+            sheetContent = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.88f)
+                        .padding(
+                            horizontal = 24.dp,
+                            vertical = 46.dp
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.area_name),
+                        style = text18,
+                        color = Color.White
+                    )
 
-    BackHandler(sheetState.isVisible) {
-        coroutineScope.launch { sheetState.hide() }
-    }
+                    var query by remember {
+                        mutableStateOf("")
+                    }
+                    EditTextLeadingIcon(
+                        modifier = Modifier.paddingTop(24),
+                        onValueChange = {
+                            query = it
+                        }, text = query,
+                        hint = "بحث",
+                        leading = {
+                            androidx.compose.material3.Icon(
+                                painter = painterResource(id = R.drawable.search),
+                                contentDescription = "",
+                                tint = SecondaryColor
+                            )
+                        })
 
-    ModalBottomSheetLayout(
-        sheetState = sheetState,
-        sheetBackgroundColor = color ?: MaterialTheme.colors.surface,
-        sheetContent = { content() },
-        modifier = Modifier.fillMaxSize(),
-        sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-    ) {
+                    LazyColumn(modifier = Modifier.paddingTop(42).fillMaxWidth()) {
+                        items(10) {
+                            AreaListItem()
+                        }
+                    }
+                }
+            }
+        ) {
+        }
     }
 }
 
 
 @Composable
-fun BottomSheetContent() {
-    Column(
-        modifier = Modifier.padding(32.dp)
+private fun AreaListItem() {
+    Row(
+        modifier = Modifier.padding(bottom = 7.dp)
+            .requiredHeight(48.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = "Bottom sheet",
-            style = MaterialTheme.typography.h6
+        Image(
+            painter = painterResource(id = R.drawable.location),
+            contentDescription = ""
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.width(13.6.dp))
         Text(
-            text = "Click outside the bottom sheet to hide it",
-            style = MaterialTheme.typography.body1
+            text = stringResource(id = R.string.area_name),
+            style = text14,
+            color = Color.White
         )
     }
 }
-

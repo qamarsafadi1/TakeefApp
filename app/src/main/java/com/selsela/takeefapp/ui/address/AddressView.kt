@@ -1,5 +1,7 @@
 package com.selsela.takeefapp.ui.address
 
+import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
@@ -8,6 +10,9 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,30 +20,34 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetState
-import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -52,237 +61,556 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.EditTextAddress
 import com.selsela.takeefapp.ui.common.ElasticButton
+import com.selsela.takeefapp.ui.common.ListedBottomSheet
 import com.selsela.takeefapp.ui.common.SearchBar
-import com.selsela.takeefapp.ui.common.Spinner
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
+import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
+import com.selsela.takeefapp.ui.theme.TextFieldBg
 import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.utils.Extensions.Companion.RequestPermission
 import com.selsela.takeefapp.utils.Extensions.Companion.bitmapDescriptor
 import com.selsela.takeefapp.utils.Extensions.Companion.getMyLocation
+import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
-@Preview
 @Composable
-fun AddressView() {
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(bottomSheetState =
-    BottomSheetState(BottomSheetValue.Collapsed)
-    )
-
-
+fun AddressView(
+    goToSearchView: (String) -> Unit
+) {
     Color.White.ChangeStatusBarColor()
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-    ) {
-        GoogleMapView()
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 24.dp, vertical = 34.dp)
-                .fillMaxWidth()
-                .fillMaxHeight(0.53f)
-        ) {
-            BackButton()
-            Card(
-                modifier = Modifier
-                    .paddingTop(16)
-                    .fillMaxWidth()
-                    .requiredHeight(48.dp),
-                elevation = 6.dp,
-                shape = RoundedCornerShape(6.dp)
-            ) {
-                SearchView()
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = { /*TODO*/ }) {
-                Image(
-                    painter = painterResource(id = R.drawable.mylocation),
-                    contentDescription = ""
-                )
-            }
+    BottomSheetLayout(){
+        goToSearchView(it)
+    }
+}
 
-        }
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@Composable
+fun BottomSheetLayout(
+    onSearch: (String) -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val modalSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
+    val citySheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
+    val areaSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
+    var addressVisible by remember {
+        mutableStateOf(true)
+    }
+    var addressCardVisible by remember {
+        mutableStateOf(true)
+    }
 
-        var addressVisible by remember {
-            mutableStateOf(true)
+    LaunchedEffect(modalSheetState) {
+        snapshotFlow { modalSheetState.isVisible }.collect { isVisible ->
+            if (!isVisible) {
+                addressVisible = true
+            }
         }
-        AnimatedVisibility(
-            visible = addressVisible,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier
-                .paddingTop(16)
-                .fillMaxWidth()
-                .fillMaxHeight(0.47f)
-                .align(Alignment.BottomCenter)
-        ) {
-            Card(
-                modifier = Modifier
-                    .animateEnterExit(
-                        // Slide in/out the inner box.
-                        enter = slideInVertically(
-                            initialOffsetY = {
-                                it / 2
-                            },
-                        ),
-                        exit = slideOutVertically(
-                            targetOffsetY = {
-                                it / 2
-                            },
-                        ),
-                    ),
-                elevation = 9.dp,
-                shape = RoundedCornerShape(topStart = 45.dp, topEnd = 45.dp)
-            ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Row(
-                        modifier = Modifier
-                            .padding(horizontal = 32.dp, vertical = 25.dp)
-                            .align(Alignment.TopStart)
-                            .fillMaxWidth()
-                            .requiredHeight(56.dp),
-                        verticalAlignment = Alignment.CenterVertically
+    }
+    LaunchedEffect(citySheetState) {
+        snapshotFlow { citySheetState.isVisible }.collect { isVisible ->
+            if (!isVisible) {
+                addressVisible = true
+            }
+        }
+    }
+    LaunchedEffect(areaSheetState) {
+        snapshotFlow { areaSheetState.isVisible }.collect { isVisible ->
+            if (!isVisible) {
+                addressVisible = true
+            }
+        }
+    }
+
+    BackHandler(modalSheetState.isVisible) {
+        addressVisible = !addressVisible
+        coroutineScope.launch { modalSheetState.hide() }
+    }
+    BackHandler(citySheetState.isVisible) {
+        coroutineScope.launch { citySheetState.hide() }
+    }
+    BackHandler(areaSheetState.isVisible) {
+        coroutineScope.launch { areaSheetState.hide() }
+    }
+    Box {
+        ModalBottomSheetLayout(
+            sheetState = modalSheetState,
+            sheetContent = {
+                Column(modifier = Modifier.fillMaxHeight(0.5f)) {
+                    Button(
+                        onClick = {
+                            addressVisible = true
+                            coroutineScope.launch {
+                                modalSheetState.hide()
+                            }
+                        }
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.location),
-                            contentDescription = "",
-                            modifier = Modifier.padding(end = 6.6.dp)
-                        )
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        )
-                        {
-                            Text(
-                                text = stringResource(R.string.current_location),
-                                style = text11,
-                                color = SecondaryColor
-                            )
-                            Text(
-                                text = "اسم المنطقة , المدينة , الحي ",
-                                style = text12,
-                                color = TextColor,
-                                modifier = Modifier.paddingTop(3)
-                            )
-                        }
-                        var isFav by remember {
-                            mutableStateOf(false)
-                        }
-                        IconButton(onClick = { isFav = !isFav }) {
-                            Image(
-                                painter = painterResource(
-                                    id =
-                                    if (isFav) R.drawable.unfav else R.drawable.fav
+                        Text(text = "Hide Sheet")
+                    }
+                }
+            }
+        ) {
+            Scaffold {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White),
+                )
+                {
+                    GoogleMapView()
+                    Headerview() {
+                        onSearch(it)
+                    }
+                    CurrentAddressView(
+                        Modifier
+                            .paddingTop(16)
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.47f)
+                            .align(Alignment.BottomCenter),
+                        addressVisible
+                    )
+                    // Add address info form
+                    AnimatedVisibility(
+                        visible = addressCardVisible,
+                        enter = fadeIn(),
+                        exit = fadeOut(),
+                        modifier = Modifier
+                            .paddingTop(16)
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.37f)
+                            .align(Alignment.BottomCenter)
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .animateEnterExit(
+                                    // Slide in/out the inner box.
+                                    enter = slideInVertically(
+                                        initialOffsetY = {
+                                            it / 2
+                                        },
+                                    ),
+                                    exit = slideOutVertically(
+                                        targetOffsetY = {
+                                            it / 2
+                                        },
+                                    ),
                                 ),
+                            elevation = 0.dp,
+                            shape = RoundedCornerShape(topStart = 45.dp, topEnd = 45.dp),
+                            backgroundColor = TextColor
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(
+                                        horizontal = 24.dp,
+                                        vertical = 25.dp
+                                    ),
+                                horizontalAlignment = Alignment.End
+                            ) {
+                                CityAreaView(onAreaClick = {
+                                    addressVisible = !addressVisible
+                                    {
+                                        coroutineScope.launch {
+                                            if (areaSheetState.isVisible)
+                                                areaSheetState.hide()
+                                            else
+                                                areaSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                        }
+                                    }.withDelay(100)
+                                }) {
+                                    addressVisible = !addressVisible
+                                    {
+                                        coroutineScope.launch {
+                                            if (citySheetState.isVisible)
+                                                citySheetState.hide()
+                                            else
+                                                citySheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                        }
+                                    }.withDelay(100)
+                                }
+                                var district by remember {
+                                    mutableStateOf("")
+                                }
+                                EditTextAddress(
+                                    onValueChange = {
+                                        district = it
+                                    }, text =
+                                    district,
+                                    hint = stringResource(R.string.district),
+                                    modifier = Modifier.paddingTop(8)
+                                )
+                                EditTextAddress(
+                                    onValueChange = {
+                                        district = it
+                                    }, text =
+                                    district,
+                                    hint = stringResource(R.string.add_note),
+                                    modifier = Modifier.paddingTop(8)
+                                )
+
+                                ElasticButton(
+                                    onClick = {
+                                        addressVisible = !addressVisible
+                                        {
+                                            addressCardVisible = !addressCardVisible
+//
+                                        }.withDelay(100)
+                                    }, title = "متابعة",
+                                    icon = R.drawable.nexticon,
+                                    modifier = Modifier.paddingTop(14)
+                                )
+
+                                // Creating a Bottom Sheet
+
+
+                            }
+
+                        }
+                    }
+
+                }
+            }
+        }
+
+        if (addressCardVisible.not()) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.3f)
+                    .align(Alignment.BottomCenter),
+                shape = RoundedCornerShape(topStart = 45.dp, topEnd = 45.dp),
+                backgroundColor = TextColor
+            ) {
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            horizontal = 24.dp,
+                            vertical = 40.dp
+                        )
+                ) {
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(
+                            modifier = Modifier.clickable {
+                                addressVisible = !addressVisible
+                                addressCardVisible = !addressCardVisible
+                            },
+                            verticalAlignment = Alignment.CenterVertically,
+
+                            ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.backbutton),
                                 contentDescription = ""
                             )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = stringResource(R.string.back), style = text11,
+                                color = SecondaryColor
+                            )
                         }
 
+                        ElasticButton(
+                            onClick = {
+                                addressCardVisible = !addressCardVisible
+
+                                coroutineScope.launch {
+                                    if (modalSheetState.isVisible)
+                                        modalSheetState.hide()
+                                    else
+                                        modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                }
+                            }, title = "حفظ",
+                            modifier = Modifier
+                                .width(123.dp)
+                                .height(48.dp)
+                        )
+
                     }
+
+                    var addressName by remember {
+                        mutableStateOf("")
+                    }
+                    Text(
+                        text = stringResource(R.string.address_name),
+                        style = text11,
+                        color = SecondaryColor,
+                        modifier = Modifier.paddingTop(25)
+                    )
+                    EditTextAddress(
+                        onValueChange = {
+                            addressName = it
+                        }, text =
+                        addressName,
+                        hint = stringResource(R.string.address_name_exmaple),
+                        modifier = Modifier.paddingTop(8)
+                    )
                 }
             }
         }
-        Card(
-            modifier = Modifier
-                .paddingTop(16)
-                .fillMaxWidth()
-                .fillMaxHeight(0.37f)
-                .align(Alignment.BottomCenter),
-            elevation = 0.dp,
-            shape = RoundedCornerShape(topStart = 45.dp, topEnd = 45.dp),
-            backgroundColor = TextColor
+
+        ListedBottomSheet(sheetState = citySheetState)
+        ListedBottomSheet(sheetState = areaSheetState)
+
+    }
+
+}
+
+@Composable
+private fun CityAreaView(
+    onAreaClick: () -> Unit,
+    onCityClick: () -> Unit
+) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        CityView(Modifier.weight(1f)) {
+            onCityClick()
+        }
+        Spacer(modifier = Modifier.width(width = 8.dp))
+        AreaView(
+            modifier = Modifier.weight(1f)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        horizontal = 24.dp,
-                        vertical = 25.dp
-                    ),
-                horizontalAlignment = Alignment.End
-            ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(R.string.area),
-                            style = text11,
-                            color = SecondaryColor
-                        )
-                        Spinner(
-                            placeHolder = stringResource(R.string.area_name)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(width = 8.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(R.string.city),
-                            style = text11,
-                            color = SecondaryColor
-                        )
-                        Spinner(
-                            placeHolder = stringResource(R.string.city_name)
-                        )
-                    }
-                }
-                var district by remember {
-                    mutableStateOf("")
-                }
-                EditTextAddress(
-                    onValueChange = {
-                        district = it
-                    }, text =
-                    district,
-                    hint = stringResource(R.string.district),
-                    modifier = Modifier.paddingTop(8)
-                )
-                EditTextAddress(
-                    onValueChange = {
-                        district = it
-                    }, text =
-                    district,
-                    hint = stringResource(R.string.add_note),
-                    modifier = Modifier.paddingTop(8)
-                )
-                val coroutineScope = rememberCoroutineScope()
-
-                ElasticButton(
-                    onClick = { addressVisible = !addressVisible
-                        coroutineScope.launch {
-                            bottomSheetScaffoldState.bottomSheetState.expand()
-
-                        }
-                       }, title = "متابعة",
-                    icon = R.drawable.nexticon,
-                    modifier = Modifier.paddingTop(14)
-                )
-
-                // Creating a Bottom Sheet
-
-
-            }
-
+            onAreaClick()
         }
-
-
     }
 }
 
 @Composable
-private fun SearchView() {
+private fun AreaView(
+    modifier: Modifier,
+    onAreaClick: () -> Unit
+) {
+    Column(modifier) {
+        Text(
+            text = stringResource(R.string.city),
+            style = text11,
+            color = SecondaryColor
+        )
+        Box(
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .fillMaxWidth()
+                .requiredHeight(46.dp)
+                .background(TextFieldBg, RoundedCornerShape(8.dp))
+                .border(1.dp, color = BorderColor, RoundedCornerShape(8.dp))
+                .clickable(onClick = {
+                    onAreaClick()
+                })
+                .padding(horizontal = 16.dp)
+
+        ) {
+            Text(
+                stringResource(id = R.string.city_name),
+                style = text11,
+                color = Color.White,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.spinnerarrow),
+                contentDescription = "",
+                modifier = Modifier.align(Alignment.CenterEnd)
+
+            )
+        }
+    }
+}
+
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun CityView(
+    weight: Modifier,
+    onCityClick: () -> Unit
+) {
+
+    Column(weight) {
+        Text(
+            text = stringResource(R.string.area),
+            style = text11,
+            color = SecondaryColor
+        )
+        Box(
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .fillMaxWidth()
+                .requiredHeight(46.dp)
+                .background(TextFieldBg, RoundedCornerShape(8.dp))
+                .border(1.dp, color = BorderColor, RoundedCornerShape(8.dp))
+                .clickable(onClick = {
+                    onCityClick()
+                })
+                .padding(horizontal = 16.dp)
+
+        ) {
+            Text(
+                stringResource(id = R.string.area_name),
+                style = text11,
+                color = Color.White,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.spinnerarrow),
+                contentDescription = "",
+                modifier = Modifier.align(Alignment.CenterEnd)
+
+            )
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalAnimationApi::class)
+private fun CurrentAddressView(
+
+    modifier: Modifier, addressVisible: Boolean
+) {
+    AnimatedVisibility(
+        visible = addressVisible,
+        enter = fadeIn(),
+        exit = fadeOut(),
+        modifier = modifier
+    ) {
+        Card(
+            modifier = Modifier
+                .animateEnterExit(
+                    // Slide in/out the inner box.
+                    enter = slideInVertically(
+                        initialOffsetY = {
+                            it / 2
+                        },
+                    ),
+                    exit = slideOutVertically(
+                        targetOffsetY = {
+                            it / 2
+                        },
+                    ),
+                ),
+            elevation = 9.dp,
+            shape = RoundedCornerShape(topStart = 45.dp, topEnd = 45.dp)
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp, vertical = 25.dp)
+                        .align(Alignment.TopStart)
+                        .fillMaxWidth()
+                        .requiredHeight(56.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.location),
+                        contentDescription = "",
+                        modifier = Modifier.padding(end = 6.6.dp)
+                    )
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    )
+                    {
+                        Text(
+                            text = stringResource(R.string.current_location),
+                            style = text11,
+                            color = SecondaryColor
+                        )
+                        Text(
+                            text = "اسم المنطقة , المدينة , الحي ",
+                            style = text12,
+                            color = TextColor,
+                            modifier = Modifier.paddingTop(3)
+                        )
+                    }
+                    var isFav by remember {
+                        mutableStateOf(false)
+                    }
+                    IconButton(onClick = { isFav = !isFav }) {
+                        Image(
+                            painter = painterResource(
+                                id =
+                                if (isFav) R.drawable.unfav else R.drawable.fav
+                            ),
+                            contentDescription = ""
+                        )
+                    }
+
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Headerview(
+    onSearch: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 24.dp, vertical = 34.dp)
+            .fillMaxWidth()
+            .fillMaxHeight(0.53f)
+    ) {
+        BackButton()
+        Card(
+            modifier = Modifier
+                .paddingTop(16)
+                .fillMaxWidth()
+                .requiredHeight(48.dp),
+            elevation = 6.dp,
+            shape = RoundedCornerShape(6.dp)
+        ) {
+            SearchView() {
+                onSearch(it)
+            }
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(onClick = { /*TODO*/ }) {
+            Image(
+                painter = painterResource(id = R.drawable.mylocation),
+                contentDescription = ""
+            )
+        }
+    }
+}
+
+@Composable
+fun SearchView(
+    onSearch: (String) -> Unit
+) {
     var text by remember {
         mutableStateOf("")
     }
-    SearchBar(text) {
+    SearchBar(text,
+        onSearch = {
+            onSearch(it)
+        }) {
         text = it
     }
 }
 
 @Composable
-private fun BackButton() {
+fun BackButton() {
     IconButton(
         onClick = { /*TODO*/ },
     ) {
@@ -294,7 +622,7 @@ private fun BackButton() {
 }
 
 @Composable
-private fun GoogleMapView() {
+fun GoogleMapView() {
     val context = LocalContext.current
     var permissionIsGranted by remember {
         mutableStateOf(false)

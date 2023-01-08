@@ -10,6 +10,8 @@ object Destinations {
     const val LOGIN_SCREEN = "login"
     const val VERIFY_SCREEN = "verify"
     const val ADDRESS_SCREEN = "address"
+    const val SEARCH_ADDRESS_SCREEN = "address/"
+    const val SEARCH_ADDRESS_SCREEN_WITH_ARGUMENT = "address/{query}"
 
 }
 
@@ -19,7 +21,6 @@ class NavigationActions(private val navController: NavController) {
             navigateWithClearBackStack(navController)
         }
     }
-
     fun navigateToHome() {
         navController.navigate(Destinations.HOME_SCREEN) {
             navigateWithClearBackStack(navController)
@@ -33,6 +34,10 @@ class NavigationActions(private val navController: NavController) {
     }
     fun navigateToAddress(){
         navController.navigate(Destinations.ADDRESS_SCREEN)
+    }
+    fun navigateToSearchAddress(query: String?){
+        val queryResult = query ?: ""
+        navController.navigate("${Destinations.SEARCH_ADDRESS_SCREEN}${queryResult}")
     }
 
 

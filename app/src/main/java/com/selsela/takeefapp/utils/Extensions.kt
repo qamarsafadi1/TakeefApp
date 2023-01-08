@@ -52,6 +52,7 @@ class Extensions {
         fun NavController.bindToolbarTitle(currentRoute: NavBackStackEntry): String{
             var title =  when(currentRoute.destination.route){
                 Destinations.HOME_SCREEN,Destinations.LOGIN_SCREEN,Destinations.VERIFY_SCREEN -> ""
+                Destinations.SEARCH_ADDRESS_SCREEN_WITH_ARGUMENT -> "تحديد عنوان"
                 else -> "Selsela"
             }
             return title

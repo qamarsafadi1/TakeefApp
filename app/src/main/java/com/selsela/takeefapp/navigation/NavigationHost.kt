@@ -48,8 +48,9 @@ fun NavigationHost(
             }
         }
         composable(Destinations.ADDRESS_SCREEN) {
-            AddressView(){ query ->
-                NavigationActions(navController).navigateToSearchAddress(query)
+            AddressView(){ query -> 
+                val queryResult = query.ifEmpty { "none" }
+                NavigationActions(navController).navigateToSearchAddress(queryResult)
             }
         }
         composable(Destinations.SEARCH_ADDRESS_SCREEN_WITH_ARGUMENT){

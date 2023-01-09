@@ -73,6 +73,7 @@ import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.utils.Extensions.Companion.RequestPermission
 import com.selsela.takeefapp.utils.Extensions.Companion.bitmapDescriptor
 import com.selsela.takeefapp.utils.Extensions.Companion.getMyLocation
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.launch
@@ -84,6 +85,7 @@ fun AddressView(
 ) {
     Color.White.ChangeStatusBarColor()
     BottomSheetLayout(){
+        it.log("query")
         goToSearchView(it)
     }
 }

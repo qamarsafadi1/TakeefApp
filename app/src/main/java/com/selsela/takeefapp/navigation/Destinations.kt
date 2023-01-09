@@ -36,7 +36,7 @@ class NavigationActions(private val navController: NavController) {
         navController.navigate(Destinations.ADDRESS_SCREEN)
     }
     fun navigateToSearchAddress(query: String?){
-        val queryResult = query ?: ""
+        val queryResult = query ?: "none"
         navController.navigate("${Destinations.SEARCH_ADDRESS_SCREEN}${queryResult}")
     }
 

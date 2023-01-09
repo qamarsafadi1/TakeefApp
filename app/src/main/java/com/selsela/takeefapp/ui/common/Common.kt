@@ -145,6 +145,37 @@ fun ElasticButton(
     }
     // }
 }
+@Composable
+fun IconedButton(
+    onClick: () -> Unit,
+    icon: Int,
+    modifier: Modifier = Modifier
+        .width(167.dp)
+        .requiredHeight(48.dp)
+) {
+    // ElasticView(onClick = { onClick() }) {
+    Button(
+        onClick = {
+            onClick()
+        },
+        modifier = modifier,
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp
+        ),
+        shape = RoundedCornerShape(24.dp),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Purple40)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = icon), contentDescription = "")
+        }
+    }
+    // }
+}
 
 @Composable
 fun NextPageButton() {

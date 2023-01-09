@@ -1,6 +1,11 @@
 package com.selsela.takeefapp.ui.address
 
 import android.annotation.SuppressLint
+import android.view.ContextThemeWrapper
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.CalendarView
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -23,9 +28,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
@@ -35,6 +41,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,9 +53,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.marginEnd
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -61,6 +74,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.EditTextAddress
 import com.selsela.takeefapp.ui.common.ElasticButton
+import com.selsela.takeefapp.ui.common.IconedButton
 import com.selsela.takeefapp.ui.common.ListedBottomSheet
 import com.selsela.takeefapp.ui.common.SearchBar
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
@@ -70,6 +84,8 @@ import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.TextFieldBg
 import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text12
+import com.selsela.takeefapp.ui.theme.text14
+import com.selsela.takeefapp.ui.theme.text20Book
 import com.selsela.takeefapp.utils.Extensions.Companion.RequestPermission
 import com.selsela.takeefapp.utils.Extensions.Companion.bitmapDescriptor
 import com.selsela.takeefapp.utils.Extensions.Companion.getMyLocation
@@ -77,6 +93,8 @@ import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -84,7 +102,7 @@ fun AddressView(
     goToSearchView: (String) -> Unit
 ) {
     Color.White.ChangeStatusBarColor()
-    BottomSheetLayout(){
+    BottomSheetLayout() {
         it.log("query")
         goToSearchView(it)
     }
@@ -154,18 +172,12 @@ fun BottomSheetLayout(
     Box {
         ModalBottomSheetLayout(
             sheetState = modalSheetState,
+            sheetShape = RoundedCornerShape(topStart = 42.dp, topEnd = 42.dp),
+            sheetBackgroundColor = TextColor,
             sheetContent = {
-                Column(modifier = Modifier.fillMaxHeight(0.5f)) {
-                    Button(
-                        onClick = {
-                            addressVisible = true
-                            coroutineScope.launch {
-                                modalSheetState.hide()
-                            }
-                        }
-                    ) {
-                        Text(text = "Hide Sheet")
-                    }
+                TextColor.ChangeStatusBarColor()
+                Column(modifier = Modifier.fillMaxHeight(0.85f)) {
+                    DatePickerView() {}
                 }
             }
         ) {
@@ -377,6 +389,156 @@ fun BottomSheetLayout(
         ListedBottomSheet(sheetState = citySheetState)
         ListedBottomSheet(sheetState = areaSheetState)
 
+    }
+
+}
+
+@Composable
+fun DatePickerView(onBack: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 28.dp, vertical = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth(),
+                text = stringResource(R.string.select_lbl),
+                style = text14,
+                color = SecondaryColor,
+                textAlign = TextAlign.Center
+            )
+            Row(
+                modifier = Modifier.clickable {
+                    onBack()
+                },
+                verticalAlignment = Alignment.CenterVertically,
+
+                ) {
+                Image(
+                    painter = painterResource(id = R.drawable.backbutton),
+                    contentDescription = ""
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = stringResource(R.string.back), style = text11,
+                    color = SecondaryColor
+                )
+
+            }
+        }
+        Text(
+            text = stringResource(R.string.visit_date),
+            style = text20Book,
+            color = Color.White,
+            modifier = Modifier.paddingTop(13.5)
+        )
+        Calendar()
+
+        var check by remember {
+            mutableStateOf(-1)
+        }
+        PmAmView(check) {
+            check = it
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            IconedButton(
+                onClick = { /*TODO*/ },
+                icon = R.drawable.forward_arrow,
+                modifier = Modifier
+                    .paddingTop(5)
+                    .requiredWidth(width = 65.dp)
+                    .requiredHeight(48.dp)
+            )
+
+        }
+
+    }
+
+}
+
+@Composable
+fun PmAmView(selectedItem: Int = -1, onCheck: (Int) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        repeat(2) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .requiredHeight(48.dp)
+                    .background(TextFieldBg, RoundedCornerShape(11.dp))
+                    .border(width = 1.dp, color = BorderColor, RoundedCornerShape(11.dp))
+                    .padding(horizontal = 15.dp)
+                    .clickable(
+
+                    ) {
+                        onCheck(it)
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+
+                Text(
+                    text = if (it == 0) "فترة صباحية" else "فترة مسائية",
+                    style = text14,
+                    color = Color.White
+                )
+
+                Text(
+                    text = if (it == 0) "08:00 AM - 12:00 PM" else "12:00 PM - 05:00 PM",
+                    style = text14,
+                    color = SecondaryColor
+                )
+                Image(
+                    painter =
+                    if (it == selectedItem)
+                        painterResource(id = R.drawable.checked)
+                    else painterResource(id = R.drawable.uncheckedrb),
+                    contentDescription = ""
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+    }
+}
+
+@Preview
+@Composable
+fun Calendar() {
+    CompositionLocalProvider(
+        LocalLayoutDirection provides
+                LayoutDirection.Ltr
+    ) {
+        val dateFormat = SimpleDateFormat("dd:MM:yyyy", Locale.ENGLISH)
+        val cal = java.util.Calendar.getInstance()
+        val date = remember { mutableStateOf(dateFormat.format(cal.time)) }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AndroidView(
+                { CalendarView(ContextThemeWrapper(it, R.style.CalenderViewCustom)) },
+                modifier = Modifier.fillMaxWidth(),
+                update = { views ->
+                    views.firstDayOfWeek = java.util.Calendar.SATURDAY
+                    views.setOnDateChangeListener { _, year, month, dayOfMonth ->
+                        cal.set(year, month, dayOfMonth)
+                        date.value = dateFormat.format(cal.time).toString()
+                    }
+                })
+        }
     }
 
 }

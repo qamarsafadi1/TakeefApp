@@ -142,6 +142,11 @@ val text20 = TextStyle(
     fontWeight = FontWeight.Bold,
     fontSize = 20.sp
 )
+val text20Book = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 20.sp
+)
 val buttonText = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.Medium,

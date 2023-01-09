@@ -34,4 +34,6 @@
     <string name="search_result">نتائح البحث</string>
     <string name="fav_addresses">" العناوين المفضلة"</string>
     <string name="temp_address_name">المنزل</string>
+    <string name="select_lbl">تحديد</string>
+    <string name="visit_date">موعد الزيارة</string>
 </resources>

@@ -99,11 +99,15 @@ import java.util.Locale
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun AddressView(
-    goToSearchView: (String) -> Unit
+    goToSearchView: (String) -> Unit,
+    goToReviewOrder: () -> Unit
 ) {
     Color.White.ChangeStatusBarColor()
-    BottomSheetLayout() {
-        it.log("query")
+    BottomSheetLayout(
+        goToReviewOrder = {
+            goToReviewOrder()
+        }
+    ) {
         goToSearchView(it)
     }
 }
@@ -112,7 +116,8 @@ fun AddressView(
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun BottomSheetLayout(
-    onSearch: (String) -> Unit
+    goToReviewOrder: () -> Unit,
+    onSearch: (String) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
@@ -177,7 +182,13 @@ fun BottomSheetLayout(
             sheetContent = {
                 TextColor.ChangeStatusBarColor()
                 Column(modifier = Modifier.fillMaxHeight(0.85f)) {
-                    DatePickerView() {}
+                    DatePickerView(
+                        onBack = {
+
+                        }
+                    ) {
+                        goToReviewOrder()
+                    }
                 }
             }
         ) {
@@ -279,13 +290,11 @@ fun BottomSheetLayout(
                                     hint = stringResource(R.string.add_note),
                                     modifier = Modifier.paddingTop(8)
                                 )
-
                                 ElasticButton(
                                     onClick = {
                                         addressVisible = !addressVisible
                                         {
                                             addressCardVisible = !addressCardVisible
-//
                                         }.withDelay(100)
                                     }, title = "متابعة",
                                     icon = R.drawable.nexticon,
@@ -293,13 +302,9 @@ fun BottomSheetLayout(
                                 )
 
                                 // Creating a Bottom Sheet
-
-
                             }
-
                         }
                     }
-
                 }
             }
         }
@@ -394,7 +399,10 @@ fun BottomSheetLayout(
 }
 
 @Composable
-fun DatePickerView(onBack: () -> Unit) {
+fun DatePickerView(
+    onBack: () -> Unit,
+    goToReviewOrder: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -444,14 +452,15 @@ fun DatePickerView(onBack: () -> Unit) {
         PmAmView(check) {
             check = it
         }
-
         Spacer(modifier = Modifier.weight(1f))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
             IconedButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    goToReviewOrder()
+                },
                 icon = R.drawable.forward_arrow,
                 modifier = Modifier
                     .paddingTop(5)

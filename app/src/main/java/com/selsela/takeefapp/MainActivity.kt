@@ -76,7 +76,6 @@ class MainActivity : ComponentActivity() {
                                         }
                                     },
                                     navigationIcon = {
-
                                         currentRoute.value?.let {
                                             val isShowing = navController.showingBackButton(
                                                 it

@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.selsela.takeefapp.R
 import com.selsela.takeefapp.navigation.Destinations
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -50,9 +51,10 @@ class Extensions {
             }
         }
         fun NavController.bindToolbarTitle(currentRoute: NavBackStackEntry): String{
-            var title =  when(currentRoute.destination.route){
+            val title =  when(currentRoute.destination.route){
                 Destinations.HOME_SCREEN,Destinations.LOGIN_SCREEN,Destinations.VERIFY_SCREEN -> ""
-                Destinations.SEARCH_ADDRESS_SCREEN_WITH_ARGUMENT -> "تحديد عنوان"
+                Destinations.SEARCH_ADDRESS_SCREEN_WITH_ARGUMENT -> this.context.getString(R.string.chosse_address)
+                Destinations.REVIEW_ORDER -> this.context.getString(R.string.review_order)
                 else -> "Selsela"
             }
             return title

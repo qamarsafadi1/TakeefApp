@@ -46,7 +46,8 @@ import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Composable
-fun SearchAddressView(query: String?) {
+fun SearchAddressView(
+    query: String?) {
     query?.log("query")
 
     Box(
@@ -105,7 +106,7 @@ private fun FavItem() {
                 Image(
                     painter = painterResource(id = R.drawable.location),
                     contentDescription = "",
-                    modifier = Modifier.padding(end = 6.6.dp,top = 20.dp)
+                    modifier = Modifier.padding(end = 6.6.dp, top = 20.dp)
                 )
                 Column(
                     modifier = Modifier
@@ -132,22 +133,21 @@ private fun FavItem() {
                     )
                 }
                 IconButton(
-                        modifier = Modifier
-                            .paddingTop(15)
-                            .clip(CircleShape)
-                            .background(FavBg)
-                            .size(30.dp)
-                ,
-                onClick = {}
-                ){
-                Image(
-                    painter = painterResource(
-                        id = R.drawable.favorite
-                    ),
-                    contentDescription = "",
-                    colorFilter = ColorFilter.tint(Red)
-                )
-            }
+                    modifier = Modifier
+                        .paddingTop(15)
+                        .clip(CircleShape)
+                        .background(FavBg)
+                        .size(30.dp),
+                    onClick = {}
+                ) {
+                    Image(
+                        painter = painterResource(
+                            id = R.drawable.favorite
+                        ),
+                        contentDescription = "",
+                        colorFilter = ColorFilter.tint(Red)
+                    )
+                }
 
             }
         }
@@ -173,7 +173,7 @@ private fun AddressItem() {
             Image(
                 painter = painterResource(id = R.drawable.location),
                 contentDescription = "",
-                modifier = Modifier.padding(end = 6.6.dp,top = 20.dp)
+                modifier = Modifier.padding(end = 6.6.dp, top = 20.dp)
             )
             Column(
                 modifier = Modifier
@@ -198,10 +198,9 @@ private fun AddressItem() {
                     .paddingTop(15)
                     .clip(CircleShape)
                     .background(FavBg)
-                    .size(30.dp)
-                ,
+                    .size(30.dp),
                 onClick = {}
-            ){
+            ) {
                 Image(
                     painter = painterResource(
                         id = R.drawable.favorite

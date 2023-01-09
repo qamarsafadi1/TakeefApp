@@ -36,4 +36,10 @@
     <string name="temp_address_name">المنزل</string>
     <string name="select_lbl">تحديد</string>
     <string name="visit_date">موعد الزيارة</string>
+    <string name="chosse_address">تحديد عنوان</string>
+    <string name="review_order">تأكيد الطلب</string>
+    <string name="selected_address">العنوان المحدد</string>
+    <string name="please_select_payment">الرجاء تحديد وسيلة الدفع واتمام الطلب</string>
+    <string name="required_services">الخدمات المطلوبة</string>
+    <string name="cost">تكلفة</string>
 </resources>

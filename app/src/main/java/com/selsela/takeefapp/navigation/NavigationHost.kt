@@ -14,6 +14,7 @@ import com.selsela.takeefapp.ui.general.SuccessView
 import com.selsela.takeefapp.ui.home.HomeView
 import com.selsela.takeefapp.ui.intro.IntroView
 import com.selsela.takeefapp.ui.order.ReviewOrderView
+import com.selsela.takeefapp.ui.order.SpecialOrderView
 import com.selsela.takeefapp.ui.splash.SplashView
 import com.selsela.takeefapp.utils.LocalData
 
@@ -39,7 +40,9 @@ fun NavigationHost(
             }
         }
         composable(Destinations.HOME_SCREEN) {
-            HomeView() {
+            HomeView(goToSpecialOrder = {
+                navActions.navigateToSpecialOrder()
+            }) {
                 navActions.navigateToLogin()
             }
         }
@@ -73,6 +76,9 @@ fun NavigationHost(
         }
         composable(Destinations.SUCCESS){
             SuccessView()
+        }
+        composable(Destinations.SPECIAL_ORDER){
+            SpecialOrderView()
         }
     }
 }

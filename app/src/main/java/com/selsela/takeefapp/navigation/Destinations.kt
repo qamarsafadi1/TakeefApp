@@ -15,6 +15,7 @@ object Destinations {
     const val REVIEW_ORDER = "review_order"
     const val SUCCESS = "success"
     const val ERROR = "error"
+    const val SPECIAL_ORDER = "special_order"
 }
 
 class NavigationActions(private val navController: NavController) {
@@ -47,6 +48,9 @@ class NavigationActions(private val navController: NavController) {
     }
     fun navigateToSuccess(){
         navController.navigate(Destinations.SUCCESS)
+    }
+    fun navigateToSpecialOrder(){
+        navController.navigate(Destinations.SPECIAL_ORDER)
     }
 
 }

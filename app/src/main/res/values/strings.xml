@@ -56,4 +56,9 @@
     <string name="operation_failed">فشل العملية</string>
     <string name="failed_lbl">الرجاء التأكد من وسيلة الدفع المحددة ومن ثم اعادة</string>
     <string name="accept">موافق</string>
+    <string name="full_name">الاسم كاملاً</string>
+    <string name="name">الاسم</string>
+    <string name="order_title">عنوان الطلب</string>
+    <string name="order_details">تفاصيل الطلب</string>
+    <string name="write_order_details">كتابة تفاصيل الخدمة المطلوبة</string>
 </resources>

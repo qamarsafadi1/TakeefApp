@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
@@ -46,12 +47,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -66,10 +71,12 @@ import com.selsela.takeefapp.ui.theme.VerifiedBg
 import com.selsela.takeefapp.ui.theme.buttonText
 import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text12
+import com.selsela.takeefapp.ui.theme.text13
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text14White
 import com.selsela.takeefapp.ui.theme.text14WhiteCenter
+import com.selsela.takeefapp.ui.theme.text14WhiteLines
 import com.selsela.takeefapp.ui.theme.text18
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import java.util.Locale
@@ -90,7 +97,9 @@ fun ElasticButton(
     title: String,
     modifier: Modifier = Modifier
         .width(167.dp)
-        .requiredHeight(48.dp)
+        .requiredHeight(48.dp),
+    colorBg: Color = Purple40,
+    textColor: Color = Color.White
 ) {
     // ElasticView(onClick = { onClick() }) {
     Button(
@@ -103,9 +112,12 @@ fun ElasticButton(
             pressedElevation = 0.dp
         ),
         shape = RoundedCornerShape(24.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Purple40)
+        colors = ButtonDefaults.buttonColors(backgroundColor = colorBg)
     ) {
-        Text(text = title, style = buttonText)
+        Text(
+            text = title, style = buttonText,
+            color = textColor
+        )
     }
     // }
 }
@@ -145,6 +157,7 @@ fun ElasticButton(
     }
     // }
 }
+
 @Composable
 fun IconedButton(
     onClick: () -> Unit,
@@ -171,7 +184,8 @@ fun IconedButton(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = icon), contentDescription = "")
+                painter = painterResource(id = icon), contentDescription = ""
+            )
         }
     }
     // }
@@ -211,7 +225,7 @@ fun EditText(
     inputType: KeyboardType = KeyboardType.Text,
     singleLine: Boolean = true,
     modifier: Modifier = Modifier,
-    trailing: @Composable (() -> Unit)
+    trailing: @Composable (() -> Unit)? = null
 ) {
     TextField(
         value = text, onValueChange = {
@@ -220,7 +234,7 @@ fun EditText(
         modifier = modifier.then(
             Modifier
                 .fillMaxWidth()
-                .requiredHeight(46.dp)
+                .requiredHeight(48.dp)
                 .border(1.dp, color = BorderColor, RoundedCornerShape(8.dp))
         ),
         textStyle = text14White,
@@ -237,14 +251,111 @@ fun EditText(
         singleLine = singleLine,
         placeholder = {
             Text(
-                text = hint, style = text14,
+                text = hint, style = text13,
                 color = SecondaryColor.copy(0.39f)
             )
         },
         trailingIcon = {
-            trailing()
+            if (trailing != null)
+                trailing()
         },
         keyboardOptions = KeyboardOptions(keyboardType = inputType)
+    )
+}
+
+@Composable
+fun InputEditText(
+    text: String,
+    modifier: Modifier,
+    onValueChange: (String) -> Unit,
+    hint: String = "",
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    singleLine: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE,
+    inputType: KeyboardType = KeyboardType.Text,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    cursorColor: Color = Color.White,
+    textAlign: TextAlign = TextAlign.Start
+) {
+    BasicTextField(
+        value = text,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        textStyle = text14White,
+        decorationBox = { innerTextField ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .requiredHeight(48.dp)
+                    .background(TextFieldBg, shape = RoundedCornerShape(8.dp))
+                    .border(1.dp, color = BorderColor, RoundedCornerShape(8.dp))
+                    .padding(horizontal = 16.dp),
+                contentAlignment = Alignment.CenterStart,
+            ) {
+                if (text.isEmpty()) {
+                    Text(
+                        text = hint,
+                        color = SecondaryColor,
+                        style = text14White
+                    )
+                }
+                innerTextField()
+
+            }
+        },
+        enabled = enabled,
+        readOnly = readOnly,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = inputType,
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = keyboardActions,
+        cursorBrush = SolidColor(cursorColor)
+    )
+}
+
+@Composable
+fun EditTextMutltLine(
+    onValueChange: (String) -> Unit, text: String,
+    hint: String = "",
+    inputType: KeyboardType = KeyboardType.Text,
+    singleLine: Boolean = true,
+    modifier: Modifier = Modifier,
+    trailing: @Composable (() -> Unit)? = null
+) {
+    TextField(
+        value = text,
+        onValueChange = {
+            onValueChange(it)
+        },
+        modifier = modifier.then(
+            Modifier
+                .fillMaxWidth()
+                .requiredHeight(115.dp)
+                .border(1.dp, color = BorderColor, RoundedCornerShape(8.dp))
+        ),
+        textStyle = text14White,
+        shape = RoundedCornerShape(8.dp),
+        colors = TextFieldDefaults.textFieldColors(
+            Color.White,
+            backgroundColor = TextFieldBg,
+            cursorColor = Color.White,
+            disabledLabelColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+
+        ),
+        singleLine = false,
+        placeholder = {
+            Text(
+                text = hint, style = text14White,
+                color = SecondaryColor
+            )
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = inputType),
     )
 }
 
@@ -294,6 +405,7 @@ fun EditTextAddress(
         keyboardOptions = KeyboardOptions(keyboardType = inputType)
     )
 }
+
 @Composable
 fun EditTextLeadingIcon(
     onValueChange: (String) -> Unit, text: String,
@@ -383,7 +495,7 @@ fun SearchBar(
         ),
         keyboardActions = KeyboardActions(onSearch = {
             if (text.isEmpty())
-            onSearch("")
+                onSearch("")
             else onSearch(text)
         })
 
@@ -430,7 +542,7 @@ fun SearchAddressBar(
             imeAction = ImeAction.Search
         ),
         keyboardActions = KeyboardActions(onSearch = {
-          //  onSearch(text)
+            //  onSearch(text)
         })
 
     )
@@ -630,8 +742,8 @@ fun Spinner(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ListedBottomSheet(sheetState: ModalBottomSheetState){
-    Box(){
+fun ListedBottomSheet(sheetState: ModalBottomSheetState) {
+    Box() {
         ModalBottomSheetLayout(
             sheetState = sheetState,
             sheetShape = RoundedCornerShape(topEnd = 42.dp, topStart = 42.dp),
@@ -670,7 +782,11 @@ fun ListedBottomSheet(sheetState: ModalBottomSheetState){
                             )
                         })
 
-                    LazyColumn(modifier = Modifier.paddingTop(42).fillMaxWidth()) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .paddingTop(42)
+                            .fillMaxWidth()
+                    ) {
                         items(10) {
                             AreaListItem()
                         }
@@ -686,7 +802,8 @@ fun ListedBottomSheet(sheetState: ModalBottomSheetState){
 @Composable
 private fun AreaListItem() {
     Row(
-        modifier = Modifier.padding(bottom = 7.dp)
+        modifier = Modifier
+            .padding(bottom = 7.dp)
             .requiredHeight(48.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

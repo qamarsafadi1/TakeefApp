@@ -1,8 +1,13 @@
 package com.selsela.takeefapp.ui.home
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,6 +15,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,9 +51,11 @@ import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
 import com.selsela.takeefapp.ui.theme.CardColor
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.NoRippleTheme
+import com.selsela.takeefapp.ui.theme.SecondaryColor2
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.TextColorHint
 import com.selsela.takeefapp.ui.theme.TextColorHintAlpha60
+import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text12Meduim
 import com.selsela.takeefapp.ui.theme.text14
@@ -61,7 +69,8 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeView(
-    goToLogin: () -> Unit
+    goToSpecialOrder: () -> Unit,
+    goToLogin: () -> Unit,
 ) {
     var paddingTitle by remember {
         mutableStateOf(27.3)
@@ -77,6 +86,9 @@ fun HomeView(
                 .fillMaxSize()
                 .background(Color.White)
         ) {
+            var costVisible by remember {
+                mutableStateOf(false)
+            }
             Column(
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
@@ -104,18 +116,22 @@ fun HomeView(
 
                 LazyColumn(modifier = Modifier.padding(top = 24.dp)) {
                     items(3) {
-                        AnimContent {
+                        AnimContent(
+                            onSelect = {
+                                costVisible = !costVisible
+                            }
+                        ) {
                             if (it) {
                                 paddingTitle = 12.0
                                 paddingLabel = 5
                             } else {
                                 paddingTitle = 27.3
                                 paddingLabel = 13
+
                             }
                         }
                     }
                 }
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -123,11 +139,108 @@ fun HomeView(
                     horizontalArrangement = Arrangement.End
                 ) {
                     ElasticButton(
-                        onClick = { goToLogin() }, title = "   +  طلب خاص",
+                        onClick = { goToSpecialOrder() }, title = "   +  طلب خاص",
                     )
                 }
             }
+            AnimatedVisibility(
+                visible = costVisible,
+                enter = fadeIn(),
+                exit = fadeOut(),
+                modifier = Modifier.align(Alignment.BottomCenter)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .animateEnterExit(
+                            // Slide in/out the inner box.
+                            enter = slideInVertically(
+                                initialOffsetY = {
+                                    it / 2
+                                },
+                            ),
+                            exit = slideOutVertically(
+                                targetOffsetY = {
+                                    it / 2
+                                },
+                            ),
+                        )
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.14f)
+                        .background(TextColor, RoundedCornerShape(topEnd = 45.dp, topStart = 45.dp))
+                        .padding(horizontal = 20.dp, vertical = 22.dp)
+                ) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.cost),
+                                style = text14,
+                                color = SecondaryColor2
+                            )
+                            Row(modifier = Modifier.paddingTop(9)) {
+                                Text(
+                                    text = "300", style = text16Medium,
+                                    color = Color.White
+                                )
+                                Text(
+                                    text = stringResource(id = R.string.currency),
+                                    style = text11,
+                                    color = SecondaryColor2,
+                                    modifier = Modifier.padding(start = 4.3.dp)
+                                )
+                            }
+                        }
+                        ElasticButton(
+                            onClick = { goToLogin() },
+                            title = "متابعة الطلب",
+                            icon = R.drawable.forward_arrow,
+                            modifier = Modifier
+                                .width(150.dp)
+                                .height(48.dp)
+                        )
+                    }
+                    SelectedServicesView()
+                }
+            }
+
+
         }
+    }
+}
+
+@Composable
+private fun SelectedServicesView() {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Row {
+            Text(
+                text = "صيانة : ", style = text11,
+                color = SecondaryColor2
+            )
+            Text(text = "00", style = text12, color = Color.White)
+        }
+        Spacer(modifier = Modifier.width(14.1.dp))
+        Row {
+            Text(
+                text = "تنظيف : ", style = text11,
+                color = SecondaryColor2
+            )
+            Text(text = "00", style = text12, color = Color.White)
+        }
+        Spacer(modifier = Modifier.width(14.1.dp))
+        Row {
+            Text(
+                text = "تركيب : ", style = text11,
+                color = SecondaryColor2
+            )
+            Text(text = "00", style = text12, color = Color.White)
+        }
+        Spacer(modifier = Modifier.width(14.1.dp))
     }
 }
 
@@ -149,7 +262,10 @@ private fun TitleView(paddingTitle: Double, paddingLabel: Int) {
 @OptIn(ExperimentalMaterialApi::class)
 @ExperimentalAnimationApi
 @Composable
-fun AnimContent(onExpand: (Boolean) -> Unit) {
+fun AnimContent(
+    onSelect: (Boolean) -> Unit,
+    onExpand: (Boolean) -> Unit
+) {
     var itemExpanded by remember { mutableStateOf(false) }
     var arrowVisibility by remember { mutableStateOf(true) }
     val contentTransition = updateTransition(itemExpanded, label = "Expand")
@@ -177,6 +293,7 @@ fun AnimContent(onExpand: (Boolean) -> Unit) {
                     arrowVisibility = false
                     DetailsView {
                         itemExpanded = !itemExpanded
+                        onSelect(itemExpanded)
                     }
                 } else {
                     arrowVisibility = true

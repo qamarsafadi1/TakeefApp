@@ -73,6 +73,13 @@ val text14White = TextStyle(
     ),
     textAlign = TextAlign.Start
 )
+val text14WhiteLines = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 14.sp,
+    color = Color.White,
+    textAlign = TextAlign.Start
+)
 val text14WhiteCenter = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.SemiBold,
@@ -103,6 +110,12 @@ val text11 = TextStyle(
     fontSize = 11.sp,
     color = Color.White.copy(0.85f)
 )
+val text10= TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 10.sp,
+    color = Color.White.copy(0.85f)
+)
 val text13 = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.SemiBold,
@@ -124,7 +137,13 @@ val text18Book = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.SemiBold,
     fontSize = 18.sp,
-    color = TextColor
+    color = TextColor,
+    lineHeight = 32.sp,
+    letterSpacing = 0.5.sp,
+    lineHeightStyle = LineHeightStyle(
+        alignment = LineHeightStyle.Alignment.Center,
+        trim = LineHeightStyle.Trim.Both
+    )
 )
 val text12 = TextStyle(
     fontFamily = fonts,
@@ -146,6 +165,17 @@ val text16 = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.SemiBold,
     fontSize = 16.sp
+)
+val text16Line = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 16.sp,
+    lineHeight = 32.sp,
+    letterSpacing = 0.5.sp,
+    lineHeightStyle = LineHeightStyle(
+        alignment = LineHeightStyle.Alignment.Center,
+        trim = LineHeightStyle.Trim.Both
+    )
 )
 val text12Meduim = TextStyle(
     fontFamily = fonts,

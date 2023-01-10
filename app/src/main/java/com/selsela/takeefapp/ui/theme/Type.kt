@@ -97,6 +97,11 @@ val text11 = TextStyle(
     fontSize = 11.sp,
     color = Color.White.copy(0.85f)
 )
+val text13 = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 13.sp,
+)
 val text11Meduim = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.Medium,
@@ -140,6 +145,11 @@ val text12Meduim = TextStyle(
 val text20 = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.Bold,
+    fontSize = 20.sp
+)
+val text20Meduim = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.Medium,
     fontSize = 20.sp
 )
 val text20Book = TextStyle(

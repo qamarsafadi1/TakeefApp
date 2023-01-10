@@ -42,4 +42,11 @@
     <string name="please_select_payment">الرجاء تحديد وسيلة الدفع واتمام الطلب</string>
     <string name="required_services">الخدمات المطلوبة</string>
     <string name="cost">تكلفة</string>
+    <string name="cost_1">التكلفة</string>
+    <string name="currency">ر.س</string>
+    <string name="wallet_balance">رصيد محفظة</string>
+    <string name="your_wallet_enough">رصيد المحفظة غير كافي</string>
+    <string name="remian_to_pay">مطلوب دفع</string>
+    <string name="please_select_payment_1">الرجاء تحديد وسيلة دفع اخرى</string>
+    <string name="pay_noew">دفع الان</string>
 </resources>

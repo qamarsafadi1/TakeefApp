@@ -65,7 +65,7 @@ fun FailureView() {
                 onClick = { /*TODO*/ },
                 title = stringResource(R.string.accept),
                 modifier = Modifier
-                    .paddingTop(31)
+                    .paddingTop(79)
                     .padding(horizontal = 47.dp)
                     .fillMaxWidth()
                     .requiredHeight(48.dp)

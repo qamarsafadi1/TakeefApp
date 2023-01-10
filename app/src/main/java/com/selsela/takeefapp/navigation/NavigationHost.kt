@@ -10,6 +10,7 @@ import com.selsela.takeefapp.ui.address.AddressView
 import com.selsela.takeefapp.ui.address.SearchAddressView
 import com.selsela.takeefapp.ui.auth.LoginView
 import com.selsela.takeefapp.ui.auth.VerifyView
+import com.selsela.takeefapp.ui.general.SuccessView
 import com.selsela.takeefapp.ui.home.HomeView
 import com.selsela.takeefapp.ui.intro.IntroView
 import com.selsela.takeefapp.ui.order.ReviewOrderView
@@ -66,7 +67,12 @@ fun NavigationHost(
             SearchAddressView(query)
         }
         composable(Destinations.REVIEW_ORDER) {
-            ReviewOrderView()
+            ReviewOrderView {
+                navActions.navigateToSuccess()
+            }
+        }
+        composable(Destinations.SUCCESS){
+            SuccessView()
         }
     }
 }

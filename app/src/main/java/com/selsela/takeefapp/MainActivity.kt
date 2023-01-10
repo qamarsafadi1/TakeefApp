@@ -57,7 +57,10 @@ class MainActivity : ComponentActivity() {
                     )
                     Scaffold(
                         topBar = {
-                            if (currentRoute.value?.destination?.route != Destinations.HOME_SCREEN && currentRoute.value?.destination?.route != Destinations.SPLASH_SCREEN && currentRoute.value?.destination?.route != Destinations.INTRO_SCREEN && currentRoute.value?.destination?.route != Destinations.ADDRESS_SCREEN) {
+                            if (currentRoute.value?.destination?.route != Destinations.HOME_SCREEN && currentRoute.value?.destination?.route != Destinations.SPLASH_SCREEN
+                                && currentRoute.value?.destination?.route != Destinations.INTRO_SCREEN
+                                && currentRoute.value?.destination?.route != Destinations.ADDRESS_SCREEN
+                              ) {
                                 if (currentRoute.value?.destination?.route != Destinations.VERIFY_SCREEN)
                                 Color.White.ChangeStatusBarColor()
                                 else TextColor.ChangeStatusBarColor(true)

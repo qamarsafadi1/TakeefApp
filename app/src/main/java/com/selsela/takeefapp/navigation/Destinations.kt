@@ -13,6 +13,8 @@ object Destinations {
     const val SEARCH_ADDRESS_SCREEN = "address/"
     const val SEARCH_ADDRESS_SCREEN_WITH_ARGUMENT = "address/{query}"
     const val REVIEW_ORDER = "review_order"
+    const val SUCCESS = "success"
+    const val ERROR = "error"
 }
 
 class NavigationActions(private val navController: NavController) {
@@ -42,6 +44,9 @@ class NavigationActions(private val navController: NavController) {
 
     fun navigateToReviewOrder(){
         navController.navigate(Destinations.REVIEW_ORDER)
+    }
+    fun navigateToSuccess(){
+        navController.navigate(Destinations.SUCCESS)
     }
 
 }

@@ -49,4 +49,8 @@
     <string name="remian_to_pay">مطلوب دفع</string>
     <string name="please_select_payment_1">الرجاء تحديد وسيلة دفع اخرى</string>
     <string name="pay_noew">دفع الان</string>
+    <string name="operation_success">نجاح العملية</string>
+    <string name="success_lbl">"تم اسال طلبك بنجاح وسيتم العمل علي تنفيذه \nيمكنك متابعة حالة الطلب من قائمة طلباتي "</string>
+    <string name="order_list">قائمة طلباتي</string>
+    <string name="home">الرئيسية</string>
 </resources>

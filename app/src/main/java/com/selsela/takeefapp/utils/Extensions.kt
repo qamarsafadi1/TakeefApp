@@ -52,7 +52,8 @@ class Extensions {
         }
         fun NavController.bindToolbarTitle(currentRoute: NavBackStackEntry): String{
             val title =  when(currentRoute.destination.route){
-                Destinations.HOME_SCREEN,Destinations.LOGIN_SCREEN,Destinations.VERIFY_SCREEN -> ""
+                Destinations.HOME_SCREEN,Destinations.LOGIN_SCREEN,
+                Destinations.VERIFY_SCREEN,Destinations.SUCCESS -> ""
                 Destinations.SEARCH_ADDRESS_SCREEN_WITH_ARGUMENT -> this.context.getString(R.string.chosse_address)
                 Destinations.REVIEW_ORDER -> this.context.getString(R.string.review_order)
                 else -> "Selsela"
@@ -61,7 +62,7 @@ class Extensions {
         }
         fun NavController.showingBackButton(currentRoute: NavBackStackEntry): Boolean{
             var showBackButton =  when(currentRoute.destination.route){
-                Destinations.HOME_SCREEN,Destinations.SPLASH_SCREEN -> false
+                Destinations.HOME_SCREEN,Destinations.SPLASH_SCREEN,Destinations.SUCCESS -> false
                 else -> true
             }
             return showBackButton

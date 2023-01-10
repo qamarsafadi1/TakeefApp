@@ -50,11 +50,13 @@ import com.selsela.takeefapp.ui.theme.text20Meduim
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import androidx.compose.runtime.*
 import androidx.compose.ui.draw.clip
+import com.google.gson.annotations.Until
 import com.selsela.takeefapp.ui.common.ElasticButton
 
-@Preview
 @Composable
-fun ReviewOrderView() {
+fun ReviewOrderView(
+    goTo: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -174,7 +176,7 @@ fun ReviewOrderView() {
             PaymentView()
 
             ElasticButton(
-                onClick = { /*TODO*/ }, title = stringResource(R.string.pay_noew),
+                onClick = { goTo() }, title = stringResource(R.string.pay_noew),
                 modifier = Modifier
                     .padding(vertical = 25.dp)
                     .fillMaxWidth()

@@ -53,4 +53,7 @@
     <string name="success_lbl">"تم اسال طلبك بنجاح وسيتم العمل علي تنفيذه \nيمكنك متابعة حالة الطلب من قائمة طلباتي "</string>
     <string name="order_list">قائمة طلباتي</string>
     <string name="home">الرئيسية</string>
+    <string name="operation_failed">فشل العملية</string>
+    <string name="failed_lbl">الرجاء التأكد من وسيلة الدفع المحددة ومن ثم اعادة</string>
+    <string name="accept">موافق</string>
 </resources>

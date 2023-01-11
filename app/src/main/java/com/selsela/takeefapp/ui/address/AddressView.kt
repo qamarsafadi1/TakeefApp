@@ -29,6 +29,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.safeGesturesPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -78,6 +81,7 @@ import com.selsela.takeefapp.ui.common.IconedButton
 import com.selsela.takeefapp.ui.common.ListedBottomSheet
 import com.selsela.takeefapp.ui.common.SearchBar
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
+import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
@@ -102,7 +106,7 @@ fun AddressView(
     goToSearchView: (String) -> Unit,
     goToReviewOrder: () -> Unit
 ) {
-    Color.White.ChangeStatusBarColor()
+    Color.Transparent.ChangeStatusBarOnlyColor()
     BottomSheetLayout(
         goToReviewOrder = {
             goToReviewOrder()
@@ -180,7 +184,6 @@ fun BottomSheetLayout(
             sheetShape = RoundedCornerShape(topStart = 42.dp, topEnd = 42.dp),
             sheetBackgroundColor = TextColor,
             sheetContent = {
-                TextColor.ChangeStatusBarColor()
                 Column(modifier = Modifier.fillMaxHeight(0.85f)) {
                     DatePickerView(
                         onBack = {
@@ -405,8 +408,10 @@ fun DatePickerView(
 ) {
     Column(
         modifier = Modifier
+            .safeDrawingPadding()
             .fillMaxSize()
-            .padding(horizontal = 28.dp, vertical = 40.dp),
+            .padding(horizontal = 28.dp, vertical = 40.dp)
+            ,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {

@@ -166,6 +166,11 @@ val text16 = TextStyle(
     fontWeight = FontWeight.SemiBold,
     fontSize = 16.sp
 )
+val text16Bold = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.Bold,
+    fontSize = 16.sp
+)
 val text16Line = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.SemiBold,

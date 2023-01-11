@@ -16,6 +16,7 @@ object Destinations {
     const val SUCCESS = "success"
     const val ERROR = "error"
     const val SPECIAL_ORDER = "special_order"
+    const val MY_ACCOUNT = "my_account"
 }
 
 class NavigationActions(private val navController: NavController) {
@@ -51,6 +52,9 @@ class NavigationActions(private val navController: NavController) {
     }
     fun navigateToSpecialOrder(){
         navController.navigate(Destinations.SPECIAL_ORDER)
+    }
+    fun navigateToMyAccount(){
+        navController.navigate(Destinations.MY_ACCOUNT)
     }
 
 }

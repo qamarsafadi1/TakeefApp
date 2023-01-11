@@ -70,6 +70,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 @Composable
 fun HomeView(
     goToSpecialOrder: () -> Unit,
+    goToMyAccount: () -> Unit,
     goToLogin: () -> Unit,
 ) {
     var paddingTitle by remember {
@@ -100,7 +101,9 @@ fun HomeView(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Image(painter = painterResource(id = R.drawable.menu), contentDescription = "")
+                    ElasticView(onClick = { goToMyAccount() }) {
+                        Image(painter = painterResource(id = R.drawable.menu), contentDescription = "",)
+                    }
                     Image(
                         painter = painterResource(id = R.drawable.notificationnew),
                         contentDescription = ""

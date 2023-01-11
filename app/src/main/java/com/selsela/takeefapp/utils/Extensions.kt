@@ -1,7 +1,10 @@
 package com.selsela.takeefapp.utils
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.location.Location
@@ -10,6 +13,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.core.content.ContextCompat
@@ -138,5 +142,22 @@ class Extensions {
             drawable.draw(canvas)
             return BitmapDescriptorFactory.fromBitmap(bm)
         }
+
+        fun <T> Context.navigate(
+            fromActivity: Context, toActivity: Class<T>, isLogin: Boolean? = true
+        ) {
+            val navIntent = Intent(fromActivity, toActivity)
+            navIntent.putExtra("isLogin", isLogin)
+            this.startActivity(navIntent)
+            this.getActivity()?.finish()
+        }
+
+        fun Context.getActivity(): AppCompatActivity? = when (this) {
+            is AppCompatActivity -> this
+            is ContextWrapper -> baseContext.getActivity()
+            else -> null
+        }
     }
+
+
 }

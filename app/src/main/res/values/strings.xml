@@ -61,4 +61,6 @@
     <string name="order_title">عنوان الطلب</string>
     <string name="order_details">تفاصيل الطلب</string>
     <string name="write_order_details">كتابة تفاصيل الخدمة المطلوبة</string>
+    <string name="app_language">لغة التطبيق\n</string>
+    <string name="confirm_lbl">تأكيد</string>
 </resources>

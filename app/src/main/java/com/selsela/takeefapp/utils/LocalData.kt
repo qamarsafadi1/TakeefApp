@@ -10,6 +10,11 @@ open class LocalData {
                 field = value
                 Hawk.put("appLocal", value)
             }
+    var isOnApp: Boolean = Hawk.get("isOnApp", false)
+            set(value) {
+                field = value
+                Hawk.put("isOnApp", value)
+            }
 
         var firstLaunch: Boolean = Hawk.get("firstLaunch", true)
             set(value) {

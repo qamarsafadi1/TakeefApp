@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.selsela.takeefapp.ui.account.MyAccountView
 import com.selsela.takeefapp.ui.address.AddressView
 import com.selsela.takeefapp.ui.address.SearchAddressView
 import com.selsela.takeefapp.ui.auth.LoginView
@@ -42,6 +43,8 @@ fun NavigationHost(
         composable(Destinations.HOME_SCREEN) {
             HomeView(goToSpecialOrder = {
                 navActions.navigateToSpecialOrder()
+            }, goToMyAccount = {
+               navActions.navigateToMyAccount()
             }) {
                 navActions.navigateToLogin()
             }
@@ -74,11 +77,17 @@ fun NavigationHost(
                 navActions.navigateToSuccess()
             }
         }
-        composable(Destinations.SUCCESS){
+        composable(Destinations.SUCCESS) {
             SuccessView()
         }
-        composable(Destinations.SPECIAL_ORDER){
+        composable(Destinations.SPECIAL_ORDER) {
             SpecialOrderView()
+        }
+        composable(Destinations.MY_ACCOUNT){
+            MyAccountView()
+                {
+                navController.navigateUp()
+            }
         }
     }
 }

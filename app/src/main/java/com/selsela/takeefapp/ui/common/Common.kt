@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
@@ -48,19 +47,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.selsela.takeefapp.LocalMutableContext
+import com.selsela.takeefapp.MainActivity
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.Purple40
@@ -76,8 +76,11 @@ import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text14White
 import com.selsela.takeefapp.ui.theme.text14WhiteCenter
-import com.selsela.takeefapp.ui.theme.text14WhiteLines
 import com.selsela.takeefapp.ui.theme.text18
+import com.selsela.takeefapp.utils.Extensions.Companion.getActivity
+import com.selsela.takeefapp.utils.Extensions.Companion.navigate
+import com.selsela.takeefapp.utils.LocalData
+import com.selsela.takeefapp.utils.LocalUtils.setLocale
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import java.util.Locale
 
@@ -795,6 +798,112 @@ fun ListedBottomSheet(sheetState: ModalBottomSheetState) {
             }
         ) {
         }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun LanguageSheet(sheetState: ModalBottomSheetState, onConfirm: () -> Unit) {
+    Box() {
+        val context = LocalContext.current
+        val configuration = LocalConfiguration.current
+        val mutableContext = LocalMutableContext.current
+        var check by remember {
+            if (LocalData.appLocal == "ar")
+                mutableStateOf(0)
+            else mutableStateOf(1)
+        }
+        ModalBottomSheetLayout(
+            sheetState = sheetState,
+            sheetShape = RoundedCornerShape(topEnd = 42.dp, topStart = 42.dp),
+            sheetBackgroundColor = TextColor,
+            sheetContent = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.4f)
+                        .padding(
+                            horizontal = 24.dp,
+                            vertical = 46.dp
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.app_language),
+                        style = text18,
+                        color = Color.White
+                    )
+
+                    LanguageItem(check) {
+                        check = it
+                    }
+
+                    Spacer(modifier = Modifier.height(35.dp))
+                    ElasticButton(
+                        onClick = {
+                            if (check == 0) {
+                                context.setLocale("ar")
+                            } else {
+                                context.setLocale("en")
+                            }
+                            val locale = Locale(LocalData.appLocal)
+                            configuration.setLocale(locale)
+                            mutableContext.value = context.createConfigurationContext(configuration)
+                            onConfirm()
+                        },
+                        title = stringResource(R.string.confirm_lbl),
+                    )
+                }
+            }) {
+
+        }
+    }
+
+}
+
+@Composable
+private fun LanguageItem(selectedItem: Int, onCheck: (Int) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        repeat(2) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .requiredHeight(48.dp)
+                    .background(TextFieldBg, RoundedCornerShape(11.dp))
+                    .border(
+                        width = 1.dp,
+                        color = BorderColor,
+                        RoundedCornerShape(11.dp)
+                    )
+                    .padding(horizontal = 15.dp)
+                    .clickable(
+                    ) {
+                        onCheck(it)
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                Text(
+                    text = if (it == 0) "العربية" else "English",
+                    style = text14,
+                    color = Color.White
+                )
+
+                Image(
+                    painter =
+                    if (it == selectedItem)
+                        painterResource(id = R.drawable.checked)
+                    else painterResource(id = R.drawable.uncheckedrb),
+                    contentDescription = ""
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
     }
 }
 

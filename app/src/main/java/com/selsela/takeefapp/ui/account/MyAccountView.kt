@@ -40,10 +40,13 @@ import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.LanguageSheet
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
+import com.selsela.takeefapp.ui.theme.ColorAccent
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
+import com.selsela.takeefapp.ui.theme.text10
+import com.selsela.takeefapp.ui.theme.text10NoLines
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text13
 import com.selsela.takeefapp.ui.theme.text14
@@ -316,23 +319,45 @@ private fun SettingsCards() {
             elevation = 20.dp,
             backgroundColor = Color.White
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.notifiication),
-                    contentDescription = ""
-                )
-                Text(
-                    text = "الاشعارات",
-                    style = text12,
-                    color = SecondaryColor,
-                    modifier = Modifier.paddingTop(10)
+            Box {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.notifiication),
+                        contentDescription = ""
+                    )
+                    Text(
+                        text = "الاشعارات",
+                        style = text12,
+                        color = SecondaryColor,
+                        modifier = Modifier.paddingTop(10)
 
-                )
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .padding( top =16.dp, end = 10.dp)
+                        .align(Alignment.TopEnd)
+                        .clip(CircleShape)
+                        .background(ColorAccent)
+                        .size(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "3",
+                        style = text10NoLines,
+                        color = Color.White,
+                        modifier = Modifier
+                            .paddingTop(1.5)
+                            .align(Alignment.Center)
+                    )
+                }
             }
+
         }
     }
 }

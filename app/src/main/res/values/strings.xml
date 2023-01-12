@@ -65,4 +65,6 @@
     <string name="confirm_lbl">تأكيد</string>
     <string name="new_orders">طلبات جديدة</string>
     <string name="order_route">مسار مشرف الصيانة</string>
+    <string name="_08_00_am_12_00_pm"> PM 12:00  - 8:00 AM </string>
+    <string name="other_pay">وسيلة دفع اخرى</string>
 </resources>

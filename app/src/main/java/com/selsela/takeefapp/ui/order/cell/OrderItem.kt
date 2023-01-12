@@ -3,6 +3,7 @@ package com.selsela.takeefapp.ui.order.cell
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,13 +41,17 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Composable
 fun OrderItem(
+    onClick: () -> Unit,
     onRouteClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .padding(bottom = 11.dp, top = 11.dp)
             .fillMaxWidth()
-            .defaultMinSize(minHeight = 191.dp),
+            .defaultMinSize(minHeight = 191.dp)
+            .clickable {
+                onClick()
+            },
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
@@ -189,7 +194,7 @@ fun OrderItem(
 }
 
 @Composable
-private fun DateView() {
+fun DateView() {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = "AM",

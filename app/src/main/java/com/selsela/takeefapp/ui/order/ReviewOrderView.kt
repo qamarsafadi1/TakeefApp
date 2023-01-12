@@ -480,7 +480,7 @@ private fun VisitDateView() {
                 )
             }
             Text(
-                text = "08:00 AM - 12:00 PM",
+                text = stringResource(id = R.string._08_00_am_12_00_pm),
                 style = text12,
                 color = SecondaryColor,
                 modifier = Modifier.paddingTop(

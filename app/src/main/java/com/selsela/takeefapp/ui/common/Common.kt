@@ -182,7 +182,8 @@ fun ElasticButton(
                 text = title, style = buttonText,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = if (iconGravity == RIGHT) 5.dp else 0.dp, top = 3.dp)
+                    .padding(start = if (iconGravity == RIGHT) 5.dp else 0.dp, top = 1.dp),
+                textAlign = TextAlign.Center
             )
             if (iconGravity == 0) {
                 Image(
@@ -964,7 +965,6 @@ private fun AreaListItem() {
 }
 
 
-
 @Composable
 private fun OrderItem() {
     Card(
@@ -1049,7 +1049,8 @@ private fun OrderItem() {
                 }
 
                 Row(
-                    Modifier.paddingTop(10)
+                    Modifier
+                        .paddingTop(10)
                         .fillMaxWidth(),
                 ) {
                     Image(
@@ -1090,7 +1091,7 @@ private fun OrderItem() {
                 ElasticButton(
                     onClick = { /*TODO*/ }, title = "متابعة المسار",
                     icon = R.drawable.map,
-                    iconGravity = RIGHT ,
+                    iconGravity = RIGHT,
                     modifier = Modifier
                         .paddingTop(13)
                         .requiredHeight(36.dp)
@@ -1176,7 +1177,9 @@ private fun DateTimeView() {
 
 @Composable
 fun StepperView(
+    modifier: Modifier = Modifier.wrapContentWidth(),
     currentStep: Int = 0,
+    isDetails: Boolean = false,
     items: List<String> = listOf(
         "استلام الطلب",
         "متوجه لك",
@@ -1185,7 +1188,7 @@ fun StepperView(
     )
 ) {
     Box(
-        modifier = Modifier.wrapContentWidth(),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         Divider(
@@ -1197,14 +1200,17 @@ fun StepperView(
             color = SecondaryColor2.copy(0.32f)
         )
         LazyRow(
-            modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally)
+            modifier = modifier,
+            horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             itemsIndexed(
                 items
             ) { index, step ->
                 Step(
-                    step, currentStep == index,
-                    index < currentStep
+                    step = step,
+                    isCurrent = currentStep == index,
+                    isCompleted = index < currentStep,
+                    isDetails = isDetails
                 )
             }
 
@@ -1218,6 +1224,7 @@ private fun Step(
     step: String,
     isCurrent: Boolean,
     isCompleted: Boolean,
+    isDetails: Boolean = false
 ) {
     val drawable: Int by animateIntAsState(
         targetValue = if (isCurrent) {
@@ -1242,7 +1249,9 @@ private fun Step(
             durationMillis = 1000,
         )
     )
+    if (isDetails.not())
     Spacer(modifier = Modifier.width(10.dp))
+
     Column(
         Modifier
             .wrapContentWidth(),

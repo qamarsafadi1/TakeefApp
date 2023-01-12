@@ -62,6 +62,7 @@ class Extensions {
                 Destinations.REVIEW_ORDER -> this.context.getString(R.string.review_order)
                 Destinations.ORDERS_SCREEN -> this.context.getString(R.string.new_orders)
                 Destinations.ORDER_ROUTE_SCREEN -> this.context.getString(R.string.order_route)
+                Destinations.ORDER_DETAILS -> this.context.getString(R.string.order_details)
                 else -> "Selsela"
             }
             return title

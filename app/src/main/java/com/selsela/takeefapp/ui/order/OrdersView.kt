@@ -58,6 +58,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Composable
 fun OrdersView(
+    goToDetails: () -> Unit,
     goToOrderRoute: () -> Unit
 ) {
     Box(
@@ -72,7 +73,9 @@ fun OrdersView(
                 .fillMaxHeight()
         ) {
             items(2) {
-                OrderItem(){
+                OrderItem(
+                    onClick = { goToDetails() }
+                ) {
                     goToOrderRoute()
                 }
             }

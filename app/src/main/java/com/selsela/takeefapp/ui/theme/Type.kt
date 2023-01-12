@@ -110,6 +110,18 @@ val text11 = TextStyle(
     fontSize = 11.sp,
     color = Color.White.copy(0.85f)
 )
+val text11NoLines = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 11.sp,
+    color = Color.White.copy(0.85f),
+    lineHeight = 18.sp,
+    letterSpacing = 0.5.sp,
+    lineHeightStyle = LineHeightStyle(
+        alignment = LineHeightStyle.Alignment.Center,
+        trim = LineHeightStyle.Trim.Both
+    )
+)
 val text10NoLines= TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.SemiBold,

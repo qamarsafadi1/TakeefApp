@@ -402,7 +402,10 @@ private fun OrderCards(goToOrder: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .requiredHeight(88.dp),
+                .requiredHeight(88.dp)
+                .clickable {
+                    goToOrder()
+                },
             shape = RoundedCornerShape(13.dp),
             elevation = 20.dp,
             backgroundColor = LightBlue
@@ -429,7 +432,10 @@ private fun OrderCards(goToOrder: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .requiredHeight(88.dp),
+                .requiredHeight(88.dp)
+                .clickable {
+                    goToOrder()
+                },
             shape = RoundedCornerShape(13.dp),
             elevation = 20.dp,
             backgroundColor = Purple40

@@ -61,7 +61,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MyAccountView(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    goToOrder: () -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
     val coroutineScope = rememberCoroutineScope()
@@ -95,7 +96,6 @@ fun MyAccountView(
                 .fillMaxHeight(0.95f)
                 .padding(horizontal = 16.dp)
         ) {
-
             // SCREEN HEADER
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -112,9 +112,7 @@ fun MyAccountView(
                     )
                 }
                 LogoutButton()
-
             }
-
             Row(
                 Modifier
                     .padding(horizontal = 33.dp)
@@ -137,7 +135,9 @@ fun MyAccountView(
                     .fillMaxWidth()
             ) {
                 WalletCard()
-                OrderCards()
+                OrderCards(){
+                    goToOrder()
+                }
                 SettingsCards()
                 Text(
                     text = "الاعدادات",
@@ -215,9 +215,7 @@ fun MyAccountView(
                             color = TextColor,
                             modifier = Modifier.padding(start = 18.6.dp)
                         )
-
                     }
-
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -340,7 +338,7 @@ private fun SettingsCards() {
 
                 Box(
                     modifier = Modifier
-                        .padding( top =16.dp, end = 10.dp)
+                        .padding(top = 16.dp, end = 10.dp)
                         .align(Alignment.TopEnd)
                         .clip(CircleShape)
                         .background(ColorAccent)
@@ -363,7 +361,7 @@ private fun SettingsCards() {
 }
 
 @Composable
-private fun OrderCards() {
+private fun OrderCards(goToOrder: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(horizontal = 17.dp)
@@ -374,7 +372,10 @@ private fun OrderCards() {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .requiredHeight(88.dp),
+                .requiredHeight(88.dp)
+                .clickable {
+                    goToOrder()
+                },
             shape = RoundedCornerShape(13.dp),
             elevation = 20.dp,
             backgroundColor = TextColor
@@ -552,9 +553,6 @@ private fun LogoutButton() {
                 color = Color.White,
                 modifier = Modifier.padding(start = 5.dp)
             )
-
-
         }
-
     }
 }

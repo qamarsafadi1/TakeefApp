@@ -77,6 +77,8 @@ import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text14White
 import com.selsela.takeefapp.ui.theme.text14WhiteCenter
 import com.selsela.takeefapp.ui.theme.text18
+import com.selsela.takeefapp.utils.Constants.LEFT
+import com.selsela.takeefapp.utils.Constants.RIGHT
 import com.selsela.takeefapp.utils.Extensions.Companion.getActivity
 import com.selsela.takeefapp.utils.Extensions.Companion.navigate
 import com.selsela.takeefapp.utils.LocalData
@@ -130,6 +132,8 @@ fun ElasticButton(
     onClick: () -> Unit,
     title: String,
     icon: Int,
+    buttonBg: Color = Purple40,
+    iconGravity: Int = LEFT,
     modifier: Modifier = Modifier
         .width(167.dp)
         .requiredHeight(48.dp)
@@ -145,17 +149,29 @@ fun ElasticButton(
             pressedElevation = 0.dp
         ),
         shape = RoundedCornerShape(24.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Purple40)
+        colors = ButtonDefaults.buttonColors(backgroundColor = buttonBg)
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = title, style = buttonText)
-            Image(
-                painter = painterResource(id = icon), contentDescription = "",
-                modifier = Modifier.padding(start = 12.dp)
+            if (iconGravity == 1) {
+                Image(
+                    painter = painterResource(id = icon), contentDescription = "",
+                )
+            }
+            Text(
+                text = title, style = buttonText,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = if (iconGravity == RIGHT) 5.dp else 0.dp, top = 3.dp)
             )
+            if (iconGravity == 0) {
+                Image(
+                    painter = painterResource(id = icon), contentDescription = "",
+                    modifier = Modifier.padding(start = 12.dp)
+                )
+            }
         }
     }
     // }

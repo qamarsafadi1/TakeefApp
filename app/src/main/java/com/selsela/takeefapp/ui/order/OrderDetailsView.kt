@@ -20,8 +20,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.IconButton
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,12 +34,13 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.StepperView
 import com.selsela.takeefapp.ui.order.cell.DateView
+import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
+import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.theme.Bg
 import com.selsela.takeefapp.ui.theme.ColorAccent
 import com.selsela.takeefapp.ui.theme.DividerColor
@@ -53,104 +59,175 @@ import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text16Bold
 import com.selsela.takeefapp.ui.theme.text16Medium
+import com.selsela.takeefapp.utils.Constants.ACCEPT
+import com.selsela.takeefapp.utils.Constants.REJECT
 import com.selsela.takeefapp.utils.Constants.RIGHT
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import kotlinx.coroutines.launch
 
-@Preview
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun OrderDetailsView() {
-
+fun OrderDetailsView(
+    onOpenSheet: () -> Unit
+) {
+    Color.Transparent.ChangeStatusBarOnlyColor()
+    val coroutineScope = rememberCoroutineScope()
+    val paySheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
+    val rateSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Bg)
+            .padding(bottom = 45.dp)
     ) {
-
-        Card(
-            modifier = Modifier
-                .padding(
-                    vertical = 14.2.dp,
-                    horizontal = 19.dp
-                )
-                .fillMaxSize()
-
-        ) {
-            Column(
+        Column {
+            Box(
                 Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
+                    .requiredHeight(88.dp)
+                    .background(Color.White)
+                    .padding(top = 30.dp)
+                    .padding(horizontal = 6.dp),
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 30.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column {
-                        Text(
-                            text = "رقم الطلب",
-                            style = text11,
-                            color = SecondaryColor
-                        )
-                        Text(
-                            text = "#12342",
-                            style = text16Bold,
-                            color = TextColor
-                        )
-                    }
-                    DateView()
 
-                }
-                Spacer(modifier = Modifier.height(22.dp))
-                StepperView(
-                    modifier = Modifier
-
-                        .fillMaxWidth(),
-                    isDetails = true,
-                )
-                MaintenanceCostWarning()
-                AcceptRejectButtons()
-                Divider(
-                    thickness = 1.dp,
-                    color = DividerColor,
-                    modifier = Modifier.padding(top = 27.6.dp)
-                )
-                VisitDateView()
-                Divider(
-                    thickness = 1.dp,
-                    color = DividerColor,
-                    modifier = Modifier.padding(top = 8.6.dp)
-                )
-                SelectedAddressView()
-                CostView()
-                Box(
-                    modifier = Modifier
-                        .padding(top = 11.2.dp)
-                        .padding(horizontal = 7.dp)
-                        .fillMaxWidth()
-                        .requiredHeight(39.dp)
-                        .background(SecondaryColor2, shape = RoundedCornerShape(6.dp)),
-                    contentAlignment = Alignment.Center
+                IconButton(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier.align(Alignment.CenterStart)
                 ) {
-                    Text(
-                        text = "تفاصيل الخدمة",
-                        style = text14,
+                    Image(
+                        painter = painterResource(id = R.drawable.backbutton),
+                        contentDescription = ""
                     )
                 }
+                Text(
+                    text = stringResource(id = R.string.order_details),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+                    textAlign = TextAlign.Center,
+                    style = text14Meduim
+                )
 
+
+            }
+            Card(
+                modifier = Modifier
+                    .padding(
+                        vertical = 14.2.dp,
+                        horizontal = 19.dp
+                    )
+                    .fillMaxSize()
+
+            ) {
                 Column(
                     Modifier
-                        .padding(horizontal = 7.dp)
-                        .fillMaxWidth()
-                        .padding(bottom = 20.dp)
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
                 ) {
-                    repeat(2) {
-                        ServiceItem()
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 30.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text(
+                                text = "رقم الطلب",
+                                style = text11,
+                                color = SecondaryColor
+                            )
+                            Text(
+                                text = "#12342",
+                                style = text16Bold,
+                                color = TextColor
+                            )
+                        }
+                        DateView()
+
+                    }
+                    Spacer(modifier = Modifier.height(22.dp))
+                    StepperView(
+                        modifier = Modifier
+
+                            .fillMaxWidth(),
+                        isDetails = true,
+                    )
+                    MaintenanceCostWarning()
+                    AcceptRejectButtons() {
+                        coroutineScope.launch {
+                            when (it) {
+                                REJECT -> {
+                                    if (rateSheetState.isVisible)
+                                        rateSheetState.hide()
+                                    else rateSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                }
+
+                                ACCEPT -> {
+                                    if (paySheetState.isVisible)
+                                        paySheetState.hide()
+                                    else paySheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                }
+                            }
+
+                        }
+                    }
+                    Divider(
+                        thickness = 1.dp,
+                        color = DividerColor,
+                        modifier = Modifier.padding(top = 27.6.dp)
+                    )
+                    VisitDateView()
+                    Divider(
+                        thickness = 1.dp,
+                        color = DividerColor,
+                        modifier = Modifier.padding(top = 8.6.dp)
+                    )
+                    SelectedAddressView()
+                    CostView()
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 11.2.dp)
+                            .padding(horizontal = 7.dp)
+                            .fillMaxWidth()
+                            .requiredHeight(39.dp)
+                            .background(SecondaryColor2, shape = RoundedCornerShape(6.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "تفاصيل الخدمة",
+                            style = text14,
+                        )
+                    }
+
+                    Column(
+                        Modifier
+                            .padding(horizontal = 7.dp)
+                            .fillMaxWidth()
+                            .padding(bottom = 20.dp)
+                    ) {
+                        repeat(2) {
+                            ServiceItem()
+                        }
                     }
                 }
             }
         }
+
+    }
+
+    PaySheet(sheetState = paySheetState) {
+    }
+    RateSheet(rateSheetState) {
+
     }
 }
 
@@ -413,7 +490,7 @@ private fun CostView() {
 }
 
 @Composable
-private fun AcceptRejectButtons() {
+private fun AcceptRejectButtons(onClick: (Int) -> Unit) {
     Row(
         Modifier
             .padding(top = 11.dp)
@@ -422,7 +499,7 @@ private fun AcceptRejectButtons() {
     ) {
 
         ElasticButton(
-            onClick = { /*TODO*/ },
+            onClick = { onClick(REJECT) },
             title = "رفض",
             colorBg = Red,
             modifier = Modifier
@@ -431,7 +508,9 @@ private fun AcceptRejectButtons() {
         )
         Spacer(modifier = Modifier.width(18.dp))
         ElasticButton(
-            onClick = {},
+            onClick = {
+                onClick(ACCEPT)
+            },
             title = "قبول ودفع",
             icon = R.drawable.pay,
             modifier = Modifier

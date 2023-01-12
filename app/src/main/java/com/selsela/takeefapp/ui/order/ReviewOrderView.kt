@@ -182,6 +182,7 @@ fun ReviewOrderView(
                     .fillMaxWidth()
                     .requiredHeight(48.dp)
             )
+
         }
     }
 }
@@ -293,7 +294,7 @@ private fun WalletItemView() {
 }
 
 @Composable
-private fun PaymentView() {
+fun PaymentView() {
     Column(
         modifier = Modifier
             .paddingTop(18)
@@ -310,6 +311,8 @@ private fun PaymentView() {
 
     }
 }
+
+
 
 @Composable
 private fun PaymentItem(isSelected: Boolean, onClick: () -> Unit) {

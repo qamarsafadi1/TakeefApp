@@ -67,6 +67,15 @@ class Extensions {
             }
             return title
         }
+        fun NavController.bindPadding(currentRoute: NavBackStackEntry): Int{
+            val title =  when(currentRoute.destination.route) {
+                Destinations.HOME_SCREEN, Destinations.LOGIN_SCREEN,
+                Destinations.VERIFY_SCREEN, Destinations.SUCCESS, Destinations.SPECIAL_ORDER, Destinations.MY_ACCOUNT,
+                Destinations.ORDER_DETAILS -> 0
+                else -> 60
+            }
+            return title
+        }
         fun NavController.showingBackButton(currentRoute: NavBackStackEntry): Boolean{
             var showBackButton =  when(currentRoute.destination.route){
                 Destinations.HOME_SCREEN,Destinations.SPLASH_SCREEN,Destinations.SUCCESS -> false

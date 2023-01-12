@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.safeGesturesPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -400,9 +401,9 @@ fun DatePickerView(
 ) {
     Column(
         modifier = Modifier
-            .safeDrawingPadding()
             .fillMaxSize()
             .padding(horizontal = 28.dp, vertical = 40.dp)
+            .padding(bottom = 20.dp)
             ,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

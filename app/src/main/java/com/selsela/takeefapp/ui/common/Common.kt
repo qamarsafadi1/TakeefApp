@@ -72,7 +72,6 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.selsela.takeefapp.LocalMutableContext
-import com.selsela.takeefapp.MainActivity
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.LightBlue
@@ -97,8 +96,6 @@ import com.selsela.takeefapp.ui.theme.text18
 import com.selsela.takeefapp.ui.theme.text8
 import com.selsela.takeefapp.utils.Constants.LEFT
 import com.selsela.takeefapp.utils.Constants.RIGHT
-import com.selsela.takeefapp.utils.Extensions.Companion.getActivity
-import com.selsela.takeefapp.utils.Extensions.Companion.navigate
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.LocalUtils.setLocale
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
@@ -896,6 +893,7 @@ fun LanguageSheet(sheetState: ModalBottomSheetState, onConfirm: () -> Unit) {
 
 }
 
+
 @Composable
 private fun LanguageItem(selectedItem: Int, onCheck: (Int) -> Unit) {
     Column(
@@ -941,7 +939,6 @@ private fun LanguageItem(selectedItem: Int, onCheck: (Int) -> Unit) {
 
     }
 }
-
 
 @Composable
 private fun AreaListItem() {
@@ -1250,7 +1247,7 @@ private fun Step(
         )
     )
     if (isDetails.not())
-    Spacer(modifier = Modifier.width(10.dp))
+        Spacer(modifier = Modifier.width(10.dp))
 
     Column(
         Modifier

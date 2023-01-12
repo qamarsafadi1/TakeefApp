@@ -102,6 +102,15 @@ fun Color.ChangeStatusBarColor(
         darkIcons = isDark
     )
 }
+
+@Composable
+fun Color.ChangeNavigationBarColor(){
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setNavigationBarColor(
+        color = this,
+        darkIcons = false
+    )
+}
 @Composable
 fun Color.ChangeStatusBarOnlyColor(
     isDark: Boolean = false

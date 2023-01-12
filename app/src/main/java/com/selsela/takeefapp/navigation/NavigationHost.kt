@@ -19,8 +19,11 @@ import com.selsela.takeefapp.ui.order.OrderRouteView
 import com.selsela.takeefapp.ui.order.OrdersView
 import com.selsela.takeefapp.ui.order.ReviewOrderView
 import com.selsela.takeefapp.ui.order.SpecialOrderView
+import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
 import com.selsela.takeefapp.ui.splash.SplashView
+import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.utils.LocalData
+import com.selsela.takeefapp.utils.SheetEnum
 
 @Composable
 fun NavigationHost(
@@ -28,7 +31,7 @@ fun NavigationHost(
     startDestination: String = Destinations.SPLASH_SCREEN,
     navActions: NavigationActions = remember(navController) {
         NavigationActions(navController)
-    }
+    },
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Destinations.SPLASH_SCREEN) {
@@ -109,7 +112,8 @@ fun NavigationHost(
             OrderRouteView()
         }
         composable(Destinations.ORDER_DETAILS){
-            OrderDetailsView()
+            OrderDetailsView(){
+            }
         }
     }
 }

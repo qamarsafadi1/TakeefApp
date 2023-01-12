@@ -18,6 +18,7 @@ object Destinations {
     const val SPECIAL_ORDER = "special_order"
     const val MY_ACCOUNT = "my_account"
     const val ORDERS_SCREEN = "orders"
+    const val ORDER_ROUTE_SCREEN = "order_route_screen"
 }
 
 class NavigationActions(private val navController: NavController) {
@@ -26,39 +27,52 @@ class NavigationActions(private val navController: NavController) {
             navigateWithClearBackStack(navController)
         }
     }
+
     fun navigateToHome() {
         navController.navigate(Destinations.HOME_SCREEN) {
             navigateWithClearBackStack(navController)
         }
     }
-    fun navigateToLogin(){
+
+    fun navigateToLogin() {
         navController.navigate(Destinations.LOGIN_SCREEN)
     }
-    fun navigateToVerify(){
+
+    fun navigateToVerify() {
         navController.navigate(Destinations.VERIFY_SCREEN)
     }
-    fun navigateToAddress(){
+
+    fun navigateToAddress() {
         navController.navigate(Destinations.ADDRESS_SCREEN)
     }
-    fun navigateToSearchAddress(query: String?){
+
+    fun navigateToSearchAddress(query: String?) {
         val queryResult = query ?: "none"
         navController.navigate("${Destinations.SEARCH_ADDRESS_SCREEN}${queryResult}")
     }
 
-    fun navigateToReviewOrder(){
+    fun navigateToReviewOrder() {
         navController.navigate(Destinations.REVIEW_ORDER)
     }
-    fun navigateToSuccess(){
+
+    fun navigateToSuccess() {
         navController.navigate(Destinations.SUCCESS)
     }
-    fun navigateToSpecialOrder(){
+
+    fun navigateToSpecialOrder() {
         navController.navigate(Destinations.SPECIAL_ORDER)
     }
-    fun navigateToMyAccount(){
+
+    fun navigateToMyAccount() {
         navController.navigate(Destinations.MY_ACCOUNT)
     }
-    fun navigateToOrders(){
+
+    fun navigateToOrders() {
         navController.navigate(Destinations.ORDERS_SCREEN)
+    }
+
+    fun navigateToOrderRoute() {
+        navController.navigate(Destinations.ORDER_ROUTE_SCREEN)
     }
 
 }

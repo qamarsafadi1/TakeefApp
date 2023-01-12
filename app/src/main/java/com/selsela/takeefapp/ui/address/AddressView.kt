@@ -2,11 +2,9 @@ package com.selsela.takeefapp.ui.address
 
 import android.annotation.SuppressLint
 import android.view.ContextThemeWrapper
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.CalendarView
 import androidx.activity.compose.BackHandler
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
@@ -29,10 +27,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.safeGesturesPadding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -64,7 +59,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.view.marginEnd
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -80,7 +74,6 @@ import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.IconedButton
 import com.selsela.takeefapp.ui.common.ListedBottomSheet
 import com.selsela.takeefapp.ui.common.SearchBar
-import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor
@@ -93,7 +86,6 @@ import com.selsela.takeefapp.ui.theme.text20Book
 import com.selsela.takeefapp.utils.Extensions.Companion.RequestPermission
 import com.selsela.takeefapp.utils.Extensions.Companion.bitmapDescriptor
 import com.selsela.takeefapp.utils.Extensions.Companion.getMyLocation
-import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.launch
@@ -800,7 +792,9 @@ fun BackButton() {
 }
 
 @Composable
-fun GoogleMapView() {
+fun GoogleMapView(
+    @DrawableRes markerDrawable: Int = R.drawable.marker
+) {
     val context = LocalContext.current
     var permissionIsGranted by remember {
         mutableStateOf(false)
@@ -843,7 +837,7 @@ fun GoogleMapView() {
                 state = markerState,
                 icon = bitmapDescriptor(
                     context = context,
-                    vectorResId = R.drawable.marker
+                    vectorResId = markerDrawable
                 )
             )
         }

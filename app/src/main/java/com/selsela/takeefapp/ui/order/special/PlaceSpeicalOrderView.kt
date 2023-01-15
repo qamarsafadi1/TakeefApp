@@ -1,4 +1,4 @@
-package com.selsela.takeefapp.ui.order
+package com.selsela.takeefapp.ui.order.special
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
@@ -30,17 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.AppLogoImage
-import com.selsela.takeefapp.ui.common.EditText
 import com.selsela.takeefapp.ui.theme.SecondaryColor2
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
-import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text18
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.ui.common.EditTextMutltLine
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.InputEditText
@@ -49,13 +46,11 @@ import com.selsela.takeefapp.ui.theme.ButtonBg
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.text10
-import com.selsela.takeefapp.ui.theme.text16
 import com.selsela.takeefapp.ui.theme.text16Line
-import com.selsela.takeefapp.ui.theme.text18Book
 
 @Preview
 @Composable
-fun SpecialOrderView() {
+fun PlaceSpecialOrderView() {
     Box(
         modifier = Modifier
             .fillMaxWidth()

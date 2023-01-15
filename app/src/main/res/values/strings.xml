@@ -67,4 +67,5 @@
     <string name="order_route">مسار مشرف الصيانة</string>
     <string name="_08_00_am_12_00_pm"> PM 12:00  - 8:00 AM </string>
     <string name="other_pay">وسيلة دفع اخرى</string>
+    <string name="special_order">طلبات خاصة</string>
 </resources>

@@ -18,12 +18,10 @@ import com.selsela.takeefapp.ui.order.OrderDetailsView
 import com.selsela.takeefapp.ui.order.OrderRouteView
 import com.selsela.takeefapp.ui.order.OrdersView
 import com.selsela.takeefapp.ui.order.ReviewOrderView
-import com.selsela.takeefapp.ui.order.SpecialOrderView
-import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
+import com.selsela.takeefapp.ui.order.special.PlaceSpecialOrderView
+import com.selsela.takeefapp.ui.order.special.SpecialOrders
 import com.selsela.takeefapp.ui.splash.SplashView
-import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.utils.LocalData
-import com.selsela.takeefapp.utils.SheetEnum
 
 @Composable
 fun NavigationHost(
@@ -87,12 +85,15 @@ fun NavigationHost(
             SuccessView()
         }
         composable(Destinations.SPECIAL_ORDER) {
-            SpecialOrderView()
+            PlaceSpecialOrderView()
         }
         composable(Destinations.MY_ACCOUNT) {
             MyAccountView(
                 onBack = {
                     navController.navigateUp()
+                },
+                goToSpecialOrders = {
+                    navActions.navigateToSpecialOrders()
                 }
             )
             {
@@ -108,12 +109,15 @@ fun NavigationHost(
                 navActions.navigateToOrderRoute()
             }
         }
-        composable(Destinations.ORDER_ROUTE_SCREEN){
+        composable(Destinations.ORDER_ROUTE_SCREEN) {
             OrderRouteView()
         }
-        composable(Destinations.ORDER_DETAILS){
-            OrderDetailsView(){
+        composable(Destinations.ORDER_DETAILS) {
+            OrderDetailsView() {
             }
+        }
+        composable(Destinations.SPECIAL_ORDERS){
+            SpecialOrders()
         }
     }
 }

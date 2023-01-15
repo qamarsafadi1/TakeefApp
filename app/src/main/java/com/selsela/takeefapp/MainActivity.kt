@@ -45,12 +45,10 @@ import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TakeefAppTheme
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text14Meduim
-import com.selsela.takeefapp.utils.Extensions.Companion.bindPadding
-import com.selsela.takeefapp.utils.Extensions.Companion.bindToolbarTitle
 import com.selsela.takeefapp.utils.Extensions.Companion.log
-import com.selsela.takeefapp.utils.Extensions.Companion.showingBackButton
 import com.selsela.takeefapp.utils.LocalData
-import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import com.selsela.takeefapp.utils.Navigation.bindToolbarTitle
+import com.selsela.takeefapp.utils.Navigation.showingBackButton
 
 class MainActivity : ComponentActivity() {
     @OptIn(

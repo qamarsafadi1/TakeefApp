@@ -62,6 +62,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MyAccountView(
     onBack: () -> Unit,
+    goToSpecialOrders: () -> Unit,
     goToOrder: () -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
@@ -135,7 +136,9 @@ fun MyAccountView(
                     .fillMaxWidth()
             ) {
                 WalletCard()
-                OrderCards(){
+                OrderCards(goToSpecialOrder = {
+                    goToSpecialOrders()
+                }){
                     goToOrder()
                 }
                 SettingsCards()
@@ -361,7 +364,10 @@ private fun SettingsCards() {
 }
 
 @Composable
-private fun OrderCards(goToOrder: () -> Unit) {
+private fun OrderCards(
+    goToSpecialOrder: () -> Unit,
+    goToOrder: () -> Unit
+) {
     Row(
         modifier = Modifier
             .padding(horizontal = 17.dp)
@@ -404,7 +410,7 @@ private fun OrderCards(goToOrder: () -> Unit) {
                 .weight(1f)
                 .requiredHeight(88.dp)
                 .clickable {
-                    goToOrder()
+                    goToSpecialOrder()
                 },
             shape = RoundedCornerShape(13.dp),
             elevation = 20.dp,

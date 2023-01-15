@@ -26,6 +26,7 @@ object Destinations {
     const val ABOUT_APP_SCREEN = "about_app_screen"
     const val TERMS = "terms"
     const val TECHNICAL_SUPPORT = "technical_support"
+    const val PROFILE_SCREEN = "profile_screen"
 }
 
 class NavigationActions(private val navController: NavController) {
@@ -105,7 +106,12 @@ class NavigationActions(private val navController: NavController) {
     fun navigateToTermsScreen() {
         navController.navigate(Destinations.TERMS)
     }
+
     fun navigateToSupport() {
         navController.navigate(Destinations.TECHNICAL_SUPPORT)
+    }
+
+    fun navigateToProfile() {
+        navController.navigate(Destinations.PROFILE_SCREEN)
     }
 }

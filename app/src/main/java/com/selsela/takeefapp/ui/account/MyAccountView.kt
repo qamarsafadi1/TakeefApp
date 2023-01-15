@@ -63,6 +63,7 @@ fun MyAccountView(
     goToNotification: () -> Unit,
     goToTerms: () -> Unit,
     goToSupport: () -> Unit,
+    goToProfile: () -> Unit,
     goToOrder: () -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
@@ -141,7 +142,11 @@ fun MyAccountView(
                 }){
                     goToOrder()
                 }
-                SettingsCards(){
+                SettingsCards(
+                    goToProfile = {
+                        goToProfile()
+                    }
+                ){
                     goToNotification()
                 }
                 Text(
@@ -261,6 +266,7 @@ fun MyAccountView(
 
 @Composable
 private fun SettingsCards(
+    goToProfile: () -> Unit,
     goToNotification: () -> Unit
 ) {
     Row(
@@ -300,7 +306,10 @@ private fun SettingsCards(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .requiredHeight(88.dp),
+                .requiredHeight(88.dp)
+                .clickable {
+                    goToProfile()
+                },
             shape = RoundedCornerShape(13.dp),
             elevation = 20.dp,
             backgroundColor = Color.White

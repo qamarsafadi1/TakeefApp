@@ -262,6 +262,7 @@ fun EditText(
     inputType: KeyboardType = KeyboardType.Text,
     singleLine: Boolean = true,
     modifier: Modifier = Modifier,
+    textStyle: androidx.compose.ui.text.TextStyle = text13,
     trailing: @Composable (() -> Unit)? = null
 ) {
     TextField(
@@ -288,7 +289,7 @@ fun EditText(
         singleLine = singleLine,
         placeholder = {
             Text(
-                text = hint, style = text13,
+                text = hint, style = textStyle,
                 color = SecondaryColor.copy(0.39f)
             )
         },

@@ -22,6 +22,7 @@ object Navigation {
             Destinations.SPECIAL_ORDERS_DETAILS -> this.context.getString(R.string.special_order_detail)
             Destinations.NOTIFICATION_SCREEN -> this.context.getString(R.string.notification)
             Destinations.TECHNICAL_SUPPORT -> this.context.getString(R.string.tech_support)
+            Destinations.PROFILE_SCREEN -> this.context.getString(R.string.profile)
             else -> "Selsela"
         }
         return title

@@ -104,7 +104,8 @@ fun VerifyView(
                         onOtpTextChange = { value, otpInputFilled ->
                             otpValue = value
                         },
-                        modifier = Modifier.paddingTop(25)
+                        modifier = Modifier.paddingTop(25),
+                        otpCount = 6
                     )
 
                     Text(

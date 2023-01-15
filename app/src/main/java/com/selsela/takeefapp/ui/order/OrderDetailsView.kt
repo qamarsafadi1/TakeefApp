@@ -68,7 +68,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OrderDetailsView(
-    onOpenSheet: () -> Unit
+    onBack: () -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
     val coroutineScope = rememberCoroutineScope()
@@ -99,7 +99,7 @@ fun OrderDetailsView(
             ) {
 
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { onBack() },
                     modifier = Modifier.align(Alignment.CenterStart)
                 ) {
                     Image(

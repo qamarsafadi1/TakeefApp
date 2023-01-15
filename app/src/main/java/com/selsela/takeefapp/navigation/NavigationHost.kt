@@ -14,6 +14,7 @@ import com.selsela.takeefapp.ui.auth.VerifyView
 import com.selsela.takeefapp.ui.general.SuccessView
 import com.selsela.takeefapp.ui.home.HomeView
 import com.selsela.takeefapp.ui.intro.IntroView
+import com.selsela.takeefapp.ui.notification.NotificationView
 import com.selsela.takeefapp.ui.order.OrderDetailsView
 import com.selsela.takeefapp.ui.order.OrderRouteView
 import com.selsela.takeefapp.ui.order.OrdersView
@@ -95,6 +96,9 @@ fun NavigationHost(
                 },
                 goToSpecialOrders = {
                     navActions.navigateToSpecialOrders()
+                },
+                goToNotification = {
+                    navActions.navigateToNotification()
                 }
             )
             {
@@ -115,6 +119,7 @@ fun NavigationHost(
         }
         composable(Destinations.ORDER_DETAILS) {
             OrderDetailsView() {
+                navController.navigateUp()
             }
         }
         composable(Destinations.SPECIAL_ORDERS){
@@ -124,6 +129,9 @@ fun NavigationHost(
         }
         composable(Destinations.SPECIAL_ORDERS_DETAILS){
             SpecialOrderDetailsView()
+        }
+        composable(Destinations.NOTIFICATION_SCREEN){
+            NotificationView()
         }
     }
 }

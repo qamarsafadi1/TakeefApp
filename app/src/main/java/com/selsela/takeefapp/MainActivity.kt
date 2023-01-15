@@ -112,7 +112,9 @@ class MainActivity : ComponentActivity() {
                                                             text = title,
                                                             style = text14Meduim,
                                                             modifier = Modifier.fillMaxWidth(),
-                                                            textAlign = TextAlign.Center
+                                                            textAlign = TextAlign.Center,
+                                                            color = if (it.destination.route == Destinations.NOTIFICATION_SCREEN) Color.White
+                                                            else TextColor
                                                         )
                                                     }
                                                 },
@@ -142,7 +144,8 @@ class MainActivity : ComponentActivity() {
                                                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                                                     containerColor =
                                                     if (
-                                                        currentRoute.value?.destination?.route != Destinations.VERIFY_SCREEN
+                                                        currentRoute.value?.destination?.route != Destinations.VERIFY_SCREEN &&
+                                                        currentRoute.value?.destination?.route != Destinations.NOTIFICATION_SCREEN
                                                     )
                                                         Color.White
                                                     else TextColor

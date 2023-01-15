@@ -63,6 +63,7 @@ import kotlinx.coroutines.launch
 fun MyAccountView(
     onBack: () -> Unit,
     goToSpecialOrders: () -> Unit,
+    goToAboutApp: () -> Unit,
     goToNotification: () -> Unit,
     goToOrder: () -> Unit
 ) {
@@ -183,6 +184,9 @@ fun MyAccountView(
 
                 Row(
                     modifier = Modifier.paddingTop(31)
+                        .clickable {
+                            goToAboutApp()
+                        }
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.aboutapp),

@@ -23,6 +23,7 @@ object Destinations {
     const val SPECIAL_ORDERS = "special_orders"
     const val SPECIAL_ORDERS_DETAILS = "special_orders_details"
     const val NOTIFICATION_SCREEN = "notification_screen"
+    const val ABOUT_APP_SCREEN = "about_app_screen"
 }
 
 class NavigationActions(private val navController: NavController) {
@@ -93,6 +94,9 @@ class NavigationActions(private val navController: NavController) {
 
     fun navigateToNotification(){
         navController.navigate(Destinations.NOTIFICATION_SCREEN)
+    }
+    fun navigateToAboutApp(){
+        navController.navigate(Destinations.ABOUT_APP_SCREEN)
     }
 
 }

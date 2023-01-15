@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.selsela.takeefapp.ui.aboutapp.AboutAppView
 import com.selsela.takeefapp.ui.account.MyAccountView
 import com.selsela.takeefapp.ui.address.AddressView
 import com.selsela.takeefapp.ui.address.SearchAddressView
@@ -99,6 +100,9 @@ fun NavigationHost(
                 },
                 goToNotification = {
                     navActions.navigateToNotification()
+                },
+                goToAboutApp = {
+                    navActions.navigateToAboutApp()
                 }
             )
             {
@@ -132,6 +136,9 @@ fun NavigationHost(
         }
         composable(Destinations.NOTIFICATION_SCREEN){
             NotificationView()
+        }
+        composable(Destinations.ABOUT_APP_SCREEN){
+            AboutAppView()
         }
     }
 }

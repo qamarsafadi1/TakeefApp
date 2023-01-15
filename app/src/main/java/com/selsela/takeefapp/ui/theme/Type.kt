@@ -268,3 +268,8 @@ val text260Book = TextStyle(
     fontWeight = FontWeight.SemiBold,
     fontSize = 26.sp
 )
+val text22Book = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 22.sp
+)

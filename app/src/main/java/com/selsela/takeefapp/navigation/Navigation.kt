@@ -11,7 +11,7 @@ object Navigation {
         val title = when (currentRoute.destination.route) {
             Destinations.HOME_SCREEN, Destinations.LOGIN_SCREEN,
             Destinations.VERIFY_SCREEN, Destinations.SUCCESS,
-            Destinations.SPECIAL_ORDER,Destinations.ABOUT_APP_SCREEN -> ""
+            Destinations.SPECIAL_ORDER, Destinations.ABOUT_APP_SCREEN, Destinations.TERMS -> ""
 
             Destinations.SEARCH_ADDRESS_SCREEN_WITH_ARGUMENT -> this.context.getString(R.string.chosse_address)
             Destinations.REVIEW_ORDER -> this.context.getString(R.string.review_order)

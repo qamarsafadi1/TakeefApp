@@ -24,6 +24,7 @@ import com.selsela.takeefapp.ui.order.special.PlaceSpecialOrderView
 import com.selsela.takeefapp.ui.order.special.SpecialOrderDetailsView
 import com.selsela.takeefapp.ui.order.special.SpecialOrders
 import com.selsela.takeefapp.ui.splash.SplashView
+import com.selsela.takeefapp.ui.terms.TermsView
 import com.selsela.takeefapp.utils.LocalData
 
 @Composable
@@ -103,6 +104,9 @@ fun NavigationHost(
                 },
                 goToAboutApp = {
                     navActions.navigateToAboutApp()
+                },
+                goToTerms = {
+                    navActions.navigateToTermsScreen()
                 }
             )
             {
@@ -126,19 +130,22 @@ fun NavigationHost(
                 navController.navigateUp()
             }
         }
-        composable(Destinations.SPECIAL_ORDERS){
-            SpecialOrders(){
+        composable(Destinations.SPECIAL_ORDERS) {
+            SpecialOrders() {
                 navActions.navigateToSpecialOrderDetails()
             }
         }
-        composable(Destinations.SPECIAL_ORDERS_DETAILS){
+        composable(Destinations.SPECIAL_ORDERS_DETAILS) {
             SpecialOrderDetailsView()
         }
-        composable(Destinations.NOTIFICATION_SCREEN){
+        composable(Destinations.NOTIFICATION_SCREEN) {
             NotificationView()
         }
-        composable(Destinations.ABOUT_APP_SCREEN){
+        composable(Destinations.ABOUT_APP_SCREEN) {
             AboutAppView()
+        }
+        composable(Destinations.TERMS) {
+            TermsView()
         }
     }
 }

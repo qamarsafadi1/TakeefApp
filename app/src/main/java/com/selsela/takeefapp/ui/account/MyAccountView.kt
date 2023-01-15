@@ -65,6 +65,7 @@ fun MyAccountView(
     goToSpecialOrders: () -> Unit,
     goToAboutApp: () -> Unit,
     goToNotification: () -> Unit,
+    goToTerms: () -> Unit,
     goToOrder: () -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
@@ -169,6 +170,9 @@ fun MyAccountView(
 
                 Row(
                     modifier = Modifier.paddingTop(31)
+                        .clickable {
+                            goToTerms()
+                        }
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.terms),

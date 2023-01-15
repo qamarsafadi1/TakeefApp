@@ -99,6 +99,7 @@ import com.selsela.takeefapp.utils.Constants.RIGHT
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.LocalUtils.setLocale
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
@@ -311,13 +312,14 @@ fun InputEditText(
     inputType: KeyboardType = KeyboardType.Text,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     cursorColor: Color = Color.White,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    textStyle: androidx.compose.ui.text.TextStyle = text14White
 ) {
     BasicTextField(
         value = text,
         onValueChange = onValueChange,
         modifier = modifier,
-        textStyle = text14White,
+        textStyle = textStyle,
         decorationBox = { innerTextField ->
             Box(
                 modifier = Modifier
@@ -332,7 +334,7 @@ fun InputEditText(
                     Text(
                         text = hint,
                         color = SecondaryColor,
-                        style = text14White
+                        style = textStyle
                     )
                 }
                 innerTextField()

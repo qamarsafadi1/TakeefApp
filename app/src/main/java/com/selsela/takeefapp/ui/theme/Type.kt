@@ -263,3 +263,8 @@ val buttonText = TextStyle(
     fontSize = 13.sp,
     color = Color.White
 )
+val text260Book = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 26.sp
+)

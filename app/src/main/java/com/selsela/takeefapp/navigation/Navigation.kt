@@ -1,4 +1,4 @@
-package com.selsela.takeefapp.utils
+package com.selsela.takeefapp.navigation
 
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -18,6 +18,7 @@ object Navigation {
             Destinations.ORDER_ROUTE_SCREEN -> this.context.getString(R.string.order_route)
             Destinations.ORDER_DETAILS -> this.context.getString(R.string.order_details)
             Destinations.SPECIAL_ORDERS -> this.context.getString(R.string.special_order)
+            Destinations.SPECIAL_ORDERS_DETAILS -> this.context.getString(R.string.special_order_detail)
             else -> "Selsela"
         }
         return title

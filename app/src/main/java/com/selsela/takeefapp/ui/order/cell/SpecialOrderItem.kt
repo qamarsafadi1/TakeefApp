@@ -1,6 +1,7 @@
 package com.selsela.takeefapp.ui.order.cell
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,13 +28,18 @@ import com.selsela.takeefapp.ui.theme.text16Bold
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Composable
-fun SpecialOrderItem() {
+fun SpecialOrderItem(
+    onClick: () -> Unit
+) {
     Card(
         Modifier
             .padding(bottom = 8.4.dp)
             .fillMaxSize()
             .requiredHeight(187.dp)
             .padding(bottom = 8.4.dp)
+            .clickable {
+                onClick()
+            }
     ) {
         Column(
             modifier = Modifier

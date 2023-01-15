@@ -1,7 +1,7 @@
 package com.selsela.takeefapp.navigation
 
 import androidx.navigation.NavController
-import com.selsela.takeefapp.utils.Navigation.navigateWithClearBackStack
+import com.selsela.takeefapp.navigation.Navigation.navigateWithClearBackStack
 
 object Destinations {
     const val SPLASH_SCREEN = "splash"
@@ -21,6 +21,7 @@ object Destinations {
     const val ORDER_ROUTE_SCREEN = "order_route_screen"
     const val ORDER_DETAILS = "order_details"
     const val SPECIAL_ORDERS = "special_orders"
+    const val SPECIAL_ORDERS_DETAILS = "special_orders_details"
 }
 
 class NavigationActions(private val navController: NavController) {
@@ -81,8 +82,12 @@ class NavigationActions(private val navController: NavController) {
         navController.navigate(Destinations.ORDER_DETAILS)
     }
 
-    fun navigateToSpecialOrders(){
+    fun navigateToSpecialOrders() {
         navController.navigate(Destinations.SPECIAL_ORDERS)
+    }
+
+    fun navigateToSpecialOrderDetails() {
+        navController.navigate(Destinations.SPECIAL_ORDERS_DETAILS)
     }
 
 }

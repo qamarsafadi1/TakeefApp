@@ -14,7 +14,9 @@ import com.selsela.takeefapp.ui.theme.Bg
 
 @Preview
 @Composable
-fun SpecialOrders() {
+fun SpecialOrders(
+    goToDetails: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -29,7 +31,9 @@ fun SpecialOrders() {
             )
         ) {
             items(3) {
-                SpecialOrderItem()
+                SpecialOrderItem(){
+                    goToDetails()
+                }
             }
         }
     }

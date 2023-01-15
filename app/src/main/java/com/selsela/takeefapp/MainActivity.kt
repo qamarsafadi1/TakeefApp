@@ -47,8 +47,8 @@ import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
-import com.selsela.takeefapp.utils.Navigation.bindToolbarTitle
-import com.selsela.takeefapp.utils.Navigation.showingBackButton
+import com.selsela.takeefapp.navigation.Navigation.bindToolbarTitle
+import com.selsela.takeefapp.navigation.Navigation.showingBackButton
 
 class MainActivity : ComponentActivity() {
     @OptIn(

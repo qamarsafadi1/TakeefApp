@@ -29,12 +29,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.R
@@ -45,13 +43,11 @@ import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
-import com.selsela.takeefapp.ui.theme.text10
 import com.selsela.takeefapp.ui.theme.text10NoLines
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text13
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
-import com.selsela.takeefapp.ui.theme.text16
 import com.selsela.takeefapp.ui.theme.text16Bold
 import com.selsela.takeefapp.ui.theme.text16Medium
 import com.selsela.takeefapp.utils.LocalData
@@ -66,6 +62,7 @@ fun MyAccountView(
     goToAboutApp: () -> Unit,
     goToNotification: () -> Unit,
     goToTerms: () -> Unit,
+    goToSupport: () -> Unit,
     goToOrder: () -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
@@ -155,6 +152,9 @@ fun MyAccountView(
                 )
                 Row(
                     modifier = Modifier.paddingTop(25.9)
+                        .clickable {
+                            goToSupport()
+                        }
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.chat_text),

@@ -24,6 +24,7 @@ import com.selsela.takeefapp.ui.order.special.PlaceSpecialOrderView
 import com.selsela.takeefapp.ui.order.special.SpecialOrderDetailsView
 import com.selsela.takeefapp.ui.order.special.SpecialOrders
 import com.selsela.takeefapp.ui.splash.SplashView
+import com.selsela.takeefapp.ui.support.SupportScreen
 import com.selsela.takeefapp.ui.terms.TermsView
 import com.selsela.takeefapp.utils.LocalData
 
@@ -107,6 +108,9 @@ fun NavigationHost(
                 },
                 goToTerms = {
                     navActions.navigateToTermsScreen()
+                },
+                goToSupport = {
+                    navActions.navigateToSupport()
                 }
             )
             {
@@ -146,6 +150,9 @@ fun NavigationHost(
         }
         composable(Destinations.TERMS) {
             TermsView()
+        }
+        composable(Destinations.TECHNICAL_SUPPORT) {
+            SupportScreen()
         }
     }
 }

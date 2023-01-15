@@ -66,6 +66,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -313,6 +314,8 @@ fun InputEditText(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     cursorColor: Color = Color.White,
     textAlign: TextAlign = TextAlign.Start,
+    cornerRaduis: Dp = 8.dp,
+    fillMax: Float = 1f,
     textStyle: androidx.compose.ui.text.TextStyle = text14White
 ) {
     BasicTextField(
@@ -323,10 +326,10 @@ fun InputEditText(
         decorationBox = { innerTextField ->
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(fillMax)
                     .requiredHeight(48.dp)
-                    .background(TextFieldBg, shape = RoundedCornerShape(8.dp))
-                    .border(1.dp, color = BorderColor, RoundedCornerShape(8.dp))
+                    .background(TextFieldBg, shape = RoundedCornerShape(cornerRaduis))
+                    .border(1.dp, color = BorderColor, RoundedCornerShape(cornerRaduis))
                     .padding(horizontal = 16.dp),
                 contentAlignment = Alignment.CenterStart,
             ) {

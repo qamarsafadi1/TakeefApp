@@ -25,6 +25,7 @@ object Destinations {
     const val NOTIFICATION_SCREEN = "notification_screen"
     const val ABOUT_APP_SCREEN = "about_app_screen"
     const val TERMS = "terms"
+    const val TECHNICAL_SUPPORT = "technical_support"
 }
 
 class NavigationActions(private val navController: NavController) {
@@ -93,14 +94,18 @@ class NavigationActions(private val navController: NavController) {
         navController.navigate(Destinations.SPECIAL_ORDERS_DETAILS)
     }
 
-    fun navigateToNotification(){
+    fun navigateToNotification() {
         navController.navigate(Destinations.NOTIFICATION_SCREEN)
     }
-    fun navigateToAboutApp(){
+
+    fun navigateToAboutApp() {
         navController.navigate(Destinations.ABOUT_APP_SCREEN)
     }
 
-    fun navigateToTermsScreen(){
+    fun navigateToTermsScreen() {
         navController.navigate(Destinations.TERMS)
+    }
+    fun navigateToSupport() {
+        navController.navigate(Destinations.TECHNICAL_SUPPORT)
     }
 }

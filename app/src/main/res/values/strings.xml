@@ -74,4 +74,7 @@
     <string name="tech_support">الدعم الفني</string>
     <string name="profile">حسابي</string>
     <string name="email">البريد الالكتروني</string>
+    <string name="wallet">المحفظة</string>
+    <string name="reject">رفض</string>
+    <string name="accept_1">قبول</string>
 </resources>

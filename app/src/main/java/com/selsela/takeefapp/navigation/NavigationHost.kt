@@ -27,6 +27,7 @@ import com.selsela.takeefapp.ui.profile.ProfileScreen
 import com.selsela.takeefapp.ui.splash.SplashView
 import com.selsela.takeefapp.ui.support.SupportScreen
 import com.selsela.takeefapp.ui.terms.TermsView
+import com.selsela.takeefapp.ui.wallet.WalletScreen
 import com.selsela.takeefapp.utils.LocalData
 
 @Composable
@@ -115,6 +116,9 @@ fun NavigationHost(
                 },
                 goToProfile = {
                     navActions.navigateToProfile()
+                },
+                goToWallet = {
+                    navActions.navigateToWallet()
                 }
             )
             {
@@ -159,9 +163,12 @@ fun NavigationHost(
             SupportScreen()
         }
         composable(Destinations.PROFILE_SCREEN) {
-            ProfileScreen(){
+            ProfileScreen() {
                 navController.navigateUp()
             }
+        }
+        composable(Destinations.WALLET_SCREEN) {
+            WalletScreen()
         }
     }
 }

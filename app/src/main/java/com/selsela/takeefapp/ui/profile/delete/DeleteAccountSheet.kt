@@ -61,7 +61,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun DeleteAccountSheet(sheetState: ModalBottomSheetState, onConfirm: () -> Unit) {
     Box() {
-        val coroutineScope = rememberCoroutineScope()
         ModalBottomSheetLayout(
             sheetState = sheetState,
             sheetShape = RoundedCornerShape(topEnd = 42.dp, topStart = 42.dp),
@@ -156,79 +155,5 @@ private fun DeleteAccountSheetContent(onConfirm: () -> Unit) {
                 colorBg = Red
             )
         }
-    }
-}
-
-
-@Composable
-private fun PaymentItemDark(isSelected: Boolean, onClick: () -> Unit) {
-
-    Row(
-        modifier = Modifier
-            .padding(bottom = 6.dp)
-            .fillMaxWidth()
-            .requiredHeight(53.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.visa), contentDescription = ""
-        )
-
-        Spacer(modifier = Modifier.width(17.7.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .requiredHeight(53.dp)
-                .background(
-                    color =
-                    LightBlue.copy(0.07f),
-                    RoundedCornerShape(11.dp)
-                )
-                .border(
-                    width = if (isSelected) 1.dp else 0.dp,
-                    color = if (isSelected) Purple40 else LightBlue.copy(0.07f),
-                    shape = RoundedCornerShape(11.dp)
-                )
-                .clip(shape = RoundedCornerShape(11.dp))
-                .clickable {
-                    onClick()
-                }
-                .padding(horizontal = 14.3.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            Text(
-                text = "فيزا كارد", style = text14,
-                color = Color.White
-            )
-            Image(
-                painter =
-                if (isSelected)
-                    painterResource(id = R.drawable.checked)
-                else painterResource(id = R.drawable.uncheckedrbwhitealpha),
-                contentDescription = ""
-            )
-        }
-    }
-}
-
-@Composable
-fun PaymentViewDark() {
-    Column(
-        modifier = Modifier
-            .paddingTop(18)
-            .fillMaxWidth()
-    ) {
-        var selectedPayment by remember {
-            mutableStateOf(0)
-        }
-        repeat(3) {
-            PaymentItemDark(selectedPayment == it) {
-                selectedPayment = it
-            }
-        }
-
     }
 }

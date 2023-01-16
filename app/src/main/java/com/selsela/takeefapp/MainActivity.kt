@@ -24,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -54,7 +55,9 @@ import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.navigation.Navigation.bindToolbarTitle
 import com.selsela.takeefapp.navigation.Navigation.showingBackButton
 import com.selsela.takeefapp.ui.common.ElasticButton
+import com.selsela.takeefapp.ui.order.AddedCostSheet
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @OptIn(
@@ -171,6 +174,15 @@ class MainActivity : ComponentActivity() {
                                     ) {
                                         NavigationHost(navController)
                                     }
+                                }
+
+                                val sheetState = rememberModalBottomSheetState(
+                                    initialValue = ModalBottomSheetValue.Hidden,
+                                    confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+                                    skipHalfExpanded = true
+                                )
+                                AddedCostSheet(sheetState = sheetState) {
+
                                 }
                             }
                         }

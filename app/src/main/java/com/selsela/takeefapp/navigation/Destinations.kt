@@ -27,6 +27,7 @@ object Destinations {
     const val TERMS = "terms"
     const val TECHNICAL_SUPPORT = "technical_support"
     const val PROFILE_SCREEN = "profile_screen"
+    const val WALLET_SCREEN = "wallet_screen"
 }
 
 class NavigationActions(private val navController: NavController) {
@@ -113,5 +114,9 @@ class NavigationActions(private val navController: NavController) {
 
     fun navigateToProfile() {
         navController.navigate(Destinations.PROFILE_SCREEN)
+    }
+
+    fun navigateToWallet() {
+        navController.navigate(Destinations.WALLET_SCREEN)
     }
 }

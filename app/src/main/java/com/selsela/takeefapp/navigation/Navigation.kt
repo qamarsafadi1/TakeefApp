@@ -23,6 +23,7 @@ object Navigation {
             Destinations.NOTIFICATION_SCREEN -> this.context.getString(R.string.notification)
             Destinations.TECHNICAL_SUPPORT -> this.context.getString(R.string.tech_support)
             Destinations.PROFILE_SCREEN -> this.context.getString(R.string.profile)
+            Destinations.WALLET_SCREEN -> this.context.getString(R.string.wallet)
             else -> "Selsela"
         }
         return title

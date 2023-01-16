@@ -60,6 +60,12 @@ val text14 = TextStyle(
         trim = LineHeightStyle.Trim.Both
     )
 )
+val text40 = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.Medium,
+    fontSize = 40.sp,
+    color = TextColor
+)
 val text14Bold = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.Bold,
@@ -168,6 +174,11 @@ val text8= TextStyle(
 val text13 = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.SemiBold,
+    fontSize = 13.sp,
+)
+val text13Meduim = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.Medium,
     fontSize = 13.sp,
 )
 val text11Meduim = TextStyle(

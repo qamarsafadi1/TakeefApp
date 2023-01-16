@@ -64,6 +64,7 @@ fun MyAccountView(
     goToTerms: () -> Unit,
     goToSupport: () -> Unit,
     goToProfile: () -> Unit,
+    goToWallet: () -> Unit,
     goToOrder: () -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
@@ -136,7 +137,9 @@ fun MyAccountView(
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()
             ) {
-                WalletCard()
+                WalletCard(){
+                    goToWallet()
+                }
                 OrderCards(goToSpecialOrder = {
                     goToSpecialOrders()
                 }){
@@ -492,13 +495,18 @@ private fun OrderCards(
 }
 
 @Composable
-private fun WalletCard() {
+private fun WalletCard(
+    goToWallet: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 17.dp)
             .paddingTop(20)
-            .requiredHeight(84.dp),
+            .requiredHeight(84.dp)
+            .clickable {
+                goToWallet()
+            },
         shape = RoundedCornerShape(13.dp),
         elevation = 20.dp
     ) {

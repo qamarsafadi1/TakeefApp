@@ -10,16 +10,24 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.safeGesturesPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,11 +36,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.EditText
+import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.InputEditText
+import com.selsela.takeefapp.ui.order.PaySheet
+import com.selsela.takeefapp.ui.profile.delete.DeleteAccountSheet
+import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
+import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
@@ -40,19 +54,70 @@ import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text12Bold
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Bold
+import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text14White
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import kotlinx.coroutines.launch
 
-@Preview
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    onBack: () -> Unit
+) {
+    Color.Transparent.ChangeStatusBarOnlyColor()
+    val coroutineScope = rememberCoroutineScope()
+    val paySheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             Modifier
+                .padding(bottom = 40.dp)
                 .fillMaxSize()
                 .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Box(
+                Modifier
+                    .padding(top =20.dp)
+                    .fillMaxWidth()
+                    .requiredHeight(88.dp)
+                    .background(Color.White)
+                    .padding(top = 30.dp)
+                    .padding(horizontal = 6.dp),
+            ) {
+
+                IconButton(
+                    onClick = { onBack() },
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.backbutton),
+                        contentDescription = ""
+                    )
+                }
+                Text(
+                    text = stringResource(id = R.string.profile),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+                    textAlign = TextAlign.Center,
+                    style = text14Meduim
+                )
+                ElasticButton(
+                    onClick = { /*TODO*/ },
+                    title = "حفظ ",
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 14.dp)
+                        .width(107.dp)
+                        .height(44.dp)
+
+                )
+
+            }
             Box(modifier = Modifier.defaultMinSize(minHeight = 115.dp, minWidth = 115.dp)) {
                 Image(
                     painter = painterResource(id = R.drawable.placeholder2),
@@ -109,13 +174,22 @@ fun ProfileScreen() {
                         modifier = Modifier.paddingTop(12)
                     )
                 }
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = {
+                    coroutineScope.launch {
+                        if (paySheetState.isVisible)
+                            paySheetState.hide()
+                        else paySheetState.animateTo(ModalBottomSheetValue.Expanded)
+                    }
+
+                }) {
                     Image(
                         painter = painterResource(id = R.drawable.deletetrash),
                         contentDescription = ""
                     )
                 }
             }
+        }
+        DeleteAccountSheet(sheetState = paySheetState) {
         }
     }
 

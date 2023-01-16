@@ -159,7 +159,9 @@ fun NavigationHost(
             SupportScreen()
         }
         composable(Destinations.PROFILE_SCREEN) {
-            ProfileScreen()
+            ProfileScreen(){
+                navController.navigateUp()
+            }
         }
     }
 }

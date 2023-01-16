@@ -8,6 +8,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -35,6 +38,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.rememberNavController
@@ -49,6 +53,8 @@ import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.navigation.Navigation.bindToolbarTitle
 import com.selsela.takeefapp.navigation.Navigation.showingBackButton
+import com.selsela.takeefapp.ui.common.ElasticButton
+import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 class MainActivity : ComponentActivity() {
     @OptIn(
@@ -96,6 +102,7 @@ class MainActivity : ComponentActivity() {
                                             && currentRoute.value?.destination?.route != Destinations.ADDRESS_SCREEN
                                             && currentRoute.value?.destination?.route != Destinations.MY_ACCOUNT
                                             && currentRoute.value?.destination?.route != Destinations.ORDER_DETAILS
+                                            && currentRoute.value?.destination?.route != Destinations.PROFILE_SCREEN
                                         ) {
                                             if (currentRoute.value?.destination?.route != Destinations.VERIFY_SCREEN)
                                                 Color.White.ChangeStatusBarColor()
@@ -141,6 +148,9 @@ class MainActivity : ComponentActivity() {
                                                     }
 
                                                 },
+                                                actions = {
+                                                    BindMenuItems(currentRoute)
+                                                },
                                                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                                                     containerColor =
                                                     if (
@@ -171,11 +181,17 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
+    private fun BindMenuItems(currentRoute: State<NavBackStackEntry?>) {
+
+    }
+
+    @Composable
     private fun FitSystemWindow(currentRoute: State<NavBackStackEntry?>) {
         "${currentRoute.value?.destination?.route}".log("ROUTE")
         if (currentRoute.value?.destination?.route == Destinations.MY_ACCOUNT
             || currentRoute.value?.destination?.route == Destinations.ADDRESS_SCREEN
             || currentRoute.value?.destination?.route == Destinations.ORDER_DETAILS
+            || currentRoute.value?.destination?.route == Destinations.PROFILE_SCREEN
         ) {
             WindowCompat.setDecorFitsSystemWindows(window, false)
         } else {

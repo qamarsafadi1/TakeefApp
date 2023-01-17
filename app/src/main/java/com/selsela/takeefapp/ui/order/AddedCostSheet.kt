@@ -74,14 +74,14 @@ private fun AddedCostSheetContent(onConfirm: () -> Unit) {
     ) {
 
         Text(
-            text = "قام المشرف باضافة",
+            text = stringResource(R.string.supervisor_add),
             style = text14,
             color = SecondaryColor,
             modifier = Modifier.paddingTop(37.5)
         )
 
         Text(
-            text = "تكلفة اضافية للصيانة",
+            text = stringResource(R.string.cost_added),
             style = text20,
             color = Color.White,
             modifier = Modifier.paddingTop(9.5)
@@ -150,7 +150,7 @@ private fun AddedCostSheetContent(onConfirm: () -> Unit) {
                           contentDescription = ""
                       )
                       Text(
-                          text = "لن يتم عمل الصيانة قبل دفع التكلفة",
+                          text = stringResource(R.string.maintinance_not_done_befor),
                           style = text14,
                           color = SecondaryColor,
                           modifier = Modifier.padding(start = 10.dp)

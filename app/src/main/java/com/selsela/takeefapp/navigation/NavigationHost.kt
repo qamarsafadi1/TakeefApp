@@ -61,7 +61,14 @@ fun NavigationHost(
             }
         }
         composable(Destinations.LOGIN_SCREEN) {
-            LoginView() {
+            LoginView(
+                goToTerms = {
+                    navActions.navigateToTermsScreen()
+                },
+                goToSupport = {
+                    navActions.navigateToSupport()
+                }
+            ) {
                 navActions.navigateToVerify()
             }
         }
@@ -89,7 +96,13 @@ fun NavigationHost(
             }
         }
         composable(Destinations.SUCCESS) {
-            SuccessView()
+            SuccessView(
+                goOrders = {
+                    navActions.navigateToOrdersWithoutBackStack()
+                }
+            ){
+                navActions.navigateToHome()
+            }
         }
         composable(Destinations.SPECIAL_ORDER) {
             PlaceSpecialOrderView()

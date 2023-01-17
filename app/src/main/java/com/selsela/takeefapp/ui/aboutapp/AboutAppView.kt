@@ -76,12 +76,12 @@ fun AboutAppView() {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "جودة ",
+                        text = stringResource(R.string.quality_1),
                         style = text22Book,
                         color = Purple40
                     )
                     Text(
-                        text = "سرعة ",
+                        text = stringResource(R.string.fast),
                         style = text22Book,
                         color = TextColor,
                         modifier = Modifier
@@ -89,7 +89,7 @@ fun AboutAppView() {
                             .padding(start = 43.dp)
                     )
                     Text(
-                        text = "أمــــــــان ",
+                        text = stringResource(R.string.safety),
                         style = text22Book,
                         color = LightBlue,
                         modifier = Modifier
@@ -116,7 +116,7 @@ fun AboutAppView() {
                 ) {
 
                     Text(
-                        text = "عن التطبيق",
+                        text = stringResource(R.string.about_app),
                         style = text16Medium,
                         color = TextColor
                     )

@@ -30,7 +30,7 @@ fun TermsView() {
     ) {
 
         Text(
-            text = "الشروط الاحكام",
+            text = stringResource(id = R.string.terms_condition),
             style = text16Medium,
             color = TextColor
         )

@@ -77,7 +77,7 @@ fun SpecialOrderDetailsView() {
                     ) {
                         Column {
                             Text(
-                                text = "رقم الطلب",
+                                text = stringResource(id = R.string.order_number),
                                 style = text11,
                                 color = SecondaryColor
                             )
@@ -104,12 +104,12 @@ fun SpecialOrderDetailsView() {
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = "عنوان : ",
+                            text = stringResource(id = R.string.address_dot),
                             style = text11,
                             color = SecondaryColor
                         )
                         Text(
-                            text = "اسم العنوان يوضع هنا في هذه المساحة",
+                            text = stringResource(id = R.string.address_name_here),
                             style = text12,
                             color = TextColor
                         )
@@ -121,7 +121,7 @@ fun SpecialOrderDetailsView() {
                     }
                 ) {
                     Text(
-                        text = "التفاصيل",
+                        text = stringResource(id = R.string.detalis),
                         style = text11,
                         color = SecondaryColor,
                         modifier = Modifier.paddingTop(8)
@@ -155,7 +155,7 @@ fun SpecialOrderDetailsView() {
                     }
                 ) {
                     Text(
-                        text = "المرفقات",
+                        text = stringResource(R.string.attachment),
                         style = text11,
                         color = SecondaryColor,
                         modifier = Modifier.paddingTop(9)

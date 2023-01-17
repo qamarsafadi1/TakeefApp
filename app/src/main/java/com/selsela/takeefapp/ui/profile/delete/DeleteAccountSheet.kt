@@ -92,14 +92,14 @@ private fun DeleteAccountSheetContent(onConfirm: () -> Unit) {
             contentDescription = ""
         )
         Text(
-            text = "تاكيد",
+            text = stringResource(R.string.confirm_lbl_1),
             style = text14,
             color = SecondaryColor,
             modifier = Modifier.paddingTop(37.5)
         )
 
         Text(
-            text = "حذف الحساب",
+            text = stringResource(R.string.delete_account),
             style = text20,
             color = Color.White,
             modifier = Modifier.paddingTop(9.5)
@@ -112,7 +112,7 @@ private fun DeleteAccountSheetContent(onConfirm: () -> Unit) {
         )
 
         Text(
-            text = "لن تتكن من الوصول الي بياناتك لاحقا في حالة حذف الحساب",
+            text = stringResource(R.string.delete_account_lbl),
             style = text14,
             color = Color.White,
             modifier = Modifier
@@ -122,7 +122,7 @@ private fun DeleteAccountSheetContent(onConfirm: () -> Unit) {
         )
 
         Text(
-            text = "تأكيد الحذف؟",
+            text = stringResource(R.string.delete_confirmation),
             style = text20,
             color = Color.White,
             modifier = Modifier.paddingTop(36.5)
@@ -141,7 +141,7 @@ private fun DeleteAccountSheetContent(onConfirm: () -> Unit) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "الغاء",
+                    text = stringResource(R.string.cancel_lbl),
                     style = text16Medium,
                     color = Purple40
                 )

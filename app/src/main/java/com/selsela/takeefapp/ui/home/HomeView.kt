@@ -135,14 +135,15 @@ fun HomeView(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.weight(1f))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 25.dp),
+                        .padding(vertical = 25.dp),
                     horizontalArrangement = Arrangement.End
                 ) {
                     ElasticButton(
-                        onClick = { goToSpecialOrder() }, title = "   +  طلب خاص",
+                        onClick = { goToSpecialOrder() }, title = stringResource(R.string.special_order_add),
                     )
                 }
             }
@@ -182,11 +183,12 @@ fun HomeView(
                                 .weight(1f)
                         ) {
                             Text(
-                                text = stringResource(id = R.string.cost),
+                                text = stringResource(id = R.string.cost_1),
                                 style = text14,
                                 color = SecondaryColor2
                             )
-                            Row(modifier = Modifier.paddingTop(9)) {
+                            Row(modifier = Modifier.paddingTop(9),
+                            verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     text = "300", style = text16Medium,
                                     color = Color.White
@@ -201,7 +203,7 @@ fun HomeView(
                         }
                         ElasticButton(
                             onClick = { goToLogin() },
-                            title = "متابعة الطلب",
+                            title = stringResource(R.string.order_follow_up),
                             icon = R.drawable.forward_arrow,
                             modifier = Modifier
                                 .width(150.dp)
@@ -222,7 +224,7 @@ private fun SelectedServicesView() {
     Row(modifier = Modifier.fillMaxWidth()) {
         Row {
             Text(
-                text = "صيانة : ", style = text11,
+                text = stringResource(id = R.string.maintinance_dot), style = text11,
                 color = SecondaryColor2
             )
             Text(text = "00", style = text12, color = Color.White)
@@ -230,7 +232,7 @@ private fun SelectedServicesView() {
         Spacer(modifier = Modifier.width(14.1.dp))
         Row {
             Text(
-                text = "تنظيف : ", style = text11,
+                text = stringResource(id = R.string.clean_dot), style = text11,
                 color = SecondaryColor2
             )
             Text(text = "00", style = text12, color = Color.White)
@@ -238,7 +240,7 @@ private fun SelectedServicesView() {
         Spacer(modifier = Modifier.width(14.1.dp))
         Row {
             Text(
-                text = "تركيب : ", style = text11,
+                text = stringResource(id = R.string.installtion_dot), style = text11,
                 color = SecondaryColor2
             )
             Text(text = "00", style = text12, color = Color.White)
@@ -332,7 +334,7 @@ private fun DetailsView(onCollapse: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "التكلفة : ",
+                    text = stringResource(id = R.string.cost_dot),
                     style = text16Medium
                 )
                 Text(
@@ -340,14 +342,14 @@ private fun DetailsView(onCollapse: () -> Unit) {
                     style = text16Medium
                 )
                 Text(
-                    text = "ر.س",
+                    text = stringResource(id = R.string.currency_1),
                     style = text12Meduim,
                     modifier = Modifier.padding(start = 5.dp)
                 )
             }
 
             Text(
-                text = "يتم خصم المبلغ المدفوع من قيمة التكلفة الاجمالية للصيانة ",
+                text = stringResource(R.string.maintinance_lbl),
                 style = text12,
                 color = TextColorHintAlpha60,
                 modifier = Modifier.padding(top = 12.dp)
@@ -413,7 +415,7 @@ private fun ConditionTypeView() {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "مكيف شباك",
+            text = stringResource(R.string.temp_1),
             style = text12Meduim
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -467,17 +469,17 @@ private fun ServiceItem(arrowVisibility: Boolean) {
                 .weight(1f)
         ) {
             Text(
-                text = "طلب خدمة",
+                text = stringResource(R.string.order_service),
                 style = text12,
                 color = TextColor.copy(0.44f)
             )
             Text(
-                text = "التنظيف",
+                text = stringResource(R.string.clean),
                 style = text20,
                 color = TextColor
             )
             Text(
-                text = "صيانة جميع انواع المكيفات",
+                text = stringResource(R.string.maintinance_all),
                 style = text12,
                 color = TextColor.copy(0.44f)
             )

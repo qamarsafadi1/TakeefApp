@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -58,7 +59,7 @@ fun PlaceSpecialOrderView() {
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
+            contentAlignment = Alignment.Center
         ) {
             var isAnimated by remember {
                 mutableStateOf(false)
@@ -73,31 +74,42 @@ fun PlaceSpecialOrderView() {
                         )
                 )
             }
-            Column(
-                modifier = Modifier
-                    .padding(bottom = 21.dp)
-                    .align(Alignment.Center)
-                    .padding(horizontal = 24.dp)
-                    .fillMaxWidth()
-                    .animateContentSize(tween(500))
-                    .background(TextColor, RoundedCornerShape(33.dp))
-                    .padding(horizontal = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                if (isAnimated.not()) {
-                    SpecialOrderFormView()
-                } else {
-                    SuccessSend()
-                }
-            }
+           Box(Modifier
+               .align(Alignment.Center),
+           contentAlignment = Alignment.TopCenter) {
+               Column(
+                   modifier = Modifier
+                       .padding(bottom = 21.dp,top = 44.dp)
+                       .padding(horizontal = 24.dp)
+                       .fillMaxWidth()
+                       .animateContentSize(tween(500))
+                       .background(TextColor, RoundedCornerShape(33.dp))
+                       .padding(horizontal = 24.dp),
+                   horizontalAlignment = Alignment.CenterHorizontally,
+                   verticalArrangement = Arrangement.Center
+               ) {
+                   if (isAnimated.not()) {
+                       SpecialOrderFormView()
+                   } else {
+                       SuccessSend()
+                   }
+               }
+
+
+               if (isAnimated){
+                   LottieAnimationView(raw = R.raw.send,
+                       modifier = Modifier
+                           .size(126.dp)
+                         )
+               }
+           }
 
             if (isAnimated.not()) {
                 ElasticButton(
                     onClick = {
                         isAnimated = !isAnimated
 
-                    }, title = "إرسال الطلب",
+                    }, title = stringResource(R.string.send_order),
                     modifier = Modifier
                         .padding(vertical = 21.dp)
                         .padding(horizontal = 24.dp)
@@ -107,13 +119,6 @@ fun PlaceSpecialOrderView() {
                 )
             }
 
-            if (isAnimated){
-                LottieAnimationView(raw = R.raw.send,
-                modifier = Modifier
-                    .paddingTop(112)
-                    .size(126.dp)
-                    .align(Alignment.TopCenter))
-            }
         }
     }
 }
@@ -126,7 +131,7 @@ private fun SpecialOrderFormView() {
             .fillMaxWidth()
     ) {
         Text(
-            text = "طلب خاص",
+            text = stringResource(R.string.special_order_1),
             style = text18,
             color = Color.White,
             modifier = Modifier
@@ -136,7 +141,7 @@ private fun SpecialOrderFormView() {
         )
 
         Text(
-            text = "سيتم التواصل معك من قبل الادارة لانجاز الطلب",
+            text = stringResource(R.string.will_contatc),
             modifier = Modifier
                 .paddingTop(16)
                 .fillMaxWidth(),
@@ -208,18 +213,18 @@ private fun SpecialOrderFormView() {
             Column {
                 Row {
                     Text(
-                        text = "اضافة مرفقات",
+                        text = stringResource(R.string.add_attachments),
                         style = text11,
                         color = Color.White.copy(0.85f)
                     )
                     Text(
-                        text = "( اختياري)",
+                        text = stringResource(R.string.optinal),
                         style = text10,
                         color = SecondaryColor.copy(0.70f)
                     )
                 }
                 Text(
-                    text = "اسم الملف يوضع هنا",
+                    text = stringResource(R.string.file_name),
                     style = text10,
                     color = SecondaryColor
                 )
@@ -248,11 +253,11 @@ fun SuccessSend() {
         Spacer(modifier = Modifier.height(137.dp))
 
         Text(
-            text = "تم الإرسال", style = text18,
+            text = stringResource(R.string.has_been_sent), style = text18,
             color = Color.White
         )
         Text(
-            text = "سيتم التواصل معك ومتابعة الطلب من قبل الادارة",
+            text = stringResource(R.string.will_contact_soon),
             style = text16Line,
             color = Color.White.copy(0.85f),
             textAlign = TextAlign.Center,
@@ -261,7 +266,7 @@ fun SuccessSend() {
 
         Spacer(modifier = Modifier.height(20.dp))
         ElasticButton(
-            onClick = { /*TODO*/ }, title = "إغلاق",
+            onClick = { /*TODO*/ }, title = stringResource(R.string.close),
             colorBg = ButtonBg,
             textColor = Purple40,
             modifier = Modifier

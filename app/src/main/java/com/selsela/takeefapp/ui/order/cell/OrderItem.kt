@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.ElasticButton
@@ -37,6 +38,7 @@ import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text12Bold
 import com.selsela.takeefapp.ui.theme.text16Bold
 import com.selsela.takeefapp.utils.Constants
+import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Composable
@@ -75,7 +77,7 @@ fun OrderItem(
             ) {
                 Column {
                     Text(
-                        text = "رقم الطلب",
+                        text = stringResource(R.string.order_number),
                         style = text11,
                         color = SecondaryColor
                     )
@@ -92,7 +94,14 @@ fun OrderItem(
                         .fillMaxWidth()
                         .weight(1f)
                 )
-                StepperView()
+                StepperView(
+                    items = listOf(
+                        stringResource(R.string.recived_order),
+                        stringResource(R.string.on_way),
+                        stringResource(R.string.on_progress),
+                        stringResource(R.string.done_order)
+                    )
+                )
             }
 
             Column(
@@ -117,7 +126,7 @@ fun OrderItem(
                             colorFilter = ColorFilter.tint(SecondaryColor)
                         )
                         Text(
-                            text = "موعد الزيارة",
+                            text = stringResource(id = R.string.visit_date_1),
                             style = text11,
                             color = SecondaryColor,
                             modifier = Modifier.padding(start = 6.4.dp)
@@ -128,7 +137,8 @@ fun OrderItem(
                 }
 
                 Row(
-                    Modifier.paddingTop(10)
+                    Modifier
+                        .paddingTop(10)
                         .fillMaxWidth(),
                 ) {
                     Image(
@@ -136,7 +146,7 @@ fun OrderItem(
                         contentDescription = ""
                     )
                     Text(
-                        text = "التكلفة  : ",
+                        text = stringResource(id = R.string.cost_dot),
                         style = text11,
                         color = TextColor,
                         modifier = Modifier.padding(start = 9.dp)
@@ -150,7 +160,7 @@ fun OrderItem(
                             modifier = Modifier.padding(start = 4.dp)
                         )
                         Text(
-                            text = "ر.س",
+                            text = stringResource(id = R.string.currency_1),
                             style = text10,
                             color = TextColor,
                             modifier = Modifier.padding(start = 5.dp)
@@ -167,18 +177,18 @@ fun OrderItem(
                 horizontalArrangement = Arrangement.End
             ) {
                 ElasticButton(
-                    onClick = {onRouteClick() }, title = "متابعة المسار",
+                    onClick = {onRouteClick() }, title = stringResource(id = R.string.follow_route),
                     icon = R.drawable.map,
                     iconGravity = Constants.RIGHT ,
                     modifier = Modifier
                         .paddingTop(13)
                         .requiredHeight(36.dp)
-                        .width(137.dp),
+                        .width(if (LocalData.appLocal == "ar") 137.dp else 157.dp),
                     buttonBg = LightBlue
                 )
                 AnimatedVisibility(visible = false) {
                     ElasticButton(
-                        onClick = { /*TODO*/ }, title = "تقييم",
+                        onClick = { /*TODO*/ }, title =stringResource(id = R.string.rate),
                         icon = R.drawable.star,
                         iconGravity = Constants.RIGHT,
                         modifier = Modifier

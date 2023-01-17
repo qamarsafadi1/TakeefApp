@@ -236,7 +236,7 @@ private fun WalletItemView() {
             )
             Spacer(modifier = Modifier.width(5.dp))
             Text(
-                text = "رس",
+                text = stringResource(id = R.string.currency_1),
                 style = text13,
                 color = SecondaryColor
             )
@@ -285,7 +285,7 @@ private fun WalletItemView() {
             )
             Spacer(modifier = Modifier.width(5.dp))
             Text(
-                text = "رس",
+                text = stringResource(id = R.string.currency_1),
                 style = text13,
                 color = SecondaryColor
             )
@@ -393,7 +393,7 @@ private fun ServiceItem() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "خدمة صيانة",
+                text = stringResource(id = R.string.maintinance_serivce),
                 style = text12,
                 color = SecondaryColor
             )
@@ -405,7 +405,7 @@ private fun ServiceItem() {
                 modifier = Modifier.padding(end = 7.dp)
             )
             Text(
-                text = "جهاز",
+                text = stringResource(id = R.string.device),
                 style = text12,
                 color = SecondaryColor
             )
@@ -433,7 +433,7 @@ private fun ServiceItem() {
             )
             Spacer(modifier = Modifier.width(3.dp))
             Text(
-                text = "رس",
+                text = stringResource(id = R.string.currency_1),
                 style = text14,
                 color = TextColor
             )
@@ -459,7 +459,7 @@ private fun VisitDateView() {
                 contentDescription = ""
             )
             Text(
-                text = "موعد الزيارة",
+                text = stringResource(id = R.string.visit_date_1),
                 style = text12,
                 color = SecondaryColor,
                 modifier = Modifier.padding(start = 8.dp)
@@ -477,7 +477,7 @@ private fun VisitDateView() {
             ) {
                 Spacer(modifier = Modifier.width(5.dp))
                 Text(
-                    text = "فترة صباحية",
+                    text = stringResource(id = R.string.am_lbl),
                     style = text14,
                     color = TextColor
                 )

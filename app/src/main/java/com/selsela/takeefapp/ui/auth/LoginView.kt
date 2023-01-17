@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,9 +50,12 @@ import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text18
 import com.selsela.takeefapp.ui.theme.text18Book
 import com.selsela.takeefapp.ui.theme.text18Meduim
+import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Composable
 fun LoginView(
+    goToTerms: () -> Unit,
+    goToSupport: () -> Unit,
     goToVerify: () -> Unit
 ) {
     Box(
@@ -60,96 +64,101 @@ fun LoginView(
             .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
-        Card(
-            shape = RoundedCornerShape(33.dp),
-            backgroundColor = TextColor,
-            modifier = Modifier
-                .padding(top = 0.dp)
-                .padding(horizontal = 24.dp)
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 405.dp)
-        ) {
-
-            Column(
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.77f)){
+            Card(
+                shape = RoundedCornerShape(33.dp),
+                backgroundColor = TextColor,
                 modifier = Modifier
+                    .padding(top = 71.dp)
+                    .padding(horizontal = 24.dp)
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 70.dp)
+                    .defaultMinSize(minHeight = 405.dp)
             ) {
-                Text(
-                    text = stringResource(R.string.welcome_lbl),
-                    style = text18Book,
-                    color = Purple40
-                )
 
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 23.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 70.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.login),
-                        style = text18,
-                        color = Color.White
+                        text = stringResource(R.string.welcome_lbl),
+                        style = text18Book,
+                        color = Purple40
                     )
-                    Text(
-                        text = "/",
-                        style = text18Meduim,
-                        modifier = Modifier.padding(start = 1.dp, end = 6.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.register),
-                        style = text14Meduim,
-                        color = Color.White.copy(0.85f)
-                    )
-                }
 
-                Text(
-                    text = stringResource(R.string.mobile),
-                    style = text11,
-                    modifier = Modifier.padding(top = 35.dp)
-                )
-                EditTextView()
-                Spacer(modifier = Modifier.height(58.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 23.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
-                            text = stringResource(R.string.when_you_register),
-                            style = text11
+                            text = stringResource(R.string.login),
+                            style = text18,
+                            color = Color.White
                         )
-                        Row(modifier = Modifier.padding(top = 4.dp)) {
-                            Text(text = stringResource(R.string.you_accept), style = text11)
+                        Text(
+                            text = "/",
+                            style = text18Meduim,
+                            modifier = Modifier.padding(start = 1.dp, end = 6.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.register),
+                            style = text14Meduim,
+                            color = Color.White.copy(0.85f)
+                        )
+                    }
+
+                    Text(
+                        text = stringResource(R.string.mobile),
+                        style = text11,
+                        modifier = Modifier.padding(top = 35.dp)
+                    )
+                    EditTextView()
+                    Spacer(modifier = Modifier.height(58.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
                             Text(
-                                text = stringResource(R.string.terms_condition),
-                                style = text11Meduim,
-                                textDecoration = TextDecoration.Underline,
-                                modifier = Modifier.padding(start = 6.dp)
+                                text = stringResource(R.string.when_you_register),
+                                style = text11
                             )
+                            Row(modifier = Modifier.padding(top = 4.dp)) {
+                                Text(text = stringResource(R.string.you_accept), style = text11)
+                                ElasticView(onClick = { goToTerms() }) {
+                                    Text(
+                                        text = stringResource(R.string.terms_condition),
+                                        style = text11Meduim,
+                                        textDecoration = TextDecoration.Underline,
+                                        modifier = Modifier.padding(start = 6.dp)
+                                    )
+                                }
+
+                            }
+                        }
+                        ElasticView(onClick = { goToVerify() }) {
+                            NextPageButton()
                         }
                     }
-                    ElasticView(onClick = { goToVerify() }) {
-                        NextPageButton()
-                    }
+
+
                 }
-
-
             }
+            LottieAnimationView(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .width(187.dp)
+                    .height(84.dp),
+                raw = R.raw.look
+            )
         }
-        LottieAnimationView(
-            modifier = Modifier
-                .padding(top = 85.dp)
-                .size(
-                    width = 137.dp,
-                    height = 84.dp
-                )
-                .align(Alignment.TopCenter),
-            raw = R.raw.look
-        )
+
 
         Row(
             modifier = Modifier
@@ -174,12 +183,15 @@ fun LoginView(
                     .background(LightBlue.copy(0.07f), shape = RoundedCornerShape(25.dp))
             ) {
                 Text(text = stringResource(R.string.facing_problem), style = text12)
-                Text(
-                    text = stringResource(R.string.support_lbl),
-                    style = text12Meduim,
-                    color = LightBlue,
-                    modifier = Modifier.padding(start = 6.dp)
-                )
+                ElasticView(onClick = { goToSupport()}) {
+                    Text(
+                        text = stringResource(R.string.support_lbl),
+                        style = text12Meduim,
+                        color = LightBlue,
+                        modifier = Modifier.padding(start = 6.dp)
+                    )
+                }
+
             }
 
 

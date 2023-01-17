@@ -49,7 +49,6 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 fun SearchAddressView(
     query: String?) {
     query?.log("query")
-
     Box(
         modifier = Modifier
             .fillMaxSize()

@@ -37,7 +37,10 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Preview
 @Composable
-fun SuccessView() {
+fun SuccessView(
+    goOrders: () -> Unit,
+    goHome: () -> Unit,
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -73,7 +76,7 @@ fun SuccessView() {
             )
 
             ElasticButton(
-                onClick = { /*TODO*/ },
+                onClick = {goOrders()},
                 title = stringResource(R.string.order_list),
                 modifier = Modifier
                     .paddingTop(31)
@@ -82,7 +85,7 @@ fun SuccessView() {
                     .requiredHeight(48.dp)
             )
 
-            ElasticView(onClick = { /*TODO*/ }) {
+            ElasticView(onClick = { goHome()}) {
                 Text(
                     text = stringResource(R.string.home),
                     style = text16,

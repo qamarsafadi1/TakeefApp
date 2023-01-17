@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.theme.Gray
@@ -54,7 +55,7 @@ fun SpecialOrderItem(
             ) {
                 Column {
                     Text(
-                        text = "رقم الطلب",
+                        text = stringResource(id = R.string.order_number),
                         style = text11,
                         color = SecondaryColor
                     )
@@ -74,18 +75,18 @@ fun SpecialOrderItem(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "عنوان : ",
+                    text = stringResource(R.string.address_dot),
                     style = text11,
                     color = SecondaryColor
                 )
                 Text(
-                    text = "اسم العنوان يوضع هنا في هذه المساحة",
+                    text = stringResource(R.string.address_name_here),
                     style = text12,
                     color = TextColor
                 )
             }
             Text(
-                text = "التفاصيل",
+                text = stringResource(R.string.detalis),
                 style = text11,
                 color = SecondaryColor,
                 modifier = Modifier.paddingTop(8)

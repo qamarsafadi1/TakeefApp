@@ -92,14 +92,14 @@ private fun PaySheetContent(onConfirm: () -> Unit) {
             contentDescription = ""
         )
         Text(
-            text = "دفع",
+            text = stringResource(R.string.pay_lbl),
             style = text14,
             color = SecondaryColor,
             modifier = Modifier.paddingTop(37.5)
         )
 
         Text(
-            text = "التكلفة الإضافية للصيانة",
+            text = stringResource(R.string.extra_cost_maintincance),
             style = text20,
             color = Color.White,
             modifier = Modifier.paddingTop(9.5)
@@ -146,7 +146,7 @@ private fun PaySheetContent(onConfirm: () -> Unit) {
 
       Row(modifier = Modifier.fillMaxWidth()) {
           Text(
-              text = "طريقة الدفع",
+              text = stringResource(R.string.payment_method),
               style = text14,
               color = SecondaryColor,
               modifier = Modifier.paddingTop(24.5)

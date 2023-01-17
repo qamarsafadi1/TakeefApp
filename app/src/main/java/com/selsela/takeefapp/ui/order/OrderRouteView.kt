@@ -1,7 +1,6 @@
 package com.selsela.takeefapp.ui.order
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,10 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
-import com.selsela.takeefapp.ui.address.GoogleMapView
+import com.selsela.takeefapp.ui.address.components.GoogleMapView
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text12
@@ -80,7 +80,7 @@ fun OrderRouteView() {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "مشرف الصيانة",
+                                text = stringResource(R.string.maintinance_supervisor),
                                 style = text12,
                                 color = SecondaryColor
                             )
@@ -135,7 +135,7 @@ private fun ArrivalView() {
         ) {
 
             Text(
-                text = "الوصول خلال",
+                text = stringResource(R.string.arrive_within),
                 style = text12,
                 color = SecondaryColor
             )
@@ -149,7 +149,7 @@ private fun ArrivalView() {
                 )
 
                 Text(
-                    text = "دقائق",
+                    text = stringResource(R.string.mintues),
                     style = text12,
                     color = SecondaryColor,
                     modifier = Modifier.padding(start = 5.dp)

@@ -150,7 +150,7 @@ fun ElasticButton(
     title: String,
     icon: Int,
     buttonBg: Color = Purple40,
-    iconGravity: Int = LEFT,
+    iconGravity: Int = if (LocalData.appLocal == "ar") LEFT else RIGHT,
     modifier: Modifier = Modifier
         .width(167.dp)
         .requiredHeight(48.dp)
@@ -187,13 +187,53 @@ fun ElasticButton(
             if (iconGravity == 0) {
                 Image(
                     painter = painterResource(id = icon), contentDescription = "",
-                    modifier = Modifier.padding(start = 12.dp)
                 )
             }
         }
     }
     // }
 }
+
+@Composable
+fun ElasticButton(
+    onClick: () -> Unit,
+    title: String,
+    icon: Int,
+    buttonBg: Color = Purple40,
+    modifier: Modifier = Modifier
+        .width(167.dp)
+        .requiredHeight(48.dp)
+) {
+    // ElasticView(onClick = { onClick() }) {
+    Button(
+        onClick = {
+            onClick()
+        },
+        modifier = modifier,
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp
+        ),
+        shape = RoundedCornerShape(24.dp),
+        colors = ButtonDefaults.buttonColors(backgroundColor = buttonBg)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Text(
+                text = title, style = buttonText,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.width(18.dp))
+            Image(
+                painter = painterResource(id = icon), contentDescription = "",
+            )
+        }
+    }
+}
+// }
 
 @Composable
 fun IconedButton(
@@ -518,7 +558,7 @@ fun SearchBar(
         textStyle = text12,
         placeholder = {
             Text(
-                text = "بحث عن عنوان او تحديد عنوان سابق",
+                text = stringResource(R.string.search_on_address),
                 style = text12,
                 color = SecondaryColor
             )
@@ -814,7 +854,7 @@ fun ListedBottomSheet(sheetState: ModalBottomSheetState) {
                         onValueChange = {
                             query = it
                         }, text = query,
-                        hint = "بحث",
+                        hint = stringResource(R.string.search),
                         leading = {
                             androidx.compose.material3.Icon(
                                 painter = painterResource(id = R.drawable.search),
@@ -1016,7 +1056,14 @@ private fun OrderItem() {
                         .fillMaxWidth()
                         .weight(1f)
                 )
-                StepperView()
+                StepperView(
+                    items = listOf(
+                    stringResource(R.string.recived_order),
+                    stringResource(R.string.on_way),
+                    stringResource(R.string.on_progress),
+                    stringResource(R.string.done_order)
+                )
+                )
             }
 
             Column(
@@ -1041,7 +1088,7 @@ private fun OrderItem() {
                             colorFilter = ColorFilter.tint(SecondaryColor)
                         )
                         Text(
-                            text = "موعد الزيارة",
+                            text = stringResource(R.string.visit_date_1),
                             style = text11,
                             color = SecondaryColor,
                             modifier = Modifier.padding(start = 6.4.dp)
@@ -1061,7 +1108,7 @@ private fun OrderItem() {
                         contentDescription = ""
                     )
                     Text(
-                        text = "التكلفة  : ",
+                        text = stringResource(R.string.cost_dot),
                         style = text11,
                         color = TextColor,
                         modifier = Modifier.padding(start = 9.dp)
@@ -1075,7 +1122,7 @@ private fun OrderItem() {
                             modifier = Modifier.padding(start = 4.dp)
                         )
                         Text(
-                            text = "ر.س",
+                            text = stringResource(R.string.currency_1),
                             style = text10,
                             color = TextColor,
                             modifier = Modifier.padding(start = 5.dp)
@@ -1092,7 +1139,7 @@ private fun OrderItem() {
                 horizontalArrangement = Arrangement.End
             ) {
                 ElasticButton(
-                    onClick = { /*TODO*/ }, title = "متابعة المسار",
+                    onClick = { /*TODO*/ }, title = stringResource(R.string.follow_route),
                     icon = R.drawable.map,
                     iconGravity = RIGHT,
                     modifier = Modifier
@@ -1103,7 +1150,7 @@ private fun OrderItem() {
                 )
                 AnimatedVisibility(visible = false) {
                     ElasticButton(
-                        onClick = { /*TODO*/ }, title = "تقييم",
+                        onClick = { /*TODO*/ }, title = stringResource(R.string.rate),
                         icon = R.drawable.star,
                         iconGravity = RIGHT,
                         modifier = Modifier
@@ -1268,7 +1315,7 @@ private fun Step(
             text = step,
             modifier = Modifier
                 .paddingTop(9)
-                .width(30.dp),
+                .width(if (LocalData.appLocal == "ar") 30.dp else 50.dp),
             style = text8,
             color = textColor,
             textAlign = TextAlign.Center
@@ -1286,23 +1333,23 @@ fun SelectedServicesView() {
     ) {
         Row {
             Text(
-                text = "صيانة : ", style = text11,
+                text = stringResource(R.string.maintinance_dot), style = text11,
                 color = SecondaryColor
             )
             Text(text = "00", style = text12, color = TextColor)
         }
-        Spacer(modifier = Modifier.width(51.1.dp))
+        Spacer(modifier = Modifier.width(41.1.dp))
         Row {
             Text(
-                text = "تنظيف : ", style = text11,
+                text = stringResource(R.string.clean_dot), style = text11,
                 color = SecondaryColor
             )
             Text(text = "00", style = text12, color = TextColor)
         }
-        Spacer(modifier = Modifier.width(51.1.dp))
+        Spacer(modifier = Modifier.width(41.1.dp))
         Row {
             Text(
-                text = "تركيب : ", style = text11,
+                text = stringResource(R.string.installtion_dot), style = text11,
                 color = SecondaryColor
             )
             Text(text = "00", style = text12, color = TextColor)

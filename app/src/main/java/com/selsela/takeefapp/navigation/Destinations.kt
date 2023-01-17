@@ -77,7 +77,16 @@ class NavigationActions(private val navController: NavController) {
     }
 
     fun navigateToOrders() {
-        navController.navigate(Destinations.ORDERS_SCREEN)
+        navController.navigate(Destinations.ORDERS_SCREEN){
+
+        }
+    }
+    fun navigateToOrdersWithoutBackStack() {
+        navController.navigate(Destinations.ORDERS_SCREEN){
+            popUpTo(Destinations.HOME_SCREEN ) {
+                inclusive = false
+            }
+        }
     }
 
     fun navigateToOrderRoute() {

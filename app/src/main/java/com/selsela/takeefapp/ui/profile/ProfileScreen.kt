@@ -81,7 +81,7 @@ fun ProfileScreen(
         ) {
             Box(
                 Modifier
-                    .padding(top =20.dp)
+                    .padding(top = 20.dp)
                     .fillMaxWidth()
                     .requiredHeight(88.dp)
                     .background(Color.White)
@@ -108,7 +108,7 @@ fun ProfileScreen(
                 )
                 ElasticButton(
                     onClick = { /*TODO*/ },
-                    title = "حفظ ",
+                    title = stringResource(id = R.string.save_lbl),
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(end = 14.dp)
@@ -161,14 +161,14 @@ fun ProfileScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
+                Column(Modifier.weight(1f)) {
                     Text(
-                        text = "حذف الحساب",
+                        text =stringResource(id = R.string.delete_account),
                         style = text14Bold,
                         color = TextColor
                     )
                     Text(
-                        text = "لن تتمكن من استعادة بياناتك مرة اخرى",
+                        text = stringResource(R.string.delete_account_lbl_1),
                         style = text12,
                         color = SecondaryColor,
                         modifier = Modifier.paddingTop(12)

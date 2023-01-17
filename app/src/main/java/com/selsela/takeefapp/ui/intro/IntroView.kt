@@ -4,6 +4,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -41,9 +44,10 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.qamar.elasticview.ElasticView
+import com.selsela.takeefapp.LocalMutableContext
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.NextPageButton
-import com.selsela.takeefapp.ui.model.intro.Intro
+import com.selsela.takeefapp.ui.intro.intro.model.Intro
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.TakeefAppTheme
@@ -54,8 +58,10 @@ import com.selsela.takeefapp.ui.theme.textBodyStyle
 import com.selsela.takeefapp.ui.theme.textTitleStyle
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
+import com.selsela.takeefapp.utils.LocalUtils.setLocale
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 val doneSelection = mutableListOf<Int>()
 
@@ -68,7 +74,7 @@ fun IntroView(
     var isSkipVisible by remember {
         mutableStateOf(true)
     }
-    val introList = Intro().listOfIntro()
+    val introList = Intro().listOfIntro(LocalContext.current)
     var backgroundColor by remember {
         mutableStateOf(TextColor)
     }
@@ -169,7 +175,7 @@ private fun StartNowButton() {
     ) {
 
         Text(
-            text = "إبدء الان", style = buttonText,
+            text = stringResource(R.string.start_now), style = buttonText,
             modifier = Modifier.padding(end = 23.dp)
         )
         Image(
@@ -213,6 +219,9 @@ fun IntroItem(intro: Intro, index: Int) {
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val context = LocalContext.current
+        val configuration = LocalConfiguration.current
+        val mutableContext = LocalMutableContext.current
         Column(
 
             modifier = Modifier.fillMaxSize(1f),
@@ -229,6 +238,12 @@ fun IntroItem(intro: Intro, index: Int) {
                     modifier = Modifier
                         .padding(top = 54.dp, start = 24.dp, end = 24.dp)
                         .align(Alignment.TopEnd)
+                        .clickable {
+                            context.setLocale("en")
+                            val locale = Locale("en")
+                            configuration.setLocale(locale)
+                            mutableContext.value = context.createConfigurationContext(configuration)
+                        }
                 )
 
                 if (intro.Image == R.drawable.intro2) {

@@ -37,6 +37,7 @@ import com.selsela.takeefapp.ui.theme.TextFieldBg
 import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text11NoLines
 import com.selsela.takeefapp.utils.Extensions.Companion.log
+import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -50,13 +51,14 @@ fun NotificationItem(
     onSwipe: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    var selected = isSelected
-    val width = 96.dp
     val squareSize = 75.dp
     var swipeableState = rememberSwipeableState(0)
     val sizePx = with(LocalDensity.current) { squareSize.toPx() }
     val anchors = mapOf(0f to 0, sizePx to 1) // Maps anchor points (in px) to states
-    val alignment = Alignment.CenterEnd
+    val alignment =
+        if (LocalData.appLocal == "ar")
+            Alignment.CenterEnd
+        else Alignment.CenterStart
 
     Box(
         modifier = Modifier
@@ -95,7 +97,10 @@ fun NotificationItem(
             .fillMaxWidth()
             .requiredHeight(122.dp)
             .offset {
-                IntOffset(-(swipeableState.offset.value.roundToInt()), 0)
+                if (LocalData.appLocal == "ar")
+                    IntOffset(-(swipeableState.offset.value.roundToInt()), 0)
+                else IntOffset(swipeableState.offset.value.roundToInt(), 0)
+
             }) {
             Card(
                 elevation = 0.dp,

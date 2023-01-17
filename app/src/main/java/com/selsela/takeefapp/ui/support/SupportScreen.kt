@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,6 +46,7 @@ import com.selsela.takeefapp.ui.theme.SecondaryColor2
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text10
 import com.selsela.takeefapp.ui.theme.text12
+import com.selsela.takeefapp.ui.theme.text12White
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Preview
@@ -121,7 +123,7 @@ fun AdminItem() {
                 )
             }
             Text(
-                text = "ادارة النظام",
+                text = stringResource(R.string.admin),
                 style = text10,
                 color = TextColor,
                 modifier = Modifier.paddingTop(6)
@@ -141,7 +143,7 @@ fun AdminItem() {
                 .padding(horizontal = 18.dp, vertical = 24.dp)
         ) {
             Text(
-                text = "مرحبا بك في تطبيق ام جي \n يسعدنا الرد علي استفساراتكم واقتراحاتكم ",
+                text = stringResource(R.string.welcome_to),
                 style = text12,
                 color = TextColor,
 
@@ -171,7 +173,7 @@ fun MeItem() {
                 .padding(horizontal = 18.dp, vertical = 24.dp)
         ) {
             Text(
-                text = "مرحبا بك في تطبيق ام جي \n يسعدنا الرد علي استفساراتكم واقتراحاتكم ",
+                text = stringResource(id = R.string.welcome_to),
                 style = text12,
                 color = TextColor,
 
@@ -196,8 +198,8 @@ private fun MessageEditText() {
         onValueChange = {
             message = it
         },
-        textStyle = text12,
-        hint = "كتابة نص الرسالة هنا",
+        textStyle = text12White,
+        hint = stringResource(R.string.write_message_here),
         cornerRaduis = 30.dp,
         fillMax = 0.85f
     )

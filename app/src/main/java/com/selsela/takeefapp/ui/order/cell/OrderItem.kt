@@ -73,9 +73,10 @@ fun OrderItem(
         ) {
             Row(
                 Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Column {
+                Column(Modifier.fillMaxWidth()
+                    .weight(1f)) {
                     Text(
                         text = stringResource(R.string.order_number),
                         style = text11,
@@ -89,12 +90,11 @@ fun OrderItem(
                     DateView()
 
                 }
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                )
+
                 StepperView(
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1.5f),
                     items = listOf(
                         stringResource(R.string.recived_order),
                         stringResource(R.string.on_way),

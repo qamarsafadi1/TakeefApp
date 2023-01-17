@@ -1227,8 +1227,9 @@ private fun DateTimeView() {
 
 @Composable
 fun StepperView(
-    modifier: Modifier = Modifier.wrapContentWidth(),
-    currentStep: Int = 0,
+    modifier: Modifier = Modifier
+        .fillMaxWidth()
+,    currentStep: Int = 0,
     isDetails: Boolean = false,
     items: List<String> = listOf(
         "استلام الطلب",
@@ -1243,7 +1244,7 @@ fun StepperView(
     ) {
         Divider(
             Modifier
-                .fillMaxWidth(0.6f)
+                .fillMaxWidth(0.7f)
                 .padding(vertical = 10.dp)
                 .align(Alignment.TopCenter),
             thickness = 4.dp,
@@ -1251,7 +1252,7 @@ fun StepperView(
         )
         LazyRow(
             modifier = modifier,
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.SpaceAround,
         ) {
             itemsIndexed(
                 items
@@ -1299,8 +1300,8 @@ private fun Step(
             durationMillis = 1000,
         )
     )
-    if (isDetails.not())
-        Spacer(modifier = Modifier.width(10.dp))
+//    if (isDetails.not())
+//        Spacer(modifier = Modifier.width(10.dp))
 
     Column(
         Modifier

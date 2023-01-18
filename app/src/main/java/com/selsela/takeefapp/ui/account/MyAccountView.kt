@@ -193,17 +193,18 @@ fun MyAccountView(
                 Row(
                     modifier = Modifier
                         .paddingTop(31)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .clickable {
+                            coroutineScope.launch {
+                                if (languageSheet.isVisible)
+                                    languageSheet.hide()
+                                else languageSheet.animateTo(ModalBottomSheetValue.Expanded)
+                            }
+                        },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(modifier = Modifier.clickable {
-                        coroutineScope.launch {
-                            if (languageSheet.isVisible)
-                                languageSheet.hide()
-                            else languageSheet.animateTo(ModalBottomSheetValue.Expanded)
-                        }
-                    }
+                    Row(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.langauage),

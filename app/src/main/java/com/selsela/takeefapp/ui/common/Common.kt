@@ -944,6 +944,7 @@ fun LanguageSheet(sheetState: ModalBottomSheetState, onConfirm: () -> Unit) {
 private fun LanguageItem(selectedItem: Int, onCheck: (Int) -> Unit) {
     Column(
         modifier = Modifier
+            .paddingTop(15)
             .fillMaxWidth()
     ) {
         repeat(2) {

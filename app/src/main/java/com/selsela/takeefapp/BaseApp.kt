@@ -4,11 +4,12 @@ import android.app.Application
 import com.orhanobut.hawk.Hawk
 import com.selsela.takeefapp.utils.LocalData
 import com.yariksoffice.lingver.Lingver
+import dagger.hilt.android.HiltAndroidApp
 
 import java.util.*
 
+@HiltAndroidApp
 class BaseApp : Application() {
-
     override fun onCreate() {
         super.onCreate()
         Hawk.init(this).build()

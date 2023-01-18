@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name=".BaseApp"
         android:allowBackup="true"
@@ -14,8 +14,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TakeefApp"
-        tools:targetApi="31">
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.TakeefApp">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDD7WH1Qz2mvUUDuDvSSY6uUxQdOV2J3do" />

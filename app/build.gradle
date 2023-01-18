@@ -1,6 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+
 }
 
 android {
@@ -78,6 +82,22 @@ dependencies {
     implementation("com.himanshoe:kalendar-endlos:1.0.0")
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation "com.google.accompanist:accompanist-flowlayout:0.20.0"
+    implementation 'com.github.tapadoo:alerter:7.2.4'
+
+    // Networking
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+    implementation('com.github.ihsanbal:LoggingInterceptor:3.1.0-rc5') {
+        exclude group: 'org.json', module: 'json'
+    }
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha04"
+    implementation 'com.github.leonard-palm:compose-state-events:1.2.3'
 
 
+    // hilt
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    implementation "androidx.hilt:hilt-navigation-compose:$hiltAndroidXVersion"
+    kapt "com.google.dagger:hilt-compiler:$hiltVersion"
 }

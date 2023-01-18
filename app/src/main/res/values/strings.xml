@@ -172,4 +172,17 @@
     <string name="on_way">Delivered to</string>
     <string name="on_progress">In process</string>
     <string name="done_order">Order finished</string>
+    <string name="valid_required">This field is required</string>
+    <string name="valid_required2">Please enter </string>
+    <string name="valid_required3">Please select</string>
+    <string name="warning_email_pattern">Please enter a valid email address</string>
+    <string name="warning_password_length">Password is too short<br> </br></string>
+    <string name="warning_password_weak">Password is weak need to contains numbers and characters</string>
+    <string name="warning_password_not_match">Password not match<br> </br></string>
+    <string name="warning_phone_pattern">Please enter Numbers only</string>
+    <string name="warning_phone_length_pattern">Phone number need to contain 8 characters</string>
+    <string name="warning_phone_length_pattern_2">رقم الهاتف الصحيح لـ %2$s يتكون من : %1$s أرقام</string>
+    <string name="_msg_failed">Something went wrong, please try again</string>
+    <string name="not_start_with_zero">Phone number can\'t start with zero</string>
+
 </resources>

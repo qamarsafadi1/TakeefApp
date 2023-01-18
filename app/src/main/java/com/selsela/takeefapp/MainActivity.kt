@@ -57,8 +57,10 @@ import com.selsela.takeefapp.navigation.Navigation.showingBackButton
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.order.AddedCostSheet
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(
         ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,

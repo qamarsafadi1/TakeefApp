@@ -68,6 +68,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -100,7 +102,6 @@ import com.selsela.takeefapp.utils.Constants.RIGHT
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.LocalUtils.setLocale
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
-import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
@@ -302,9 +303,14 @@ fun EditText(
     inputType: KeyboardType = KeyboardType.Text,
     singleLine: Boolean = true,
     modifier: Modifier = Modifier,
+    borderColor: Color = BorderColor,
     textStyle: androidx.compose.ui.text.TextStyle = text13,
     trailing: @Composable (() -> Unit)? = null
 ) {
+
+    val surfaceColor: Color by animateColorAsState(
+       borderColor
+    )
     TextField(
         value = text, onValueChange = {
             onValueChange(it)
@@ -313,7 +319,7 @@ fun EditText(
             Modifier
                 .fillMaxWidth()
                 .requiredHeight(48.dp)
-                .border(1.dp, color = BorderColor, RoundedCornerShape(8.dp))
+                .border(1.dp, color = surfaceColor, RoundedCornerShape(8.dp))
         ),
         textStyle = text14White,
         shape = RoundedCornerShape(8.dp),
@@ -711,7 +717,7 @@ private fun OtpView(
 
 @Composable
 fun Countdown(seconds: Long, modifier: Modifier) {
-    val millisInFuture: Long = seconds * 1000
+    val millisInFuture: Long = seconds*1000
 
     var timeData by remember {
         mutableStateOf(millisInFuture)
@@ -736,11 +742,11 @@ fun Countdown(seconds: Long, modifier: Modifier) {
         }
     }
     val secMilSec: Long = 1000
-    val minMilSec = 60 * secMilSec
-    val hourMilSec = 60 * minMilSec
-    val dayMilSec = 24 * hourMilSec
-    val minutes = (timeData % dayMilSec % hourMilSec / minMilSec).toInt()
-    val seconds = (timeData % dayMilSec % hourMilSec % minMilSec / secMilSec).toInt()
+    val minMilSec = 60*secMilSec
+    val hourMilSec = 60*minMilSec
+    val dayMilSec = 24*hourMilSec
+    val minutes = (timeData%dayMilSec%hourMilSec/minMilSec).toInt()
+    val seconds = (timeData%dayMilSec%hourMilSec%minMilSec/secMilSec).toInt()
 
     Text(
         text = String.format(
@@ -1059,11 +1065,11 @@ private fun OrderItem() {
                 )
                 StepperView(
                     items = listOf(
-                    stringResource(R.string.recived_order),
-                    stringResource(R.string.on_way),
-                    stringResource(R.string.on_progress),
-                    stringResource(R.string.done_order)
-                )
+                        stringResource(R.string.recived_order),
+                        stringResource(R.string.on_way),
+                        stringResource(R.string.on_progress),
+                        stringResource(R.string.done_order)
+                    )
                 )
             }
 
@@ -1229,8 +1235,7 @@ private fun DateTimeView() {
 @Composable
 fun StepperView(
     modifier: Modifier = Modifier
-        .fillMaxWidth()
-,    currentStep: Int = 0,
+        .fillMaxWidth(), currentStep: Int = 0,
     isDetails: Boolean = false,
     items: List<String> = listOf(
         "استلام الطلب",
@@ -1360,4 +1365,27 @@ fun SelectedServicesView() {
     }
 }
 
+@Composable
+fun AsyncImage(
+    imageUrl: String,
+    modifier: Modifier
+    = Modifier
+        .size(90.dp)
+        .padding(horizontal = 8.dp)
+) {
+    SubcomposeAsyncImage(
+        modifier = modifier,
+        model = imageUrl,
+        error = {
+            painterResource(R.drawable.baseline_insert_photo_24)
 
+        },
+        loading = {
+            LottieAnimationView(
+                raw = R.raw.imageloading,
+                modifier = Modifier.size(15.dp)
+            )
+        },
+        contentDescription = "",
+    )
+}

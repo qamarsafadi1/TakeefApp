@@ -22,6 +22,17 @@
         <item name="android:dateTextAppearance">@style/CalenderViewDayCustomText</item>
     </style>
 
+    <style name="AlertTextAppearance_Title_1">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="AlertTextAppearance_Text_1">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+
+    </style>
 
 
     <style name="CalenderViewWeekCustomText" parent="android:TextAppearance.DeviceDefault.Small">

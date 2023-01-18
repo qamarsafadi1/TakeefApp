@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -33,6 +34,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashView(
+    viewModel: ConfigViewModel = hiltViewModel(),
     onFinish: () -> Unit
 ) {
     Color.White.ChangeStatusBarColor()
@@ -76,6 +78,10 @@ fun SplashView(
             onFinish()
         }
     }
+
+    LaunchedEffect(Unit) {
+        viewModel.getConfig()
+    }
 }
 
 @Composable
@@ -104,13 +110,14 @@ fun Color.ChangeStatusBarColor(
 }
 
 @Composable
-fun Color.ChangeNavigationBarColor(){
+fun Color.ChangeNavigationBarColor() {
     val systemUiController = rememberSystemUiController()
     systemUiController.setNavigationBarColor(
         color = this,
         darkIcons = false
     )
 }
+
 @Composable
 fun Color.ChangeStatusBarOnlyColor(
     isDark: Boolean = false

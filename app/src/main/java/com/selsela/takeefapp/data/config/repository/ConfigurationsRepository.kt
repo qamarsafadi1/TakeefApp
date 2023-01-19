@@ -2,6 +2,7 @@ package com.selsela.takeefapp.data.config.repository
 
 import com.google.gson.Gson
 import com.selsela.takeefapp.data.config.model.Configurations
+import com.selsela.takeefapp.data.config.model.page.Page
 import com.selsela.takeefapp.data.config.source.remote.ConfigApi
 import com.selsela.takeefapp.utils.Extensions.Companion.handleExceptions
 import com.selsela.takeefapp.utils.Extensions.Companion.handleSuccess
@@ -21,11 +22,55 @@ class ConfigurationsRepository @Inject constructor(
         val data: Flow<Resource<Configurations>> = try {
             val response = api.getConfigurations()
             if (response.isSuccessful) {
+                withContext(Dispatchers.Default){
+                    getTerms()
+                    getAboutApp()
+                }
                 LocalData.configurations = response.body()?.configurations
                 LocalData.acTypes = response.body()?.acTypes
                 LocalData.services = response.body()?.services
                 handleSuccess(
                     response.body()?.configurations,
+                    response.body()?.responseMessage ?: response.message()
+                )
+            } else {
+                val gson = Gson()
+                val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                handleExceptions(errorBase)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            handleExceptions(e)
+        }
+        data
+    }
+    suspend fun getTerms(): Flow<Resource<Page>> = withContext(Dispatchers.IO) {
+        val data: Flow<Resource<Page>> = try {
+            val response = api.getTerms()
+            if (response.isSuccessful) {
+                LocalData.terms = response.body()?.page
+                handleSuccess(
+                    response.body()?.page,
+                    response.body()?.responseMessage ?: response.message()
+                )
+            } else {
+                val gson = Gson()
+                val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                handleExceptions(errorBase)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            handleExceptions(e)
+        }
+        data
+    }
+    suspend fun getAboutApp(): Flow<Resource<Page>> = withContext(Dispatchers.IO) {
+        val data: Flow<Resource<Page>> = try {
+            val response = api.getAboutApp()
+            if (response.isSuccessful) {
+                LocalData.aboutApp = response.body()?.page
+                handleSuccess(
+                    response.body()?.page,
                     response.body()?.responseMessage ?: response.message()
                 )
             } else {

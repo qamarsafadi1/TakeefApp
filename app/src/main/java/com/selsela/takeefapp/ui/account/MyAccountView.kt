@@ -80,6 +80,7 @@ fun MyAccountView(
     )
     val viewState: AuthUiState by viewModel.uiState.collectAsStateLifecycleAware(AuthUiState())
     val context = LocalContext.current
+
     AccountViewContent(
         uiState = viewState,
         viewModel,
@@ -102,9 +103,11 @@ fun MyAccountView(
      * Handle Ui state from flow
      */
 
-    LaunchedEffect(Unit){
-        viewModel.me()
+    LaunchedEffect(Unit) {
+        if (!viewModel.isLoaded)
+            viewModel.me()
     }
+
     EventEffect(
         event = viewState.onFailure,
         onConsumed = viewModel::onFailure
@@ -193,8 +196,8 @@ private fun AccountViewContent(
                     OrderCards(
                         uiState,
                         goToSpecialOrder = {
-                        goToSpecialOrders()
-                    }) {
+                            goToSpecialOrders()
+                        }) {
                         goToOrder()
                     }
                     SettingsCards(

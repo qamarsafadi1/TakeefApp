@@ -57,6 +57,8 @@ class AuthViewModel @Inject constructor(
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
     val userLoggedIn = mutableStateOf(LocalData.accessToken.isEmpty().not())
     var avatar: File? = null
+    var isLoaded = false
+
     private var state: AuthUiState
         get() = _uiState.value
         set(newState) {
@@ -231,6 +233,7 @@ class AuthViewModel @Inject constructor(
                 .collect { result ->
                     val authUiState = when (result.status) {
                         Status.SUCCESS -> {
+                            isLoaded = true
                             AuthUiState(
                                 responseMessage = result.message ?: "",
                                 onSuccess = triggered(result.data?.status ?: ""),

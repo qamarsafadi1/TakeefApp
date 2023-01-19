@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.utils
 
+import android.graphics.pdf.PdfDocument.Page
 import com.orhanobut.hawk.Hawk
 import com.selsela.takeefapp.data.auth.model.auth.User
 import com.selsela.takeefapp.data.config.model.AcType
@@ -44,6 +45,17 @@ open class LocalData {
             set(value) {
                 field = value
                 Hawk.put("configurations", value)
+            }
+
+        var terms: com.selsela.takeefapp.data.config.model.page.Page? = Hawk.get("terms")
+            set(value) {
+                field = value
+                Hawk.put("terms", value)
+            }
+        var aboutApp: com.selsela.takeefapp.data.config.model.page.Page? = Hawk.get("aboutApp")
+            set(value) {
+                field = value
+                Hawk.put("aboutApp", value)
             }
         var acTypes: List<AcType>? = Hawk.get("acTypes")
             set(value) {

@@ -16,16 +16,22 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.AppLogoImage
 import com.selsela.takeefapp.ui.common.LottieAnimationView
+import com.selsela.takeefapp.ui.splash.ConfigViewModel
+import com.selsela.takeefapp.ui.splash.GeneralUiState
 import com.selsela.takeefapp.ui.theme.CardBg
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
@@ -33,11 +39,45 @@ import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text16Medium
 import com.selsela.takeefapp.ui.theme.text22Book
+import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import de.palm.composestateevents.EventEffect
 
 @Preview
 @Composable
-fun AboutAppView() {
+fun AboutAppView(
+    viewModel: ConfigViewModel = hiltViewModel()
+) {
+
+    val viewState: GeneralUiState by viewModel.uiState.collectAsStateLifecycleAware(GeneralUiState())
+    val context = LocalContext.current
+
+    AboutAppContent(viewState)
+    /**
+     * Handle Ui state from flow
+     */
+
+    LaunchedEffect(Unit) {
+        if (viewModel.isLoaded.not()) {
+            viewModel.getAboutApp()
+        }
+    }
+
+    EventEffect(
+        event = viewState.onFailure,
+        onConsumed = viewModel::onFailure
+    ) { error ->
+        Common.handleErrors(
+            error.responseMessage,
+            error.errors,
+            context
+        )
+    }
+}
+
+@Composable
+private fun AboutAppContent(viewState: GeneralUiState) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -122,7 +162,7 @@ fun AboutAppView() {
                     )
 
                     Text(
-                        text = stringResource(id = R.string.temp_details),
+                        text = viewState.aboutApp?.text ?: "",
                         style = text12,
                         color = TextColor
                     )

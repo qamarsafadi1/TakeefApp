@@ -9,7 +9,7 @@ data class User(
     @SerializedName("activation_code")
     val activationCode: String = "",
     @SerializedName("avatar")
-    val avatar: String = "",
+    val avatar: String = "http://airconditionars.selselatech.com/uploads/blank.png",
     @SerializedName("country")
     val country: Country = Country(),
     @SerializedName("country_id")
@@ -27,5 +27,17 @@ data class User(
     @SerializedName("name")
     val name: String = "",
     @SerializedName("status")
-    val status: String = ""
+    val status: String = "",
+    @SerializedName("balance")
+    val balance: Double = 0.0,
+    @SerializedName("specific_orders")
+    val specificOrders: Int = 0,
+    @SerializedName("new_orders")
+    val newOrders: Int = 0,
+    @SerializedName("processing_orders")
+    val processingOrders: Int = 0,
+    @SerializedName("archive_orders")
+    val archiveOrders: Int = 0,
+    @SerializedName("new_notifications")
+    val newNotifications: Int = 0,
 )

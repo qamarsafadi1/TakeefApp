@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.auth.AuthUiState
 import com.selsela.takeefapp.ui.theme.ColorAccent
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.text10NoLines
@@ -36,6 +37,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Composable
 fun SettingsCards(
+    uiState: AuthUiState,
     goToProfile: () -> Unit,
     goToNotification: () -> Unit
 ) {
@@ -144,7 +146,7 @@ fun SettingsCards(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "3",
+                        text = "${uiState.user?.newNotifications}",
                         style = text10NoLines,
                         color = Color.White,
                         modifier = Modifier

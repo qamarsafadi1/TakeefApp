@@ -21,7 +21,7 @@ class HeaderInterceptor @Inject constructor(
                 .header("language", LocalData.appLocal)
                 .header("device_key", LocalData.fcmToken)
                 .header("device_type", "android")
-               // .apply { LocalData.accessToken?.let { addHeader("Authorization", "Bearer $it") } }
+               .apply { LocalData.accessToken.let { addHeader("Authorization", "Bearer $it") } }
                 .build()
 
         }catch (e:Exception){

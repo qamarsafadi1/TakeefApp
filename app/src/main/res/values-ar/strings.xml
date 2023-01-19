@@ -184,5 +184,10 @@
     <string name="warning_phone_length_pattern_2">رقم الهاتف الصحيح لـ %2$s يتكون من : %1$s أرقام</string>
     <string name="_msg_failed">فشلت العملية الرجاء اعادة المحاولة</string>
     <string name="not_start_with_zero">لا يمكن للرقم ان يبدأ بصفر</string>
+    <string name="unvalid_code">رمز التفعيل غير صحيح</string>
+    <string name="logout_lbl">هل انت متأكد من رغبتك في تسجيل الخروج؟</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
+    <string name="max_att_size">حجم الصورة كبير</string>
 
 </resources>

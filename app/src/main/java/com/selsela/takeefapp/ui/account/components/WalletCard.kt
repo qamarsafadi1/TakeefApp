@@ -19,15 +19,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.auth.AuthUiState
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text13
 import com.selsela.takeefapp.ui.theme.text14Meduim
+import com.selsela.takeefapp.utils.Extensions.Companion.getCurrency
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 
 @Composable
- fun WalletCard(
+fun WalletCard(
+    uiState: AuthUiState,
     goToWallet: () -> Unit
 ) {
     Card(
@@ -70,13 +73,13 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
                 horizontalArrangement = Arrangement.End
             ) {
                 Text(
-                    text = "100",
+                    text = "${uiState.user?.balance}",
                     style = text14Meduim,
                     color = TextColor
                 )
                 Spacer(modifier = Modifier.width(5.dp))
                 Text(
-                    text = stringResource(id = R.string.currency_1),
+                    text = stringResource(id = R.string.currency_1, getCurrency()),
                     style = text13,
                     color = SecondaryColor
                 )

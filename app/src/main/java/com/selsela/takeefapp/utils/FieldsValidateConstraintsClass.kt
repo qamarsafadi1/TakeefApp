@@ -16,7 +16,7 @@ object FieldsValidateConstraintsClass {
 
     @JvmStatic
     fun isPhoneNumberValidLength(password: String): Boolean {
-        return password.length == 8
+        return password.length == 9
     }
 
     @JvmStatic

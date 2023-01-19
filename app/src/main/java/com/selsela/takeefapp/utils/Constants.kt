@@ -11,6 +11,8 @@ object Constants {
     const val MAINTENANCE = 1
     const val CLEANING = 2
     const val INSTALLATION = 3
-
     const val NOT_VERIFIED = "not_verified"
+
+    const val LOG_OUT = 1
+    const val LOG_IN = 2
 }

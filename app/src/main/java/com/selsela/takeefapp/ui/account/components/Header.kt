@@ -25,13 +25,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.common.AsyncImage
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text16Bold
+import com.selsela.takeefapp.utils.Constants.LOG_IN
+import com.selsela.takeefapp.utils.Constants.LOG_OUT
+import com.selsela.takeefapp.utils.LocalData
 
 
 @Composable
-fun Header(onBack: () -> Unit) {
+fun Header(
+    isLoggedIn: Boolean,
+    onBack: () -> Unit,
+    onClick: (Int) -> Unit
+) {
+    val user = LocalData.user
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -46,7 +55,9 @@ fun Header(onBack: () -> Unit) {
                 colorFilter = ColorFilter.tint(Color.White)
             )
         }
-        LogoutButton()
+        LogoutButton(isLoggedIn = isLoggedIn) {
+         onClick(it)
+        }
     }
     Row(
         Modifier
@@ -57,7 +68,9 @@ fun Header(onBack: () -> Unit) {
     ) {
         CircularImage()
         Text(
-            text = "محمد صالح الجربوع",
+            text = if (user?.name.isNullOrEmpty()
+                    .not()
+            ) user?.name!! else stringResource(id = R.string.welcome_lbl),
             style = text16Bold,
             color = Color.White,
             modifier = Modifier.padding(start = 18.dp)
@@ -75,8 +88,8 @@ private fun CircularImage() {
                 .background(Color.White)
                 .size(72.dp)
         )
-        Image(
-            painter = painterResource(id = R.drawable.tempimg), contentDescription = "",
+        AsyncImage(
+            imageUrl = LocalData.user?.avatar ?: "",
             modifier = Modifier
                 .clip(CircleShape)
                 .size(64.dp)
@@ -85,8 +98,14 @@ private fun CircularImage() {
 }
 
 @Composable
-private fun LogoutButton() {
-    ElasticView(onClick = { /*TODO*/ }) {
+private fun LogoutButton(
+    isLoggedIn:Boolean,
+    onClick: (Int) -> Unit) {
+    ElasticView(onClick = {
+        if (LocalData.accessToken.isEmpty())
+            onClick(LOG_IN)
+        else onClick(LOG_OUT)
+    }) {
         Row(
             modifier = Modifier
                 .width(129.dp)
@@ -105,7 +124,8 @@ private fun LogoutButton() {
                 contentDescription = "logout"
             )
             Text(
-                text = stringResource(R.string.logout),
+                text = if (isLoggedIn) stringResource(R.string.logout)
+                else stringResource(id = R.string.login),
                 style = text12,
                 color = Color.White,
                 modifier = Modifier.padding(start = 5.dp)

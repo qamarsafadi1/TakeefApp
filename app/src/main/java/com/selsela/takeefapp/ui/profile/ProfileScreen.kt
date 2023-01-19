@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.ui.profile
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
@@ -31,18 +33,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.auth.AuthViewModel
+import com.selsela.takeefapp.ui.auth.AuthUiState
+import com.selsela.takeefapp.ui.common.AsyncImage
 import com.selsela.takeefapp.ui.common.EditText
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.InputEditText
 import com.selsela.takeefapp.ui.profile.delete.DeleteAccountSheet
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
+import com.selsela.takeefapp.ui.theme.Red
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
@@ -51,12 +60,21 @@ import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Bold
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text14White
+import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
+import com.selsela.takeefapp.utils.Extensions.Companion.mStartActivityForResult
+import com.selsela.takeefapp.utils.Extensions.Companion.showSuccess
+import com.selsela.takeefapp.utils.Extensions.Companion.uploadImages
+import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import de.palm.composestateevents.EventEffect
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProfileScreen(
+    viewModel: AuthViewModel = hiltViewModel(),
     onBack: () -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
@@ -66,6 +84,50 @@ fun ProfileScreen(
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true
     )
+    val viewState: AuthUiState by viewModel.uiState.collectAsStateLifecycleAware(AuthUiState())
+    val context = LocalContext.current
+    ProfileContent(
+        viewModel = viewModel,
+        uiState = viewState,
+        onSave = viewModel::updateProfile,
+        onBack = onBack,
+        coroutineScope,
+        paySheetState
+    )
+    /**
+     * Handle Ui state from flow
+     */
+
+    EventEffect(
+        event = viewState.onSuccess,
+        onConsumed = viewModel::onSuccess
+    ) { message ->
+        context.showSuccess(message)
+    }
+
+    EventEffect(
+        event = viewState.onFailure,
+        onConsumed = viewModel::onFailure
+    ) { error ->
+        Common.handleErrors(
+            error.responseMessage,
+            error.errors,
+            context
+        )
+    }
+
+}
+
+@Composable
+@OptIn(ExperimentalMaterialApi::class)
+private fun ProfileContent(
+    viewModel: AuthViewModel,
+    uiState: AuthUiState,
+    onSave: () -> Unit,
+    onBack: () -> Unit,
+    coroutineScope: CoroutineScope,
+    paySheetState: ModalBottomSheetState
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             Modifier
@@ -102,49 +164,30 @@ fun ProfileScreen(
                     style = text14Meduim
                 )
                 ElasticButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { onSave() },
                     title = stringResource(id = R.string.save_lbl),
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(end = 14.dp)
                         .width(107.dp)
-                        .height(44.dp)
-
+                        .height(44.dp),
+                    isLoading = uiState.isLoading
                 )
 
             }
-            Box(modifier = Modifier.defaultMinSize(minHeight = 115.dp, minWidth = 115.dp)) {
-                Image(
-                    painter = painterResource(id = R.drawable.placeholder2),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .clip(CircleShape)
-                        .size(98.dp)
-                )
-                IconButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .padding(top = 25.dp, end = 10.dp)
-                        .align(Alignment.BottomStart)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.changeimage),
-                        contentDescription = ""
-                    )
-                }
-            }
+            ImageChooser(viewModel = viewModel)
             Column(
                 modifier = Modifier
-                    .padding(bottom = 21.dp, top = 47.dp)
+                    .padding(top = 47.dp)
                     .padding(horizontal = 24.dp)
                     .fillMaxWidth()
                     .background(TextColor, RoundedCornerShape(33.dp))
-                    .padding(horizontal = 24.dp),
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                ProfileForm()
+                ProfileForm(viewModel)
 
             }
 
@@ -158,7 +201,7 @@ fun ProfileScreen(
             ) {
                 Column(Modifier.weight(1f)) {
                     Text(
-                        text =stringResource(id = R.string.delete_account),
+                        text = stringResource(id = R.string.delete_account),
                         style = text14Bold,
                         color = TextColor
                     )
@@ -187,32 +230,97 @@ fun ProfileScreen(
         DeleteAccountSheet(sheetState = paySheetState) {
         }
     }
-
 }
 
 @Composable
-private fun ProfileForm() {
+private fun ImageChooser(viewModel: AuthViewModel) {
+    val context = LocalContext.current
+    var imageUri by remember {
+        mutableStateOf<String>(LocalData.user?.avatar ?: "")
+    }
+    var isImageCaptured by remember {
+        mutableStateOf<Boolean>(false)
+    }
+    val imagePicker = mStartActivityForResult(
+        context = context,
+    ) { file, bitmap ->
+        if (file != null) {
+            isImageCaptured = true
+            imageUri = file.absolutePath
+            viewModel.avatar = file
+        }
+    }
+    Box(modifier = Modifier.defaultMinSize(minHeight = 115.dp, minWidth = 115.dp)) {
+        imageUri.let {
+            IconButton(
+                onClick = {},
+                modifier = Modifier
+                    .size(100.dp)
+                    .align(Alignment.Center)
+                    .shadow(
+                        elevation = 10.dp,
+                        shape = CircleShape,
+                        clip = false
+                    )
+            ) {
+                AsyncImage(
+                    it,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .clip(CircleShape)
+                        .size(98.dp)
+                        .shadow(
+                            elevation = 25.dp,
+                            shape = CircleShape,
+                            clip = false
+                        )
+                )
+            }
+
+
+        }
+        IconButton(
+            onClick = {
+                isImageCaptured = false
+                uploadImages(context, imagePicker, false)
+            },
+            modifier = Modifier
+                .padding(top = 25.dp, end = 10.dp)
+                .align(Alignment.BottomStart)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.changeimage),
+                contentDescription = ""
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProfileForm(viewModel: AuthViewModel) {
     Column(
         Modifier
-            .padding(bottom = 61.dp)
+            .padding(bottom = 24.dp)
             .fillMaxWidth()
     ) {
-
         Text(
             text = stringResource(R.string.full_name),
             style = text11,
             modifier = Modifier.padding(top = 61.dp)
         )
-        var name by remember {
-            mutableStateOf("")
-        }
         InputEditText(
             onValueChange = {
-                name = it
+                viewModel.name.value = it
+                if (!viewModel.isNameValid.value)
+                    viewModel.isNameValid.value = true
+
             },
-            text = name,
+            text = viewModel.name.value,
+            isValid = viewModel.isNameValid.value,
+            validationMessage = viewModel.errorMessageName.value,
             hint = stringResource(R.string.name),
             inputType = KeyboardType.Text,
+            borderColor = viewModel.validateNameBorderColor(),
             modifier = Modifier.padding(top = 16.dp)
         )
         Text(
@@ -220,14 +328,11 @@ private fun ProfileForm() {
             style = text11,
             modifier = Modifier.padding(top = 9.dp)
         )
-        var email by remember {
-            mutableStateOf("")
-        }
         InputEditText(
             onValueChange = {
-                email = it
+                viewModel.email.value = it
             },
-            text = email,
+            text = viewModel.email.value,
             hint = stringResource(R.string.email),
             inputType = KeyboardType.Email,
             modifier = Modifier.padding(top = 16.dp)
@@ -238,23 +343,24 @@ private fun ProfileForm() {
             style = text11,
             modifier = Modifier.padding(top = 6.8.dp)
         )
-        EditTextView()
+        EditTextView(viewModel)
     }
 }
 
 @Composable
-private fun EditTextView() {
-    var mobile by remember {
-        mutableStateOf("")
-    }
+private fun EditTextView(viewModel: AuthViewModel) {
     EditText(
         onValueChange = {
-            mobile = it
+            viewModel.mobile.value = it
+            if (!viewModel.isValid.value)
+                viewModel.isValid.value = true
+
         },
-        text = mobile,
+        text = viewModel.mobile.value,
         textStyle = text14White,
         hint = "59XXXXXXX",
         inputType = KeyboardType.Phone,
+        borderColor = viewModel.validateBorderColor(),
         trailing = {
             Text(
                 text = "966", style = text14,
@@ -263,4 +369,13 @@ private fun EditTextView() {
         },
         modifier = Modifier.padding(top = 16.dp)
     )
+
+    AnimatedVisibility(visible = viewModel.isValid.value.not()) {
+        Text(
+            text = viewModel.errorMessage.value,
+            style = text12,
+            color = Red,
+            modifier = Modifier.paddingTop(12)
+        )
+    }
 }

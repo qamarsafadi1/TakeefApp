@@ -52,7 +52,11 @@ class NavigationActions(private val navController: NavController) {
     }
 
     fun navigateToAddress() {
-        navController.navigate(Destinations.ADDRESS_SCREEN)
+        navController.navigate(Destinations.ADDRESS_SCREEN){
+            popUpTo(Destinations.HOME_SCREEN ) {
+                inclusive = false
+            }
+        }
     }
 
     fun navigateToSearchAddress(query: String?) {

@@ -20,16 +20,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.auth.AuthUiState
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text16Medium
+import com.selsela.takeefapp.utils.Extensions.Companion.convertToDecimalPatter
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 
 @Composable
 fun OrderCards(
+    uiState: AuthUiState,
     goToSpecialOrder: () -> Unit,
     goToOrder: () -> Unit
 ) {
@@ -57,7 +60,7 @@ fun OrderCards(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "02",
+                    text = "${uiState.user?.newOrders?.convertToDecimalPatter()}",
                     style = text16Medium,
                     color = Color.White
                 )
@@ -87,7 +90,7 @@ fun OrderCards(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "02",
+                    text = "${uiState.user?.specificOrders?.convertToDecimalPatter()}",
                     style = text16Medium,
                     color = Color.White
                 )
@@ -117,7 +120,7 @@ fun OrderCards(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "02",
+                    text = "${uiState.user?.processingOrders?.convertToDecimalPatter()}",
                     style = text16Medium,
                     color = Color.White
                 )

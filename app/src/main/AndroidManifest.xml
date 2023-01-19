@@ -16,6 +16,15 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.TakeefApp">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.selsela.takeefapp.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDD7WH1Qz2mvUUDuDvSSY6uUxQdOV2J3do" />

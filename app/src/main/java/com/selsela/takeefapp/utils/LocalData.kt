@@ -9,6 +9,10 @@ import com.selsela.takeefapp.data.config.model.Service
 
 open class LocalData {
     companion object {
+        fun clearData() {
+            accessToken = ""
+            user = null
+        }
         var appLocal: String = Hawk.get("appLocal", "ar")
             set(value) {
                 field = value
@@ -53,5 +57,7 @@ open class LocalData {
                 Hawk.put("services", value)
             }
     }
+
+
 
 }

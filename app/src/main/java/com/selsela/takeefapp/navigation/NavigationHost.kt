@@ -57,7 +57,9 @@ fun NavigationHost(
             }, goToMyAccount = {
                 navActions.navigateToMyAccount()
             }) {
-                navActions.navigateToLogin()
+                if (LocalData.accessToken.isEmpty())
+                    navActions.navigateToLogin()
+                else navActions.navigateToAddress()
             }
         }
         composable(Destinations.LOGIN_SCREEN) {
@@ -67,6 +69,9 @@ fun NavigationHost(
                 },
                 goToSupport = {
                     navActions.navigateToSupport()
+                },
+                goToHome = {
+                    navActions.navigateToHome()
                 }
             ) {
                 navActions.navigateToVerify()
@@ -74,7 +79,7 @@ fun NavigationHost(
         }
         composable(Destinations.VERIFY_SCREEN) {
             VerifyView() {
-                navActions.navigateToAddress()
+                navActions.navigateToHome()
             }
         }
         composable(Destinations.ADDRESS_SCREEN) {
@@ -100,7 +105,7 @@ fun NavigationHost(
                 goOrders = {
                     navActions.navigateToOrdersWithoutBackStack()
                 }
-            ){
+            ) {
                 navActions.navigateToHome()
             }
         }
@@ -111,6 +116,9 @@ fun NavigationHost(
             MyAccountView(
                 onBack = {
                     navController.navigateUp()
+                },
+                goToLogin = {
+                    navActions.navigateToLogin()
                 },
                 goToSpecialOrders = {
                     navActions.navigateToSpecialOrders()

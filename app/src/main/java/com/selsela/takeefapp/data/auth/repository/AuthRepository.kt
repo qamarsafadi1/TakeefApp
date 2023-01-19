@@ -1,17 +1,23 @@
 package com.selsela.takeefapp.data.auth.repository
 
 import com.google.gson.Gson
+import com.selsela.takeefapp.data.auth.model.auth.AuthResponse
 import com.selsela.takeefapp.data.auth.model.auth.User
 import com.selsela.takeefapp.data.auth.source.remote.AuthApi
+import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Constants.NOT_VERIFIED
 import com.selsela.takeefapp.utils.Extensions.Companion.handleExceptions
 import com.selsela.takeefapp.utils.Extensions.Companion.handleSuccess
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.retrofit.model.ErrorBase
 import com.selsela.takeefapp.utils.retrofit.model.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
@@ -45,13 +51,68 @@ class AuthRepository @Inject constructor(
         data
     }
 
+    suspend fun verifyCode(
+        code: String
+    ): Flow<Resource<User>> = withContext(Dispatchers.IO) {
+        val data: Flow<Resource<User>> = try {
+            val body = HashMap<String, Any>()
+            body["mobile"] = LocalData.user?.mobile ?: ""
+            body["code"] = code
+            body["country_id"] = "1"
+            val response = api.verifyCode(body)
+            if (response.isSuccessful) {
+                LocalData.accessToken = response.body()?.user?.accessToken ?: ""
+                LocalData.user = response.body()?.user
+                handleSuccess(
+                    response.body()?.user,
+                    response.body()?.responseMessage ?: response.message()
+                )
+            } else {
+                val gson = Gson()
+                val errorBase =
+                    gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.log("errorBase")
+                handleExceptions(errorBase)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            handleExceptions(e)
+        }
+        data
+    }
+
+    suspend fun me(
+    ): Flow<Resource<User>> = withContext(Dispatchers.IO) {
+        val data: Flow<Resource<User>> = try {
+            val response = api.me()
+            if (response.isSuccessful) {
+                LocalData.accessToken = response.body()?.user?.accessToken ?: ""
+                LocalData.user = response.body()?.user
+                handleSuccess(
+                    response.body()?.user,
+                    response.body()?.responseMessage ?: response.message()
+                )
+            } else {
+                val gson = Gson()
+                val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.log("errorBase")
+                handleExceptions(errorBase)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            handleExceptions(e)
+        }
+        data
+    }
+
     suspend fun updateFCM(
     ): Flow<Resource<Boolean>> =
         withContext(Dispatchers.IO) {
             val data: Flow<Resource<Boolean>> = try {
-                val response = if (LocalData.accessToken.isEmpty() || LocalData.user?.status == NOT_VERIFIED)
-                    api.updateFCM()
-                else api.updateUserFCM()
+                val response =
+                    if (LocalData.accessToken.isEmpty() || LocalData.user?.status == NOT_VERIFIED)
+                        api.updateFCM()
+                    else api.updateUserFCM()
                 if (response.isSuccessful) {
                     handleSuccess(
                         response.body()?.status,
@@ -59,7 +120,8 @@ class AuthRepository @Inject constructor(
                     )
                 } else {
                     val gson = Gson()
-                    val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    val errorBase =
+                        gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
                     handleExceptions(errorBase)
                 }
             } catch (e: Exception) {
@@ -68,4 +130,55 @@ class AuthRepository @Inject constructor(
             }
             data
         }
+    suspend fun updateProfile(
+        avatar: File?,
+        name: String,
+        mobile: String,
+        email: String,
+    ): Flow<Resource<User>> = withContext(Dispatchers.IO) {
+        val data: Flow<Resource<User>> = try {
+            val body = HashMap<String, String>()
+            body["name"] = name
+            body["mobile"] = mobile
+            body["country_id"] = "1"
+            body["email"] = email
+            val map: HashMap<String, RequestBody> = hashMapOf()
+            body.forEach { entry ->
+                " ${entry.key} = ${entry.value}"
+                run { map[entry.key] = Common.createPartFromString(entry.value) }
+            }
+            val userImage: MultipartBody.Part? = if (avatar != null)
+                Common.createImageFile(avatar, "avatar") else null
+            val response = api.updateProfile(userImage, map)
+            if (response.isSuccessful) {
+                LocalData.user = response.body()?.user
+                LocalData.accessToken = response.body()?.user?.accessToken ?: ""
+                handleSuccess(
+                    response.body()?.user,
+                    response.body()?.responseMessage ?: response.message()
+                )
+            } else {
+                if (response.code() != 451) {
+                    val gson = Gson()
+                    val errorBase =
+                        gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    handleExceptions(errorBase)
+                } else {
+                    val responseUser: AuthResponse? = Gson().fromJson(
+                        response.errorBody()?.charStream(),
+                        AuthResponse::class.java
+                    )
+                    LocalData.user = responseUser?.user
+                    handleSuccess(
+                        responseUser?.user, responseUser?.responseMessage ?: response.message()
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            handleExceptions(e)
+        }
+        data
+    }
+
 }

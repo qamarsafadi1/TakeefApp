@@ -1,6 +1,5 @@
 package com.selsela.takeefapp.ui.auth
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,34 +24,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.auth.component.EditTextView
-import com.selsela.takeefapp.ui.common.EditText
 import com.selsela.takeefapp.ui.common.LottieAnimationView
 import com.selsela.takeefapp.ui.common.NextPageButton
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
-import com.selsela.takeefapp.ui.theme.Red
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text11Meduim
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text12Meduim
-import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text18
 import com.selsela.takeefapp.ui.theme.text18Book
 import com.selsela.takeefapp.ui.theme.text18Meduim
+import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Constants.NOT_VERIFIED
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
-import com.selsela.takeefapp.utils.Extensions.Companion.log
-import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import de.palm.composestateevents.EventEffect
 
 @Composable
@@ -60,9 +56,11 @@ fun LoginView(
     viewModel: AuthViewModel = hiltViewModel(),
     goToTerms: () -> Unit,
     goToSupport: () -> Unit,
+    goToHome: () -> Unit,
     goToVerify: () -> Unit
 ) {
-    val viewState: LoginUiState by viewModel.uiState.collectAsStateLifecycleAware(LoginUiState())
+    val viewState: AuthUiState by viewModel.uiState.collectAsStateLifecycleAware(AuthUiState())
+    val context = LocalContext.current
 
     LoginContent(
         viewModel,
@@ -72,22 +70,28 @@ fun LoginView(
     )
 
     /**
-     * Handle Ui state from subscriber
+     * Handle Ui state from flow
      */
 
     EventEffect(
         event = viewState.onSuccess,
         onConsumed = viewModel::onSuccess
-    ) {
+    ) { status ->
         viewModel.updateFcm()
-        goToVerify()
+        if (status == NOT_VERIFIED)
+            goToVerify()
+        else goToHome()
     }
 
     EventEffect(
         event = viewState.onFailure,
         onConsumed = viewModel::onFailure
-    ) { stringRes ->
-        stringRes.log()
+    ) { error ->
+        Common.handleErrors(
+            error.responseMessage,
+            error.errors,
+            context
+        )
     }
 }
 
@@ -95,7 +99,7 @@ fun LoginView(
 @Composable
 private fun LoginContent(
     viewModel: AuthViewModel,
-    uiState: LoginUiState,
+    uiState: AuthUiState,
     onClick: () -> Unit,
     goToTerms: () -> Unit,
     goToSupport: () -> Unit

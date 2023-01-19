@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -63,6 +64,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -80,9 +82,11 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.selsela.takeefapp.LocalMutableContext
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.auth.AuthViewModel
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
+import com.selsela.takeefapp.ui.theme.Red
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor2
 import com.selsela.takeefapp.ui.theme.TextColor
@@ -118,6 +122,7 @@ fun AppLogoImage(
     )
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ElasticButton(
     onClick: () -> Unit,
@@ -126,7 +131,8 @@ fun ElasticButton(
         .width(167.dp)
         .requiredHeight(48.dp),
     colorBg: Color = Purple40,
-    textColor: Color = Color.White
+    textColor: Color = Color.White,
+    isLoading: Boolean = false
 ) {
     // ElasticView(onClick = { onClick() }) {
     Button(
@@ -141,14 +147,28 @@ fun ElasticButton(
         shape = RoundedCornerShape(24.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = colorBg)
     ) {
-        Text(
-            text = title, style = buttonText,
-            color = textColor
-        )
+        Row(
+            Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (isLoading) {
+                LottieAnimationView(
+                    raw = R.raw.whiteloading,
+                    modifier = Modifier.size(24.dp)
+                )
+            } else {
+                Text(
+                    text = title, style = buttonText,
+                    color = textColor
+                )
+            }
+        }
     }
     // }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ElasticButton(
     onClick: () -> Unit,
@@ -158,7 +178,8 @@ fun ElasticButton(
     iconGravity: Int = if (LocalData.appLocal == "ar") LEFT else RIGHT,
     modifier: Modifier = Modifier
         .width(167.dp)
-        .requiredHeight(48.dp)
+        .requiredHeight(48.dp),
+    isLoading: Boolean = false
 ) {
     // ElasticView(onClick = { onClick() }) {
     Button(
@@ -173,32 +194,50 @@ fun ElasticButton(
         shape = RoundedCornerShape(24.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = buttonBg)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+
+        AnimatedVisibility(
+            visible = isLoading,
+            enter = scaleIn(),
+            exit = scaleOut()
         ) {
-            if (iconGravity == 1) {
-                Image(
-                    painter = painterResource(id = icon), contentDescription = "",
-                )
-            }
-            Text(
-                text = title, style = buttonText,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = if (iconGravity == RIGHT) 5.dp else 0.dp, top = 1.dp),
-                textAlign = TextAlign.Center
+            LottieAnimationView(
+                raw = R.raw.whiteloading,
+                modifier = Modifier.size(25.dp)
             )
-            if (iconGravity == 0) {
-                Image(
-                    painter = painterResource(id = icon), contentDescription = "",
+        }
+        AnimatedVisibility(
+            visible = isLoading.not(),
+            enter = scaleIn(),
+            exit = scaleOut()
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (iconGravity == 1) {
+                    Image(
+                        painter = painterResource(id = icon), contentDescription = "",
+                    )
+                }
+                Text(
+                    text = title, style = buttonText,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = if (iconGravity == RIGHT) 5.dp else 0.dp, top = 1.dp),
+                    textAlign = TextAlign.Center
                 )
+                if (iconGravity == 0) {
+                    Image(
+                        painter = painterResource(id = icon), contentDescription = "",
+                    )
+                }
             }
         }
     }
     // }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ElasticButton(
     onClick: () -> Unit,
@@ -207,7 +246,8 @@ fun ElasticButton(
     buttonBg: Color = Purple40,
     modifier: Modifier = Modifier
         .width(167.dp)
-        .requiredHeight(48.dp)
+        .requiredHeight(48.dp),
+    isLoading: Boolean = false
 ) {
     // ElasticView(onClick = { onClick() }) {
     Button(
@@ -222,31 +262,49 @@ fun ElasticButton(
         shape = RoundedCornerShape(24.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = buttonBg)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+        AnimatedVisibility(
+            visible = isLoading,
+            enter = scaleIn(),
+            exit = scaleOut()
         ) {
+            LottieAnimationView(
+                raw = R.raw.whiteloading,
+                modifier = Modifier.size(25.dp)
+            )
+        }
+        AnimatedVisibility(
+            visible = isLoading.not(),
+            enter = scaleIn(),
+            exit = scaleOut()
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-            Text(
-                text = title, style = buttonText,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.width(18.dp))
-            Image(
-                painter = painterResource(id = icon), contentDescription = "",
-            )
+                Text(
+                    text = title, style = buttonText,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.width(18.dp))
+                Image(
+                    painter = painterResource(id = icon), contentDescription = "",
+                )
+            }
         }
     }
 }
 // }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun IconedButton(
     onClick: () -> Unit,
     icon: Int,
     modifier: Modifier = Modifier
         .width(167.dp)
-        .requiredHeight(48.dp)
+        .requiredHeight(48.dp),
+    isLoading: Boolean = false
 ) {
     // ElasticView(onClick = { onClick() }) {
     Button(
@@ -261,14 +319,32 @@ fun IconedButton(
         shape = RoundedCornerShape(24.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = Purple40)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+
+        AnimatedVisibility(
+            visible = isLoading,
+            enter = scaleIn(),
+            exit = scaleOut()
         ) {
-            Image(
-                painter = painterResource(id = icon), contentDescription = ""
+            LottieAnimationView(
+                raw = R.raw.whiteloading,
+                modifier = Modifier.size(25.dp)
             )
         }
+        AnimatedVisibility(
+            visible = isLoading.not(),
+            enter = scaleIn(),
+            exit = scaleOut()
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = icon), contentDescription = ""
+                )
+            }
+        }
+
     }
     // }
 }
@@ -295,9 +371,11 @@ fun NextPageButton(
                 modifier = Modifier.size(25.dp)
             )
         }
-        AnimatedVisibility(visible = isLoading.not(),
+        AnimatedVisibility(
+            visible = isLoading.not(),
             enter = scaleIn(),
-            exit = scaleOut()) {
+            exit = scaleOut()
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.forward_arrow),
                 contentDescription = "arrow"
@@ -313,7 +391,17 @@ fun LottieAnimationView(modifier: Modifier = Modifier, raw: Int) {
     LottieAnimation(
         composition,
         modifier = modifier,
-        iterations = LottieConstants.IterateForever
+        iterations = LottieConstants.IterateForever,
+    )
+}
+@Composable
+fun LottieAnimationSizeView(modifier: Modifier = Modifier, raw: Int) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(raw))
+    LottieAnimation(
+        composition,
+        modifier = modifier,
+        iterations = LottieConstants.IterateForever,
+        contentScale = ContentScale.None
     )
 }
 
@@ -384,8 +472,14 @@ fun InputEditText(
     textAlign: TextAlign = TextAlign.Start,
     cornerRaduis: Dp = 8.dp,
     fillMax: Float = 1f,
+    borderColor: Color = BorderColor,
+    isValid: Boolean = true,
+    validationMessage: String = "",
     textStyle: androidx.compose.ui.text.TextStyle = text14White
 ) {
+    val color: Color by animateColorAsState(
+        borderColor
+    )
     BasicTextField(
         value = text,
         onValueChange = onValueChange,
@@ -397,7 +491,7 @@ fun InputEditText(
                     .fillMaxWidth(fillMax)
                     .requiredHeight(48.dp)
                     .background(TextFieldBg, shape = RoundedCornerShape(cornerRaduis))
-                    .border(1.dp, color = BorderColor, RoundedCornerShape(cornerRaduis))
+                    .border(1.dp, color = color, RoundedCornerShape(cornerRaduis))
                     .padding(horizontal = 16.dp),
                 contentAlignment = Alignment.CenterStart,
             ) {
@@ -423,6 +517,18 @@ fun InputEditText(
         keyboardActions = keyboardActions,
         cursorBrush = SolidColor(cursorColor)
     )
+
+
+    Row(Modifier.fillMaxWidth()) {
+        AnimatedVisibility(visible = isValid.not()) {
+            Text(
+                text = validationMessage,
+                style = text12,
+                color = Red,
+                modifier = Modifier.paddingTop(10)
+            )
+        }
+    }
 }
 
 @Composable
@@ -661,6 +767,7 @@ fun OtpTextField(
     modifier: Modifier = Modifier,
     otpText: String,
     otpCount: Int = 4,
+    viewModel: AuthViewModel,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
     BasicTextField(
@@ -684,26 +791,39 @@ fun OtpTextField(
                     OtpView(
                         index = index,
                         text = otpText,
-                        modifier = modifier
+                        modifier = modifier,
+                        borderColor = viewModel.validateBorderColor()
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
             }
         },
     )
+    AnimatedVisibility(visible = viewModel.isValid.value.not()) {
+        Text(
+            text = viewModel.errorMessage.value,
+            style = text12,
+            color = Red,
+            modifier = Modifier.paddingTop(12)
+        )
+    }
 }
 
 @Composable
 private fun OtpView(
     index: Int,
     text: String,
+    borderColor: Color = BorderColor,
     modifier: Modifier = Modifier
 ) {
+    val color: Color by animateColorAsState(
+        borderColor
+    )
     val isFocused = text.length == index
     val char = when {
         index == text.length -> ""
         index > text.length -> ""
-        else -> text[index].toString()
+        else -> text.reversed()[index].toString()
     }
     Box(
         modifier = Modifier
@@ -712,8 +832,8 @@ private fun OtpView(
             .background(color = VerifiedBg, shape = RoundedCornerShape(11.dp))
             .border(
                 1.dp, when {
-                    isFocused -> BorderColor
-                    else -> BorderColor
+                    isFocused -> color
+                    else -> color
                 },
                 RoundedCornerShape(11.dp)
             )
@@ -1388,7 +1508,7 @@ fun SelectedServicesView() {
 
 @Composable
 fun AsyncImage(
-    imageUrl: String,
+    imageUrl: Any,
     modifier: Modifier
     = Modifier
         .size(90.dp)
@@ -1398,13 +1518,13 @@ fun AsyncImage(
         modifier = modifier,
         model = imageUrl,
         error = {
-            painterResource(R.drawable.baseline_insert_photo_24)
-
+            painterResource(R.drawable.placeholder)
         },
         loading = {
-            LottieAnimationView(
+            LottieAnimationSizeView(
                 raw = R.raw.imageloading,
-                modifier = Modifier.size(15.dp)
+                modifier = Modifier.width(25.dp)
+                    .height(25.dp)
             )
         },
         contentDescription = "",

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "721773655739",
+    "project_id": "jobs-c0b22",
+    "storage_bucket": "jobs-c0b22.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:721773655739:android:f30f83348ab391ac7a5b9e",
+        "android_client_info": {
+          "package_name": "com.selsela.takeefapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "721773655739-9h2qn8rbdaucp7npcmkum0dvt0618plg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxD4D_qrg7qpZzFL_cJEY27zJB2C4XU3k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "721773655739-9h2qn8rbdaucp7npcmkum0dvt0618plg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "721773655739-v8112cnec0pljngrrref7n03tsuef413.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.selsela.bookjob"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

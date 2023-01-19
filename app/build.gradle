@@ -4,6 +4,7 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
+    id 'com.google.gms.google-services'
 
 }
 
@@ -100,4 +101,10 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hiltVersion"
     implementation "androidx.hilt:hilt-navigation-compose:$hiltAndroidXVersion"
     kapt "com.google.dagger:hilt-compiler:$hiltVersion"
+
+    // fcm
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.1.0'
+
 }
+
+apply plugin: 'com.google.gms.google-services'

@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.selsela.jobsapp.utils.validatePhone
-import com.selsela.takeefapp.data.auth.model.User
+import com.selsela.takeefapp.data.auth.model.auth.User
 import com.selsela.takeefapp.data.auth.repository.AuthRepository
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.Red
@@ -104,6 +104,12 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun updateFcm() {
+        viewModelScope.launch {
+            repository.updateFCM()
+        }
+    }
+
 
     /**
      * reset handlers
@@ -111,6 +117,7 @@ class AuthViewModel @Inject constructor(
     fun onSuccess() {
         state = state.copy(onSuccess = consumed)
     }
+
     fun onFailure() {
         state = state.copy(onFailure = consumed())
     }

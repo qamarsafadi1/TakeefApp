@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.auth.component.EditTextView
 import com.selsela.takeefapp.ui.common.EditText
 import com.selsela.takeefapp.ui.common.LottieAnimationView
 import com.selsela.takeefapp.ui.common.NextPageButton
@@ -65,6 +66,7 @@ fun LoginView(
 
     LoginContent(
         viewModel,
+        viewState,
         onClick = viewModel::auth,
         goToTerms, goToSupport
     )
@@ -77,6 +79,7 @@ fun LoginView(
         event = viewState.onSuccess,
         onConsumed = viewModel::onSuccess
     ) {
+        viewModel.updateFcm()
         goToVerify()
     }
 
@@ -92,6 +95,7 @@ fun LoginView(
 @Composable
 private fun LoginContent(
     viewModel: AuthViewModel,
+    uiState: LoginUiState,
     onClick: () -> Unit,
     goToTerms: () -> Unit,
     goToSupport: () -> Unit
@@ -185,7 +189,7 @@ private fun LoginContent(
                             }
                         }
                         ElasticView(onClick = { onClick() }) {
-                            NextPageButton()
+                            NextPageButton(uiState.isLoading)
                         }
                     }
                 }
@@ -230,43 +234,7 @@ private fun LoginContent(
                         modifier = Modifier.padding(start = 6.dp)
                     )
                 }
-
             }
-
-
         }
-    }
-}
-
-@Composable
-private fun EditTextView(viewModel: AuthViewModel) {
-    EditText(
-        onValueChange = {
-            viewModel.mobile.value = it
-            if (it.isEmpty()) {
-                viewModel.isValid.value = true
-                viewModel.errorMessage.value = ""
-            }
-        },
-        text = viewModel.mobile.value,
-        hint = "59XXXXXXX",
-        inputType = KeyboardType.Phone,
-        trailing = {
-            Text(
-                text = "966", style = text14,
-                color = Color.White
-            )
-        },
-        modifier = Modifier.padding(top = 16.dp),
-        borderColor = viewModel.validateBorderColor()
-    )
-
-    AnimatedVisibility(visible = viewModel.isValid.value.not()) {
-        Text(
-            text = viewModel.errorMessage.value,
-            style = text12,
-            color = Red,
-            modifier = Modifier.paddingTop(12)
-        )
     }
 }

@@ -1,4 +1,4 @@
-package com.selsela.takeefapp.data.auth.model
+package com.selsela.takeefapp.data.auth.model.auth
 
 
 import com.google.gson.annotations.SerializedName

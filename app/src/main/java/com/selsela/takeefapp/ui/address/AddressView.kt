@@ -1,10 +1,7 @@
 package com.selsela.takeefapp.ui.address
 
 import android.annotation.SuppressLint
-import android.view.ContextThemeWrapper
-import android.widget.CalendarView
 import androidx.activity.compose.BackHandler
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
@@ -13,7 +10,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,9 +22,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.safeGesturesPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -40,7 +33,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,24 +43,9 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.address.components.CityAreaView
 import com.selsela.takeefapp.ui.address.components.CurrentAddressView
@@ -77,29 +54,14 @@ import com.selsela.takeefapp.ui.address.components.GoogleMapView
 import com.selsela.takeefapp.ui.address.components.Headerview
 import com.selsela.takeefapp.ui.common.EditTextAddress
 import com.selsela.takeefapp.ui.common.ElasticButton
-import com.selsela.takeefapp.ui.common.IconedButton
 import com.selsela.takeefapp.ui.common.ListedBottomSheet
-import com.selsela.takeefapp.ui.common.SearchBar
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
-import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
-import com.selsela.takeefapp.ui.theme.TextFieldBg
 import com.selsela.takeefapp.ui.theme.text11
-import com.selsela.takeefapp.ui.theme.text12
-import com.selsela.takeefapp.ui.theme.text14
-import com.selsela.takeefapp.ui.theme.text20Book
-import com.selsela.takeefapp.utils.Constants.LEFT
-import com.selsela.takeefapp.utils.Constants.RIGHT
-import com.selsela.takeefapp.utils.Extensions.Companion.RequestPermission
-import com.selsela.takeefapp.utils.Extensions.Companion.bitmapDescriptor
-import com.selsela.takeefapp.utils.Extensions.Companion.getMyLocation
 import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
-import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable

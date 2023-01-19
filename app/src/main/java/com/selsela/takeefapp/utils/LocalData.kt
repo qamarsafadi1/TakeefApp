@@ -1,6 +1,7 @@
 package com.selsela.takeefapp.utils
 
 import com.orhanobut.hawk.Hawk
+import com.selsela.takeefapp.data.auth.model.auth.User
 import com.selsela.takeefapp.data.config.model.AcType
 import com.selsela.takeefapp.data.config.model.Configurations
 import com.selsela.takeefapp.data.config.model.Service
@@ -17,6 +18,16 @@ open class LocalData {
             set(value) {
                 field = value
                 Hawk.put("fcmToken", value)
+            }
+        var accessToken: String = Hawk.get("token", "")
+            set(value) {
+                field = value
+                Hawk.put("token", value)
+            }
+        var user: User? = Hawk.get("user")
+            set(value) {
+                field = value
+                Hawk.put("user", value)
             }
 
         var firstLaunch: Boolean = Hawk.get("firstLaunch", true)

@@ -3,9 +3,13 @@ package com.selsela.takeefapp.ui.common
 import android.os.CountDownTimer
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -269,8 +273,11 @@ fun IconedButton(
     // }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun NextPageButton() {
+fun NextPageButton(
+    isLoading: Boolean = false
+) {
     Box(
         modifier = Modifier
             .size(56.dp)
@@ -278,10 +285,24 @@ fun NextPageButton() {
             .background(Purple40),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.forward_arrow),
-            contentDescription = "arrow"
-        )
+        AnimatedVisibility(
+            visible = isLoading,
+            enter = scaleIn(),
+            exit = scaleOut()
+        ) {
+            LottieAnimationView(
+                raw = R.raw.whiteloading,
+                modifier = Modifier.size(25.dp)
+            )
+        }
+        AnimatedVisibility(visible = isLoading.not(),
+            enter = scaleIn(),
+            exit = scaleOut()) {
+            Image(
+                painter = painterResource(id = R.drawable.forward_arrow),
+                contentDescription = "arrow"
+            )
+        }
     }
 }
 
@@ -309,7 +330,7 @@ fun EditText(
 ) {
 
     val surfaceColor: Color by animateColorAsState(
-       borderColor
+        borderColor
     )
     TextField(
         value = text, onValueChange = {

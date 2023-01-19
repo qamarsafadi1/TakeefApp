@@ -3,6 +3,7 @@ package com.selsela.takeefapp.data.auth.repository
 import com.google.gson.Gson
 import com.selsela.takeefapp.data.auth.model.auth.AuthResponse
 import com.selsela.takeefapp.data.auth.model.auth.User
+import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.data.auth.source.remote.AuthApi
 import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Constants.NOT_VERIFIED
@@ -81,8 +82,7 @@ class AuthRepository @Inject constructor(
         data
     }
 
-    suspend fun me(
-    ): Flow<Resource<User>> = withContext(Dispatchers.IO) {
+    suspend fun me(): Flow<Resource<User>> = withContext(Dispatchers.IO) {
         val data: Flow<Resource<User>> = try {
             val response = api.me()
             if (response.isSuccessful) {
@@ -96,6 +96,27 @@ class AuthRepository @Inject constructor(
                 val gson = Gson()
                 val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
                 errorBase.log("errorBase")
+                handleExceptions(errorBase)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            handleExceptions(e)
+        }
+        data
+    }
+
+    suspend fun getWallet(): Flow<Resource<WalletResponse>> = withContext(Dispatchers.IO) {
+        val data: Flow<Resource<WalletResponse>> = try {
+            val response = api.getWallet()
+            if (response.isSuccessful) {
+                LocalData.userWallet = response.body()
+                handleSuccess(
+                    response.body(),
+                    response.body()?.responseMessage ?: response.message()
+                )
+            } else {
+                val gson = Gson()
+                val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
                 handleExceptions(errorBase)
             }
         } catch (e: Exception) {
@@ -130,6 +151,7 @@ class AuthRepository @Inject constructor(
             }
             data
         }
+
     suspend fun updateProfile(
         avatar: File?,
         name: String,

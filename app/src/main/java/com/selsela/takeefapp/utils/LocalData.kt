@@ -3,6 +3,7 @@ package com.selsela.takeefapp.utils
 import android.graphics.pdf.PdfDocument.Page
 import com.orhanobut.hawk.Hawk
 import com.selsela.takeefapp.data.auth.model.auth.User
+import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.data.config.model.AcType
 import com.selsela.takeefapp.data.config.model.Configurations
 import com.selsela.takeefapp.data.config.model.Service
@@ -13,7 +14,9 @@ open class LocalData {
         fun clearData() {
             accessToken = ""
             user = null
+            userWallet = null
         }
+
         var appLocal: String = Hawk.get("appLocal", "ar")
             set(value) {
                 field = value
@@ -68,8 +71,11 @@ open class LocalData {
                 field = value
                 Hawk.put("services", value)
             }
+        var userWallet: WalletResponse? = Hawk.get("wallet")
+            set(value) {
+                field = value
+                Hawk.put("wallet", value)
+            }
     }
-
-
 
 }

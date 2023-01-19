@@ -2,6 +2,7 @@ package com.selsela.takeefapp.data.auth.source.remote
 
 import com.selsela.takeefapp.data.auth.model.auth.AuthResponse
 import com.selsela.takeefapp.data.auth.model.general.GeneralResponse
+import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.utils.LocalData
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -34,6 +35,9 @@ interface AuthApi {
 
     @GET("user/me")
     suspend fun me(): Response<AuthResponse>
+
+    @GET("user/wallet/user_wallet")
+    suspend fun getWallet(): Response<WalletResponse>
 
     @POST("user/update_user_fcm_token")
     @FormUrlEncoded

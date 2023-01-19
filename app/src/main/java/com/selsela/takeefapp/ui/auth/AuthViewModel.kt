@@ -10,6 +10,7 @@ import com.selsela.jobsapp.utils.validatePhone
 import com.selsela.jobsapp.utils.validateRequired
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.auth.model.auth.User
+import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.data.auth.repository.AuthRepository
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.Red
@@ -18,6 +19,7 @@ import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.retrofit.model.ErrorsData
 import com.selsela.takeefapp.utils.retrofit.model.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.palm.composestateevents.StateEvent
 import de.palm.composestateevents.StateEventWithContent
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
@@ -40,11 +42,23 @@ data class AuthUiState(
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),
 )
 
+data class WalletUiState(
+    val responseMessage: String = "",
+    val wallet: WalletResponse? = LocalData.userWallet,
+    val onSuccess: StateEvent = consumed,
+    val isLoading: Boolean = false,
+    val onFailure: StateEventWithContent<ErrorsData> = consumed(),
+)
+
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val application: Application,
     private val repository: AuthRepository
 ) : ViewModel() {
+
+    /**
+     * Validation Variables
+     */
     var mobile: MutableState<String> = mutableStateOf(LocalData.user?.mobile ?: "")
     var name: MutableState<String> = mutableStateOf(LocalData.user?.name ?: "")
     var email: MutableState<String> = mutableStateOf(LocalData.user?.email ?: "")
@@ -53,16 +67,28 @@ class AuthViewModel @Inject constructor(
     var errorMessageName: MutableState<String> = mutableStateOf("")
     var isValid: MutableState<Boolean> = mutableStateOf(true)
     var isNameValid: MutableState<Boolean> = mutableStateOf(true)
-    private val _uiState = MutableStateFlow(AuthUiState())
-    val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
-    val userLoggedIn = mutableStateOf(LocalData.accessToken.isEmpty().not())
     var avatar: File? = null
     var isLoaded = false
+    val userLoggedIn = mutableStateOf(LocalData.accessToken.isEmpty().not())
+
+    /**
+     * State Subscribers
+     */
+    private val _uiState = MutableStateFlow(AuthUiState())
+    val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
+    private val _walletUiState = MutableStateFlow(WalletUiState())
+    val walletUiState: StateFlow<WalletUiState> = _walletUiState.asStateFlow()
+
 
     private var state: AuthUiState
         get() = _uiState.value
         set(newState) {
             _uiState.update { newState }
+        }
+    private var walletState: WalletUiState
+        get() = _walletUiState.value
+        set(newState) {
+            _walletUiState.update { newState }
         }
 
     /**
@@ -150,6 +176,11 @@ class AuthViewModel @Inject constructor(
         else BorderColor
     }
 
+    /////////////////////////////////////////  API REQUESTS  ///////////////////////////////////////
+
+    /**
+     * API Requests
+     */
     fun auth() {
         if (isMobileValid()) {
             viewModelScope.launch {
@@ -309,15 +340,55 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun wallet() {
+        viewModelScope.launch {
+            walletState = walletState.copy(
+                isLoading = true
+            )
+            repository.getWallet()
+                .collect { result ->
+                    val walletUiState = when (result.status) {
+                        Status.SUCCESS -> {
+                            isLoaded = true
+                            WalletUiState(
+                                responseMessage = result.message ?: "",
+                                onSuccess = triggered,
+                                wallet = result.data
+                            )
+                        }
+
+                        Status.LOADING ->
+                            WalletUiState(
+                                isLoading = true
+                            )
+
+                        Status.ERROR ->
+                            WalletUiState(
+                            onFailure = triggered(
+                                ErrorsData(
+                                    result.errors,
+                                    result.message,
+                                )
+                            ),
+                            responseMessage = result.message ?: "",
+                        )
+                    }
+                    walletState = walletUiState
+                }
+        }
+    }
+
     /**
      * reset handlers
      */
     fun onSuccess() {
         state = state.copy(onSuccess = consumed())
+        walletState = walletState.copy(onSuccess = consumed)
     }
 
     fun onFailure() {
         state = state.copy(onFailure = consumed())
+        walletState = walletState.copy(onFailure = consumed())
     }
 
 }

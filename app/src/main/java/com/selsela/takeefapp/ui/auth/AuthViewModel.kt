@@ -203,7 +203,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun validateNameBorderColor(): Color {
-        return if (errorMessage.value.isNotEmpty() && isNameValid.value.not())
+        return if (errorMessageName.value.isNotEmpty() && isNameValid.value.not())
             Red
         else BorderColor
     }

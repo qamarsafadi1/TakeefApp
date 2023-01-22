@@ -39,23 +39,15 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
-import androidx.navigation.NavOptionsBuilder
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.muddzdev.styleabletoast.StyleableToast
 import com.selsela.takeefapp.R
-import com.selsela.takeefapp.data.auth.model.support.Reply
-import com.selsela.takeefapp.navigation.Destinations
 import com.selsela.takeefapp.utils.FileHelper.Companion.absoulutePath
 import com.selsela.takeefapp.utils.FileHelper.Companion.compressImage
 import com.selsela.takeefapp.utils.FileHelper.Companion.scaleBitmap
@@ -64,13 +56,8 @@ import com.selsela.takeefapp.utils.retrofit.model.Resource
 import com.tapadoo.alerter.Alerter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import retrofit2.HttpException
-import www.sanju.motiontoast.MotionToast
-import www.sanju.motiontoast.MotionToastStyle
 import java.io.File
 import java.io.IOException
-import java.net.SocketException
-import java.net.UnknownHostException
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
@@ -419,6 +406,48 @@ class Extensions {
                 })
         }
 
+        @Composable
+        fun mStartMultipaleActivityForResult(
+            context: Context,
+            lambda: (List<File>?) -> Unit
+        ): ManagedActivityResultLauncher<Intent, ActivityResult> {
+            val imges: MutableList<File>? = mutableListOf()
+            return rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.StartActivityForResult(),
+                onResult = { result ->
+                    if (result.data?.clipData != null) {
+                        val count =
+                            result.data?.clipData!!.itemCount; //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
+                        count.log("count")
+                        for (i in 0 until count) {
+                            val imageUri = result.data?.clipData?.getItemAt(i)?.uri
+                            imageUri?.let { it1 ->
+                                val selectedImage = FileHandler.decodeBitmap(context, it1)
+                                selectedImage?.log()
+                                val filename = FileUtils.getFileName(context, imageUri)
+                                val file =
+                                    FileUtils.createFile(context, imageUri, filename)
+                                file.let { it1 -> imges?.add(it1) }
+                                imges?.size?.log("viewModel.photosImg")
+                            }
+                        }
+                    } else if (result.data!!.data != null) {
+                        context.let {
+                            result.data?.data.let {
+                                val selectedImage =
+                                    it?.let { it1 -> FileHandler.decodeBitmap(context, it1) }
+                                selectedImage?.log()
+                                val image = FileHandler.getImage(it, context)
+
+                                image?.let { it1 -> imges?.add(it1) }
+                                imges?.size?.log("viewModel.photosImg")
+                            }
+                        }
+                    }
+                    lambda(imges)
+                })
+        }
+
         fun uploadImages(
             context: Context,
             images: ActivityResultLauncher<Intent>,
@@ -533,7 +562,7 @@ class Extensions {
                     },
                     restore = {
                         if (it.isEmpty().not())
-                        it.toMutableStateList()
+                            it.toMutableStateList()
                         else mutableListOf<T>().toMutableStateList()
                     }
                 )

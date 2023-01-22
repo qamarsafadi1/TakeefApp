@@ -9,14 +9,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -48,22 +52,35 @@ import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.text10
 import com.selsela.takeefapp.ui.theme.text16Line
+import java.io.File
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.selsela.takeefapp.utils.Extensions
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 
 @Preview
 @Composable
-fun PlaceSpecialOrderView() {
-    Box(
+fun PlaceSpecialOrderView(viewModel: AuthViewModel = hiltViewModel()) {
+    PlaceSpecialOrderContent(viewModel)
+}
+
+@Composable
+private fun PlaceSpecialOrderContent(viewModel: AuthViewModel) {
+    Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .background(Color.White),
     ) {
+        var isAnimated by remember {
+            mutableStateOf(false)
+        }
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            var isAnimated by remember {
-                mutableStateOf(false)
-            }
+
             if (isAnimated.not()) {
                 AppLogoImage(
                     modifier = Modifier
@@ -74,57 +91,58 @@ fun PlaceSpecialOrderView() {
                         )
                 )
             }
-           Box(Modifier
-               .align(Alignment.Center),
-           contentAlignment = Alignment.TopCenter) {
-               Column(
-                   modifier = Modifier
-                       .padding(bottom = 21.dp,top = 44.dp)
-                       .padding(horizontal = 24.dp)
-                       .fillMaxWidth()
-                       .animateContentSize(tween(500))
-                       .background(TextColor, RoundedCornerShape(33.dp))
-                       .padding(horizontal = 24.dp),
-                   horizontalAlignment = Alignment.CenterHorizontally,
-                   verticalArrangement = Arrangement.Center
-               ) {
-                   if (isAnimated.not()) {
-                       SpecialOrderFormView()
-                   } else {
-                       SuccessSend()
-                   }
-               }
-
-
-               if (isAnimated){
-                   LottieAnimationView(raw = R.raw.send,
-                       modifier = Modifier
-                           .size(126.dp)
-                         )
-               }
-           }
-
-            if (isAnimated.not()) {
-                ElasticButton(
-                    onClick = {
-                        isAnimated = !isAnimated
-
-                    }, title = stringResource(R.string.send_order),
+            Box(
+                Modifier
+                    .paddingTop(15)
+                    .align(Alignment.Center),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                Column(
                     modifier = Modifier
-                        .padding(vertical = 21.dp)
+                        .padding(bottom = 21.dp, top = 44.dp)
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
-                        .requiredHeight(48.dp)
-                        .align(Alignment.BottomCenter)
-                )
-            }
+                        .animateContentSize(tween(500))
+                        .background(TextColor, RoundedCornerShape(33.dp))
+                        .padding(horizontal = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    if (isAnimated.not()) {
+                        SpecialOrderFormView(viewModel)
+                    } else {
+                        SuccessSend()
+                    }
+                }
 
+                if (isAnimated) {
+                    LottieAnimationView(
+                        raw = R.raw.send,
+                        modifier = Modifier
+                            .size(126.dp)
+                    )
+                }
+            }
         }
+        if (isAnimated.not()) {
+            ElasticButton(
+                onClick = {
+                    //     isAnimated = !isAnimated
+                    viewModel.placeOrder()
+                }, title = stringResource(R.string.send_order),
+                modifier = Modifier
+                    .padding(vertical = 21.dp)
+                    .padding(horizontal = 24.dp)
+                    .fillMaxWidth()
+                    .requiredHeight(48.dp)
+            )
+        }
+
     }
 }
 
 @Composable
-private fun SpecialOrderFormView() {
+private fun SpecialOrderFormView(viewModel: AuthViewModel) {
     Column(
         Modifier
             .padding(bottom = 15.dp)
@@ -155,38 +173,43 @@ private fun SpecialOrderFormView() {
             style = text11,
             modifier = Modifier.padding(top = 29.dp)
         )
-        var name by remember {
-            mutableStateOf("")
-        }
+
         InputEditText(
             onValueChange = {
-                name = it
+                viewModel.name.value = it
+                if (!viewModel.isNameValid.value)
+                    viewModel.isNameValid.value = true
             },
-            text = name,
+            text = viewModel.name.value,
             hint = stringResource(R.string.name),
             inputType = KeyboardType.Text,
-            modifier = Modifier.padding(top = 16.dp)
+            isValid = viewModel.isNameValid.value,
+            validationMessage = viewModel.errorMessageName.value,
+            modifier = Modifier.padding(top = 16.dp),
+            borderColor = viewModel.validateNameBorderColor()
         )
         Text(
             text = stringResource(R.string.order_title),
             style = text11,
             modifier = Modifier.padding(top = 16.dp)
         )
-        var title by remember {
-            mutableStateOf("")
-        }
+
         InputEditText(
             onValueChange = {
-                title = it
+                viewModel.title.value = it
+                if (!viewModel.isTitleValid.value)
+                    viewModel.isTitleValid.value = true
             },
-            text = title,
+            text = viewModel.title.value,
             hint = stringResource(R.string.order_title),
             inputType = KeyboardType.Text,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = 16.dp),
+            isValid = viewModel.isTitleValid.value,
+            validationMessage = viewModel.errorMessage.value,
+            borderColor = viewModel.validateTitleBorderColor()
+
         )
-        var details by remember {
-            mutableStateOf("")
-        }
+
         Text(
             text = stringResource(R.string.order_details),
             style = text11,
@@ -194,50 +217,90 @@ private fun SpecialOrderFormView() {
         )
         EditTextMutltLine(
             onValueChange = {
-                details = it
+                viewModel.description.value = it
+                if (!viewModel.isDescriptionValid.value)
+                    viewModel.isDescriptionValid.value = true
+
             },
-            text = details,
+            text = viewModel.description.value,
             hint = stringResource(R.string.write_order_details),
             inputType = KeyboardType.Text,
             modifier = Modifier
-                .padding(top = 16.dp)
+                .padding(top = 16.dp),
+            isValid = viewModel.isDescriptionValid.value,
+            validationMessage = viewModel.errorMessageDescription.value,
+            borderColor = viewModel.validateDescriptionBorderColor()
+
         )
 
-        Row(
-            modifier = Modifier
-                .paddingTop(28)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Row {
-                    Text(
-                        text = stringResource(R.string.add_attachments),
-                        style = text11,
-                        color = Color.White.copy(0.85f)
-                    )
-                    Text(
-                        text = stringResource(R.string.optinal),
-                        style = text10,
-                        color = SecondaryColor.copy(0.70f)
-                    )
-                }
-                Text(
-                    text = stringResource(R.string.file_name),
-                    style = text10,
-                    color = SecondaryColor
-                )
-            }
+        ImagesChooser()
 
-            IconButton(onClick = { /*TODO*/ }) {
-                Image(
-                    painter = painterResource(id = R.drawable.attachment), contentDescription = ""
-                )
+
+    }
+}
+
+@Composable
+private fun ImagesChooser() {
+    val photoImages = remember {
+        mutableStateListOf<File>()
+    }
+    val context = LocalContext.current
+    val imagePicker = Extensions.mStartMultipaleActivityForResult(
+        context = context,
+    ) { file ->
+        if (file != null) {
+            file.size.log("files")
+            file.forEach {
+                photoImages.add(it)
             }
         }
+    }
+    Row(
+        modifier = Modifier
+            .paddingTop(28)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(Modifier.weight(1f)) {
+            Row {
+                Text(
+                    text = stringResource(R.string.add_attachments),
+                    style = text11,
+                    color = Color.White.copy(0.85f)
+                )
+                Text(
+                    text = stringResource(R.string.optinal),
+                    style = text10,
+                    color = SecondaryColor.copy(0.70f),
+                    modifier = Modifier.padding(start = 3.dp)
+                )
+            }
+            LazyRow() {
+                items(photoImages) {
+                    Text(
+                        text = it.nameWithoutExtension,
+                        style = text10,
+                        color = SecondaryColor
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        text = ",",
+                        style = text10,
+                        color = SecondaryColor
+                    )
+                }
+            }
 
+        }
 
+        IconButton(onClick = {
+            Extensions.uploadImages(context, imagePicker, true)
+        }) {
+            Image(
+                painter = painterResource(id = R.drawable.attachment), contentDescription = ""
+            )
+        }
     }
 }
 

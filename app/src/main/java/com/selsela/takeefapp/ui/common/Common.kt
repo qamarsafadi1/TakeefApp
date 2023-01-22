@@ -549,8 +549,14 @@ fun InputEditText(
     cornerRaduis: Dp = 8.dp,
     fillMax: Float = 1f,
     hintColor: Color =  SecondaryColor.copy(0.39f),
+    borderColor: Color = BorderColor,
+    isValid: Boolean = true,
+    validationMessage: String = "",
     textStyle: androidx.compose.ui.text.TextStyle = text14White
 ) {
+    val color: Color by animateColorAsState(
+        borderColor
+    )
     BasicTextField(
         value = text,
         onValueChange = onValueChange,
@@ -562,7 +568,7 @@ fun InputEditText(
                     .fillMaxWidth(fillMax)
                     .requiredHeight(48.dp)
                     .background(TextFieldBg, shape = RoundedCornerShape(cornerRaduis))
-                    .border(1.dp, color = BorderColor, RoundedCornerShape(cornerRaduis))
+                    .border(1.dp, color = color, RoundedCornerShape(cornerRaduis))
                     .padding(horizontal = 16.dp),
                 contentAlignment = Alignment.CenterStart,
             ) {
@@ -588,6 +594,17 @@ fun InputEditText(
         keyboardActions = keyboardActions,
         cursorBrush = SolidColor(cursorColor)
     )
+    Row(Modifier.fillMaxWidth()) {
+        AnimatedVisibility(visible = isValid.not()) {
+            Text(
+                text = validationMessage,
+                style = text12,
+                color = Red,
+                modifier = Modifier.paddingTop(10)
+            )
+        }
+    }
+
 }
 
 
@@ -598,8 +615,14 @@ fun EditTextMutltLine(
     inputType: KeyboardType = KeyboardType.Text,
     singleLine: Boolean = true,
     modifier: Modifier = Modifier,
+    borderColor: Color = BorderColor,
+    isValid: Boolean = true,
+    validationMessage: String = "",
     trailing: @Composable (() -> Unit)? = null
 ) {
+    val color: Color by animateColorAsState(
+        borderColor
+    )
     TextField(
         value = text,
         onValueChange = {
@@ -609,7 +632,7 @@ fun EditTextMutltLine(
             Modifier
                 .fillMaxWidth()
                 .requiredHeight(115.dp)
-                .border(1.dp, color = BorderColor, RoundedCornerShape(8.dp))
+                .border(1.dp, color = color, RoundedCornerShape(8.dp))
         ),
         textStyle = text14White,
         shape = RoundedCornerShape(8.dp),
@@ -631,6 +654,17 @@ fun EditTextMutltLine(
         },
         keyboardOptions = KeyboardOptions(keyboardType = inputType),
     )
+    Row(Modifier.fillMaxWidth()) {
+        AnimatedVisibility(visible = isValid.not()) {
+            Text(
+                text = validationMessage,
+                style = text12,
+                color = Red,
+                modifier = Modifier.paddingTop(10)
+            )
+        }
+    }
+
 }
 
 @Composable

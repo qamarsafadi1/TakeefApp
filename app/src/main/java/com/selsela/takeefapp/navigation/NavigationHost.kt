@@ -110,7 +110,9 @@ fun NavigationHost(
             }
         }
         composable(Destinations.SPECIAL_ORDER) {
-            PlaceSpecialOrderView()
+            PlaceSpecialOrderView(){
+                navActions.navigateToHome()
+            }
         }
         composable(Destinations.MY_ACCOUNT) {
             MyAccountView(

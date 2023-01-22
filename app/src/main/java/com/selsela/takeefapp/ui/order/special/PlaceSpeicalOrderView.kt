@@ -60,13 +60,19 @@ import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
+import com.selsela.takeefapp.utils.LocalData
 import de.palm.composestateevents.EventEffect
 
 @Preview
 @Composable
-fun PlaceSpecialOrderView(viewModel: SpecialOrderViewModel = hiltViewModel()) {
+fun PlaceSpecialOrderView(
+    viewModel: SpecialOrderViewModel = hiltViewModel(),
+    onClose: () -> Unit
+) {
 
-    val viewState: SpecialOrderUiState by viewModel.uiState.collectAsStateLifecycleAware(SpecialOrderUiState())
+    val viewState: SpecialOrderUiState by viewModel.uiState.collectAsStateLifecycleAware(
+        SpecialOrderUiState()
+    )
     val context = LocalContext.current
     var isAnimated by remember {
         mutableStateOf(false)
@@ -76,6 +82,7 @@ fun PlaceSpecialOrderView(viewModel: SpecialOrderViewModel = hiltViewModel()) {
         viewState,
         viewModel = viewModel,
         isAnimated = isAnimated,
+        onClose = onClose,
         placeOrder = viewModel::placeOrder
     )
 
@@ -109,6 +116,7 @@ private fun PlaceSpecialOrderContent(
     viewState: SpecialOrderUiState,
     viewModel: SpecialOrderViewModel,
     isAnimated: Boolean,
+    onClose: () -> Unit,
     placeOrder: () -> Unit
 ) {
     Column(
@@ -147,15 +155,16 @@ private fun PlaceSpecialOrderContent(
                         .fillMaxWidth()
                         .background(TextColor, RoundedCornerShape(33.dp))
                         .padding(horizontal = 24.dp)
-                        .animateContentSize(tween(600))
-                    ,
+                        .animateContentSize(tween(600)),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
                     if (isAnimated.not()) {
                         SpecialOrderFormView(viewModel)
                     } else {
-                        SuccessSend()
+                        SuccessSend() {
+                            onClose()
+                        }
                     }
                 }
 
@@ -349,7 +358,9 @@ private fun ImagesChooser(viewModel: SpecialOrderViewModel) {
 }
 
 @Composable
-fun SuccessSend() {
+fun SuccessSend(
+    onClose: () -> Unit
+) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -373,7 +384,10 @@ fun SuccessSend() {
 
         Spacer(modifier = Modifier.height(20.dp))
         ElasticButton(
-            onClick = { /*TODO*/ }, title = stringResource(R.string.close),
+            onClick = {
+                LocalData.user?.specificOrders =   LocalData.user?.specificOrders!!+1
+                onClose()
+            }, title = stringResource(R.string.close),
             colorBg = ButtonBg,
             textColor = Purple40,
             modifier = Modifier

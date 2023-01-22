@@ -31,7 +31,7 @@ data class User(
     @SerializedName("balance")
     val balance: Double = 0.0,
     @SerializedName("specific_orders")
-    val specificOrders: Int = 0,
+    var specificOrders: Int = 0,
     @SerializedName("new_orders")
     val newOrders: Int = 0,
     @SerializedName("processing_orders")

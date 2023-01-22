@@ -55,26 +55,69 @@ import com.selsela.takeefapp.ui.theme.text16Line
 import java.io.File
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions
-import com.selsela.takeefapp.utils.Extensions.Companion.log
+import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
+import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
+import de.palm.composestateevents.EventEffect
 
 @Preview
 @Composable
-fun PlaceSpecialOrderView(viewModel: AuthViewModel = hiltViewModel()) {
-    PlaceSpecialOrderContent(viewModel)
+fun PlaceSpecialOrderView(viewModel: SpecialOrderViewModel = hiltViewModel()) {
+
+    val viewState: SpecialOrderUiState by viewModel.uiState.collectAsStateLifecycleAware(SpecialOrderUiState())
+    val context = LocalContext.current
+    var isAnimated by remember {
+        mutableStateOf(false)
+    }
+
+    PlaceSpecialOrderContent(
+        viewState,
+        viewModel = viewModel,
+        isAnimated = isAnimated,
+        placeOrder = viewModel::placeOrder
+    )
+
+    /**
+     * Handle Ui state from flow
+     */
+
+    EventEffect(
+        event = viewState.onSuccess,
+        onConsumed = viewModel::onSuccess
+    ) {
+        isAnimated = !isAnimated
+
+    }
+
+    EventEffect(
+        event = viewState.onFailure,
+        onConsumed = viewModel::onFailure
+    ) { error ->
+        Common.handleErrors(
+            error.responseMessage,
+            error.errors,
+            context
+        )
+    }
+
 }
 
 @Composable
-private fun PlaceSpecialOrderContent(viewModel: AuthViewModel) {
+private fun PlaceSpecialOrderContent(
+    viewState: SpecialOrderUiState,
+    viewModel: SpecialOrderViewModel,
+    isAnimated: Boolean,
+    placeOrder: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(Color.White),
     ) {
-        var isAnimated by remember {
-            mutableStateOf(false)
-        }
+
         Box(
             modifier = Modifier
                 .fillMaxSize(),
@@ -102,9 +145,10 @@ private fun PlaceSpecialOrderContent(viewModel: AuthViewModel) {
                         .padding(bottom = 21.dp, top = 44.dp)
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
-                        .animateContentSize(tween(500))
                         .background(TextColor, RoundedCornerShape(33.dp))
-                        .padding(horizontal = 24.dp),
+                        .padding(horizontal = 24.dp)
+                        .animateContentSize(tween(600))
+                    ,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -127,14 +171,14 @@ private fun PlaceSpecialOrderContent(viewModel: AuthViewModel) {
         if (isAnimated.not()) {
             ElasticButton(
                 onClick = {
-                    //     isAnimated = !isAnimated
-                    viewModel.placeOrder()
+                    placeOrder()
                 }, title = stringResource(R.string.send_order),
                 modifier = Modifier
                     .padding(vertical = 21.dp)
                     .padding(horizontal = 24.dp)
                     .fillMaxWidth()
-                    .requiredHeight(48.dp)
+                    .requiredHeight(48.dp),
+                isLoading = viewState.isLoading
             )
         }
 
@@ -142,7 +186,7 @@ private fun PlaceSpecialOrderContent(viewModel: AuthViewModel) {
 }
 
 @Composable
-private fun SpecialOrderFormView(viewModel: AuthViewModel) {
+private fun SpecialOrderFormView(viewModel: SpecialOrderViewModel) {
     Column(
         Modifier
             .padding(bottom = 15.dp)
@@ -233,14 +277,14 @@ private fun SpecialOrderFormView(viewModel: AuthViewModel) {
 
         )
 
-        ImagesChooser()
+        ImagesChooser(viewModel = viewModel)
 
 
     }
 }
 
 @Composable
-private fun ImagesChooser() {
+private fun ImagesChooser(viewModel: SpecialOrderViewModel) {
     val photoImages = remember {
         mutableStateListOf<File>()
     }
@@ -249,10 +293,10 @@ private fun ImagesChooser() {
         context = context,
     ) { file ->
         if (file != null) {
-            file.size.log("files")
             file.forEach {
                 photoImages.add(it)
             }
+            viewModel.attachments = file.toMutableList()
         }
     }
     Row(

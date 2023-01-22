@@ -5,27 +5,68 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.selsela.jobsapp.utils.validateRequired
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.auth.model.auth.User
+import com.selsela.takeefapp.data.auth.repository.AuthRepository
+import com.selsela.takeefapp.data.order.repository.SpecialOrderRepository
+import com.selsela.takeefapp.ui.auth.AuthUiState
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.Red
 import com.selsela.takeefapp.utils.LocalData
+import com.selsela.takeefapp.utils.retrofit.model.ErrorsData
+import com.selsela.takeefapp.utils.retrofit.model.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.palm.composestateevents.StateEvent
+import de.palm.composestateevents.StateEventWithContent
+import de.palm.composestateevents.consumed
+import de.palm.composestateevents.triggered
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
+
+/**
+ * UiState for the Special Order
+ */
+data class SpecialOrderUiState(
+    val onSuccess: StateEvent = consumed,
+    val isLoading: Boolean = false,
+    val onFailure: StateEventWithContent<ErrorsData> = consumed(),
+)
+
 @HiltViewModel
-class AuthViewModel @Inject constructor(
-    private val application: Application
+class SpecialOrderViewModel @Inject constructor(
+    private val application: Application,
+    private val repository: SpecialOrderRepository
 ) : ViewModel() {
+
     var name: MutableState<String> = mutableStateOf(LocalData.user?.name ?: "")
     var title: MutableState<String> = mutableStateOf("")
     var description: MutableState<String> = mutableStateOf("")
+    var attachments: MutableList<File>? = mutableListOf()
     var isTitleValid: MutableState<Boolean> = mutableStateOf(true)
     var isDescriptionValid: MutableState<Boolean> = mutableStateOf(true)
     var isNameValid: MutableState<Boolean> = mutableStateOf(true)
     var errorMessage: MutableState<String> = mutableStateOf("")
     var errorMessageName: MutableState<String> = mutableStateOf("")
     var errorMessageDescription: MutableState<String> = mutableStateOf("")
+
+    /**
+     * State Subscribers
+     */
+    private val _uiState = MutableStateFlow(SpecialOrderUiState())
+    val uiState: StateFlow<SpecialOrderUiState> = _uiState.asStateFlow()
+    private var state: SpecialOrderUiState
+        get() = _uiState.value
+        set(newState) {
+            _uiState.update { newState }
+        }
 
     /**
      * Form Validation
@@ -114,7 +155,59 @@ class AuthViewModel @Inject constructor(
         else BorderColor
     }
 
-    fun placeOrder(){
-        isFormValid()
+    /////////////////////////////////////////  API REQUESTS  ///////////////////////////////////////
+
+    /**
+     * API Requests
+     */
+
+    fun placeOrder() {
+        if (isFormValid()) {
+            viewModelScope.launch {
+                state = state.copy(
+                    isLoading = true
+                )
+                repository.placeSpecialOrder(
+                    username = name.value,
+                    title = title.value,
+                    description = description.value,
+                    photos = attachments
+                )
+                    .collect { result ->
+                        val specialOrderUiState = when (result.status) {
+                            Status.SUCCESS -> {
+                                SpecialOrderUiState(
+                                    onSuccess = triggered
+                                )
+                            }
+
+                            Status.LOADING ->
+                                SpecialOrderUiState(
+                                    isLoading = true
+                                )
+
+                            Status.ERROR -> SpecialOrderUiState(
+                                onFailure = triggered(
+                                    ErrorsData(
+                                        result.errors,
+                                        result.message,
+                                    )
+                                ),
+                            )
+                        }
+                        state = specialOrderUiState
+                    }
+            }
+        }
+    }
+    /**
+     * reset handlers
+     */
+    fun onSuccess() {
+        state = state.copy(onSuccess = consumed)
+    }
+
+    fun onFailure() {
+        state = state.copy(onFailure = consumed())
     }
 }

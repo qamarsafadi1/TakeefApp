@@ -11,6 +11,8 @@ import com.selsela.jobsapp.utils.validateRequired
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.auth.model.auth.User
 import com.selsela.takeefapp.data.auth.model.notifications.Notification
+import com.selsela.takeefapp.data.auth.model.support.ContactReplies
+import com.selsela.takeefapp.data.auth.model.support.contacts.Contact
 import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.data.auth.repository.AuthRepository
 import com.selsela.takeefapp.ui.theme.BorderColor
@@ -57,6 +59,14 @@ data class NotificationUiState(
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),
 )
 
+data class SupportUiState(
+    val contacts: List<ContactReplies>? = listOf(),
+    val contactReplay: ContactReplies? = null,
+    val isLoading: Boolean = false,
+    val onSuccess: StateEventWithContent<Int> = consumed(),
+    val onFailure: StateEventWithContent<ErrorsData> = consumed(),
+)
+
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val application: Application,
@@ -76,6 +86,8 @@ class AuthViewModel @Inject constructor(
     var isNameValid: MutableState<Boolean> = mutableStateOf(true)
     var avatar: File? = null
     var isLoaded = false
+    var message: MutableState<String> = mutableStateOf("")
+    var contactId = -1
     val userLoggedIn = mutableStateOf(LocalData.accessToken.isEmpty().not())
 
     /**
@@ -87,6 +99,8 @@ class AuthViewModel @Inject constructor(
     val walletUiState: StateFlow<WalletUiState> = _walletUiState.asStateFlow()
     private val _notificationUiState = MutableStateFlow(NotificationUiState())
     val notificationUiState: StateFlow<NotificationUiState> = _notificationUiState.asStateFlow()
+    private val _contactUiState = MutableStateFlow(SupportUiState())
+    val contactUiState: StateFlow<SupportUiState> = _contactUiState.asStateFlow()
 
     private var state: AuthUiState
         get() = _uiState.value
@@ -102,6 +116,11 @@ class AuthViewModel @Inject constructor(
         get() = _notificationUiState.value
         set(newState) {
             _notificationUiState.update { newState }
+        }
+    private var supportState: SupportUiState
+        get() = _contactUiState.value
+        set(newState) {
+            _contactUiState.update { newState }
         }
 
     /**
@@ -458,6 +477,90 @@ class AuthViewModel @Inject constructor(
                     }
                     notificationState = notificationUiState
                 }
+        }
+    }
+
+    fun getContacts() {
+        viewModelScope.launch {
+            supportState = supportState.copy(
+                isLoading = true
+            )
+            repository.getContacts()
+                .collect { result ->
+                    val supportUiState = when (result.status) {
+                        Status.SUCCESS -> {
+                            isLoaded = true
+                            SupportUiState(
+                                contacts = result.data,
+                                onSuccess = triggered(
+                                    if (result.data.isNullOrEmpty().not()) result.data?.last()?.id
+                                        ?: -1
+                                    else -1
+                                ),
+                                contactReplay = if (result.data.isNullOrEmpty()
+                                        .not()
+                                ) result.data?.last()
+                                else null
+
+                            )
+                        }
+
+                        Status.LOADING ->
+                            SupportUiState(
+                                isLoading = true
+                            )
+
+                        Status.ERROR ->
+                            SupportUiState(
+                                onFailure = triggered(
+                                    ErrorsData(
+                                        result.errors,
+                                        result.message,
+                                    )
+                                )
+                            )
+                    }
+                    supportState = supportUiState
+                }
+        }
+    }
+
+    fun contactOrReplay() {
+        viewModelScope.launch {
+            supportState = supportState.copy(
+                isLoading = true
+            )
+            val request = if (contactId == -1) repository.contactAdmin(message.value)
+            else repository.replySupport(
+                message.value,
+                contact_id = contactId
+            )
+            request.collect { result ->
+                val supportUiState = when (result.status) {
+                    Status.SUCCESS -> {
+                        isLoaded = true
+                        SupportUiState(
+                            contactReplay = result.data?.contactReplies,
+                        )
+                    }
+
+                    Status.LOADING ->
+                        SupportUiState(
+                            isLoading = true
+                        )
+
+                    Status.ERROR ->
+                        SupportUiState(
+                            onFailure = triggered(
+                                ErrorsData(
+                                    result.errors,
+                                    result.message,
+                                )
+                            )
+                        )
+                }
+                supportState = supportUiState
+            }
         }
     }
 

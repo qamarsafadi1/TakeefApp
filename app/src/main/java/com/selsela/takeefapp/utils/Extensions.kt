@@ -32,6 +32,10 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -50,6 +54,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.muddzdev.styleabletoast.StyleableToast
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.auth.model.support.Reply
 import com.selsela.takeefapp.navigation.Destinations
 import com.selsela.takeefapp.utils.FileHelper.Companion.absoulutePath
 import com.selsela.takeefapp.utils.FileHelper.Companion.compressImage
@@ -465,9 +470,11 @@ class Extensions {
             //   }
             //  }
         }
+
         fun Context.createFullImageFile(): File {
             // Create an image file name
-            val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
+            val timeStamp: String =
+                SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
             val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             val ff = File.createTempFile(
                 "JPEG_${timeStamp}_", /* prefix */
@@ -514,5 +521,25 @@ class Extensions {
             return builder.toString()
         }
 
+        @Composable
+        fun <T : Any> rememberMutableStateListOf(vararg elements: T): SnapshotStateList<T> {
+            return rememberSaveable(
+                saver =
+                listSaver(
+                    save = { stateList ->
+                        if (stateList.isNotEmpty()) {
+                            stateList.toList()
+                        } else mutableListOf()
+                    },
+                    restore = {
+                        if (it.isEmpty().not())
+                        it.toMutableStateList()
+                        else mutableListOf<T>().toMutableStateList()
+                    }
+                )
+            ) {
+                elements.toList().toMutableStateList()
+            }
+        }
     }
 }

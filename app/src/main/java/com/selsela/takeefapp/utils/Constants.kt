@@ -19,4 +19,8 @@ object Constants {
     // Wallet Constants
     const val CREDIT = "credit"
     const val DEBIT = "debit"
+
+    // Support Constants
+    const val REPLY = "reply"
+    const val CONTACT = "contact"
 }

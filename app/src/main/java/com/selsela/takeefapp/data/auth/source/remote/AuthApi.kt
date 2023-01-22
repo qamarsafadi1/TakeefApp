@@ -3,6 +3,8 @@ package com.selsela.takeefapp.data.auth.source.remote
 import com.selsela.takeefapp.data.auth.model.auth.AuthResponse
 import com.selsela.takeefapp.data.auth.model.general.GeneralResponse
 import com.selsela.takeefapp.data.auth.model.notifications.NotificationResponse
+import com.selsela.takeefapp.data.auth.model.support.SupportResponse
+import com.selsela.takeefapp.data.auth.model.support.contacts.ContactsResponse
 import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.utils.LocalData
 import okhttp3.MultipartBody
@@ -70,5 +72,16 @@ interface AuthApi {
     suspend fun deleteNotification(
         @Field("notification_id") notificationId: Int
     ): Response<NotificationResponse>
+
+    @POST("app/contact_or_reply")
+    @JvmSuppressWildcards
+    @FormUrlEncoded
+    suspend fun contactAdmin(
+        @FieldMap
+        body: Map<String, Any>
+    ): Response<SupportResponse>
+
+    @GET("app/get_contacts")
+    suspend fun getContacts(): Response<ContactsResponse>
 
 }

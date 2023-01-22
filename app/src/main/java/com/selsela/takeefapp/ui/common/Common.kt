@@ -531,6 +531,66 @@ fun InputEditText(
     }
 }
 
+
+@Composable
+fun InputEditText(
+    text: String,
+    modifier: Modifier,
+    onValueChange: (String) -> Unit,
+    hint: String = "",
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    singleLine: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE,
+    inputType: KeyboardType = KeyboardType.Text,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    cursorColor: Color = Color.White,
+    textAlign: TextAlign = TextAlign.Start,
+    cornerRaduis: Dp = 8.dp,
+    fillMax: Float = 1f,
+    hintColor: Color =  SecondaryColor.copy(0.39f),
+    textStyle: androidx.compose.ui.text.TextStyle = text14White
+) {
+    BasicTextField(
+        value = text,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        textStyle = textStyle,
+        decorationBox = { innerTextField ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(fillMax)
+                    .requiredHeight(48.dp)
+                    .background(TextFieldBg, shape = RoundedCornerShape(cornerRaduis))
+                    .border(1.dp, color = BorderColor, RoundedCornerShape(cornerRaduis))
+                    .padding(horizontal = 16.dp),
+                contentAlignment = Alignment.CenterStart,
+            ) {
+                if (text.isEmpty()) {
+                    Text(
+                        text = hint,
+                        color = hintColor,
+                        style = textStyle
+                    )
+                }
+                innerTextField()
+
+            }
+        },
+        enabled = enabled,
+        readOnly = readOnly,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = inputType,
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = keyboardActions,
+        cursorBrush = SolidColor(cursorColor)
+    )
+}
+
+
 @Composable
 fun EditTextMutltLine(
     onValueChange: (String) -> Unit, text: String,

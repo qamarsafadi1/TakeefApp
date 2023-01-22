@@ -4,9 +4,13 @@ import com.google.gson.Gson
 import com.selsela.takeefapp.data.auth.model.auth.AuthResponse
 import com.selsela.takeefapp.data.auth.model.auth.User
 import com.selsela.takeefapp.data.auth.model.notifications.NotificationResponse
+import com.selsela.takeefapp.data.auth.model.support.ContactReplies
+import com.selsela.takeefapp.data.auth.model.support.SupportResponse
+import com.selsela.takeefapp.data.auth.model.support.contacts.Contact
 import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.data.auth.source.remote.AuthApi
 import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Constants.NOT_VERIFIED
 import com.selsela.takeefapp.utils.Extensions.Companion.handleExceptions
 import com.selsela.takeefapp.utils.Extensions.Companion.handleSuccess
@@ -244,5 +248,91 @@ class AuthRepository @Inject constructor(
         }
         data
     }
+
+    suspend fun getContacts(
+    ): Flow<Resource<List<ContactReplies>>> =
+        withContext(Dispatchers.IO) {
+            val data: Flow<Resource<List<ContactReplies>>> = try {
+                val response = api.getContacts()
+                if (response.isSuccessful) {
+                    handleSuccess(
+                        response.body()?.contacts,
+                        message = response.body()?.responseMessage ?: response.message() ?: ""
+                    )
+                } else {
+                    val gson = Gson()
+                    val errorBase =
+                        gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    handleExceptions(errorBase)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                handleExceptions(e)
+            }
+            data
+        }
+
+    suspend fun contactAdmin(
+        text: String
+    ): Flow<Resource<SupportResponse>> =
+        withContext(Dispatchers.IO) {
+            val data: Flow<Resource<SupportResponse>> = try {
+                val body = HashMap<String, Any>()
+                body["name"] = LocalData.user?.name ?: ""
+                body["mobile"] = LocalData.user?.mobile ?: ""
+                body["type"] = Constants.CONTACT
+                body["message"] = text
+                body["country_id"] = "1"
+                val response = api.contactAdmin(body)
+                if (response.isSuccessful) {
+                    handleSuccess(
+                        response.body(),
+                        message = response.body()?.responseMessage ?: response.message() ?: ""
+                    )
+                } else {
+                    val gson = Gson()
+                    val errorBase =
+                        gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    handleExceptions(errorBase)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                handleExceptions(e)
+            }
+            data
+        }
+
+    suspend fun replySupport(
+        text: String,
+        contact_id: Int,
+    ): Flow<Resource<SupportResponse>> =
+        withContext(Dispatchers.IO) {
+            val data: Flow<Resource<SupportResponse>> = try {
+                val body = HashMap<String, Any>()
+                body["name"] = LocalData.user?.name ?: ""
+                body["mobile"] = LocalData.user?.mobile ?: ""
+                body["type"] = Constants.REPLY
+                body["message"] = text
+                body["country_id"] = "1"
+                body["contact_id"] = contact_id
+                val response = api.contactAdmin(body)
+                if (response.isSuccessful) {
+                    handleSuccess(
+                        response.body(),
+                        message = response.body()?.responseMessage ?: response.message() ?: ""
+                    )
+                } else {
+                    val gson = Gson()
+                    val errorBase =
+                        gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    handleExceptions(errorBase)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                handleExceptions(e)
+            }
+            data
+        }
+
 
 }

@@ -10,8 +10,10 @@ import com.selsela.jobsapp.utils.validateRequired
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.auth.model.auth.User
 import com.selsela.takeefapp.data.auth.repository.AuthRepository
+import com.selsela.takeefapp.data.order.model.special.SpecificOrder
 import com.selsela.takeefapp.data.order.repository.SpecialOrderRepository
 import com.selsela.takeefapp.ui.auth.AuthUiState
+import com.selsela.takeefapp.ui.auth.NotificationUiState
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.Red
 import com.selsela.takeefapp.utils.LocalData
@@ -36,6 +38,7 @@ import javax.inject.Inject
  */
 data class SpecialOrderUiState(
     val onSuccess: StateEvent = consumed,
+    val orders: List<SpecificOrder>? = null,
     val isLoading: Boolean = false,
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),
 )
@@ -56,6 +59,8 @@ class SpecialOrderViewModel @Inject constructor(
     var errorMessage: MutableState<String> = mutableStateOf("")
     var errorMessageName: MutableState<String> = mutableStateOf("")
     var errorMessageDescription: MutableState<String> = mutableStateOf("")
+    var isLoaded = false
+
 
     /**
      * State Subscribers
@@ -200,6 +205,41 @@ class SpecialOrderViewModel @Inject constructor(
             }
         }
     }
+
+    fun getSpecialOrders() {
+        viewModelScope.launch {
+            state = state.copy(
+                isLoading = true
+            )
+            repository.getSpecialOrders()
+                .collect { result ->
+                    val specialOrderUiState = when (result.status) {
+                        Status.SUCCESS -> {
+                            isLoaded = true
+                            SpecialOrderUiState(
+                                orders = result.data?.specificOrders
+                            )
+                        }
+
+                        Status.LOADING ->
+                            SpecialOrderUiState(
+                                isLoading = true
+                            )
+
+                        Status.ERROR -> SpecialOrderUiState(
+                            onFailure = triggered(
+                                ErrorsData(
+                                    result.errors,
+                                    result.message,
+                                )
+                            ),
+                        )
+                    }
+                    state = specialOrderUiState
+                }
+        }
+    }
+
     /**
      * reset handlers
      */

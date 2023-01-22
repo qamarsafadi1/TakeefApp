@@ -37,3 +37,5 @@ val Gray3 = Color(0xFFE6E6E6)
 val CardBg = Color(0xFFF8F9F9)
 val DarkGray = Color(0xFF313538)
 val Shimmer = Color(0x595E6777)
+val ShimmerGray= Color(0x59DCDDDF)
+

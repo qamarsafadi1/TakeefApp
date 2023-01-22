@@ -1,4 +1,4 @@
-package com.selsela.takeefapp.ui.order.cell
+package com.selsela.takeefapp.ui.order.item
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material.Card
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,8 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.order.model.special.SpecificOrder
 import com.selsela.takeefapp.ui.theme.Gray
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
@@ -30,6 +31,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Composable
 fun SpecialOrderItem(
+    specificOrder: SpecificOrder,
     onClick: () -> Unit
 ) {
     Card(
@@ -60,13 +62,13 @@ fun SpecialOrderItem(
                         color = SecondaryColor
                     )
                     Text(
-                        text = "#12342",
+                        text = "#${specificOrder.orderNumber}",
                         style = text16Bold,
                         color = TextColor,
                         modifier = Modifier.paddingTop(9)
                     )
                 }
-                DateView()
+                DateView(specificOrder.createdAt)
 
             }
             Row(
@@ -80,7 +82,7 @@ fun SpecialOrderItem(
                     color = SecondaryColor
                 )
                 Text(
-                    text = stringResource(R.string.address_name_here),
+                    text = specificOrder.title,
                     style = text12,
                     color = TextColor
                 )
@@ -96,10 +98,11 @@ fun SpecialOrderItem(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها التطبيق.",
+                    text = specificOrder.description,
                     style = text12,
                     color = TextColor.copy(0.56f),
                     maxLines = 2,
+                    overflow =TextOverflow.Ellipsis,
                     modifier = Modifier.paddingTop(8).weight(1f)
                 )
                 Image(

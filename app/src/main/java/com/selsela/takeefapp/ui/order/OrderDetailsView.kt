@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.StepperView
-import com.selsela.takeefapp.ui.order.cell.DateView
+import com.selsela.takeefapp.ui.order.item.DateView
 import com.selsela.takeefapp.ui.order.rate.RateSheet
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.theme.Bg

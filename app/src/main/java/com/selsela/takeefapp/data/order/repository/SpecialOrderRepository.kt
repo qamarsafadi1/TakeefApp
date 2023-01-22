@@ -1,7 +1,9 @@
 package com.selsela.takeefapp.data.order.repository
 
 import com.google.gson.Gson
+import com.selsela.takeefapp.data.auth.model.notifications.NotificationResponse
 import com.selsela.takeefapp.data.auth.source.remote.AuthApi
+import com.selsela.takeefapp.data.order.model.special.SpecialOrderResponse
 import com.selsela.takeefapp.data.order.model.special.SpecificOrder
 import com.selsela.takeefapp.data.order.remote.SpecialOrderApi
 import com.selsela.takeefapp.utils.Common
@@ -61,5 +63,25 @@ class SpecialOrderRepository @Inject constructor(
         }
         data
     }
+    suspend fun getSpecialOrders(): Flow<Resource<SpecialOrderResponse>> = withContext(Dispatchers.IO) {
+        val data: Flow<Resource<SpecialOrderResponse>> = try {
+            val response = api.getSpecialOrders()
+            if (response.isSuccessful) {
+                handleSuccess(
+                    response.body(),
+                    response.body()?.responseMessage ?: response.message()
+                )
+            } else {
+                val gson = Gson()
+                val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                handleExceptions(errorBase)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            handleExceptions(e)
+        }
+        data
+    }
+
 
 }

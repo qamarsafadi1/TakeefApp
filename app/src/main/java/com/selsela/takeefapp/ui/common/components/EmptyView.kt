@@ -27,12 +27,13 @@ import com.selsela.takeefapp.ui.theme.text16Medium
 @Composable
 fun EmptyView(
     title: String = "",
-    description: String = ""
+    description: String = "",
+    backgroundColor: Color = TextColor
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(TextColor),
+            .background(backgroundColor),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -48,13 +49,13 @@ fun EmptyView(
 
             Text(
                 text = title, style = text16Medium,
-                color = Color.White
+                color = if (backgroundColor == TextColor) Color.White else TextColor
             )
             Spacer(modifier = Modifier.height(23.dp))
             
             Text(
                 text = description, style = text14,
-                color = SecondaryColor2
+                color =  if (backgroundColor == TextColor) SecondaryColor2 else TextColor
             )
 
         }

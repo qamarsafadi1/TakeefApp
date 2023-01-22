@@ -8,6 +8,8 @@ data class SpecialOrderResponse(
     val responseMessage: String = "",
     @SerializedName("specific_order")
     val specificOrder: SpecificOrder = SpecificOrder(),
+    @SerializedName("specific_orders")
+    val specificOrders: List<SpecificOrder> = listOf(),
     @SerializedName("status")
     val status: Boolean = false
 )

@@ -1,4 +1,4 @@
-package com.selsela.takeefapp.ui.order.cell
+package com.selsela.takeefapp.ui.order.item
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -38,6 +38,7 @@ import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text12Bold
 import com.selsela.takeefapp.ui.theme.text16Bold
 import com.selsela.takeefapp.utils.Constants
+import com.selsela.takeefapp.utils.DateHelper.Companion.getOrderDate
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
@@ -75,8 +76,11 @@ fun OrderItem(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Column(Modifier.fillMaxWidth()
-                    .weight(1f)) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
                     Text(
                         text = stringResource(R.string.order_number),
                         style = text11,
@@ -177,9 +181,10 @@ fun OrderItem(
                 horizontalArrangement = Arrangement.End
             ) {
                 ElasticButton(
-                    onClick = {onRouteClick() }, title = stringResource(id = R.string.follow_route),
+                    onClick = { onRouteClick() },
+                    title = stringResource(id = R.string.follow_route),
                     icon = R.drawable.map,
-                    iconGravity = Constants.RIGHT ,
+                    iconGravity = Constants.RIGHT,
                     modifier = Modifier
                         .paddingTop(13)
                         .requiredHeight(36.dp)
@@ -188,7 +193,7 @@ fun OrderItem(
                 )
                 AnimatedVisibility(visible = false) {
                     ElasticButton(
-                        onClick = { /*TODO*/ }, title =stringResource(id = R.string.rate),
+                        onClick = { /*TODO*/ }, title = stringResource(id = R.string.rate),
                         icon = R.drawable.star,
                         iconGravity = Constants.RIGHT,
                         modifier = Modifier
@@ -204,16 +209,27 @@ fun OrderItem(
 }
 
 @Composable
-fun DateView() {
+fun DateView(
+    date: String = ""
+) {
+    var orderDate = listOf<String>()
+    orderDate = if (date != "") getOrderDate(date) else listOf()
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-            text = "AM",
+            text =
+            if (orderDate.isEmpty().not())
+                orderDate.last()
+            else "AM",
             style = text11,
             color = SecondaryColor
         )
         Spacer(modifier = Modifier.width(3.dp))
         Text(
-            text = "08:30",
+            text =
+            if (orderDate.isEmpty().not())
+              "${orderDate[3]}:${orderDate[4]}"
+            else
+            "08:30",
             style = text11,
             color = SecondaryColor
         )
@@ -226,7 +242,10 @@ fun DateView() {
         )
         Spacer(modifier = Modifier.width(3.dp))
         Text(
-            text = "29-11-2022",
+            text = if (orderDate.isEmpty().not())
+                "${orderDate[0]}-${orderDate[1]}-${orderDate[2]}"
+            else
+                "29-11-2022",
             style = text11,
             color = SecondaryColor
         )

@@ -191,5 +191,7 @@
     <string name="max_att_size">حجم الصورة كبير</string>
     <string name="no_transaction">لا يوجد عمليات</string>
     <string name="no_transaction_lbl">لا يوجد عمليات حاليًا</string>
+    <string name="no_notifications">لا يوجد اشعارات</string>
+    <string name="no_notifications_lbl">لا توجد اشعارات حالياً</string>
 
 </resources>

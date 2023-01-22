@@ -2,6 +2,7 @@ package com.selsela.takeefapp.data.auth.source.remote
 
 import com.selsela.takeefapp.data.auth.model.auth.AuthResponse
 import com.selsela.takeefapp.data.auth.model.general.GeneralResponse
+import com.selsela.takeefapp.data.auth.model.notifications.NotificationResponse
 import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.utils.LocalData
 import okhttp3.MultipartBody
@@ -60,5 +61,14 @@ interface AuthApi {
         @PartMap
         body: HashMap<String, RequestBody>
     ): Response<AuthResponse>
+
+    @GET("user/get_user_notifications")
+    suspend fun getNotifications(): Response<NotificationResponse>
+
+    @POST("user/delete_notification")
+    @FormUrlEncoded
+    suspend fun deleteNotification(
+        @Field("notification_id") notificationId: Int
+    ): Response<NotificationResponse>
 
 }

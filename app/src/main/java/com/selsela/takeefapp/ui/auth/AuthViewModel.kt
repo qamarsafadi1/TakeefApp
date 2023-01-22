@@ -10,6 +10,7 @@ import com.selsela.jobsapp.utils.validatePhone
 import com.selsela.jobsapp.utils.validateRequired
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.auth.model.auth.User
+import com.selsela.takeefapp.data.auth.model.notifications.Notification
 import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.data.auth.repository.AuthRepository
 import com.selsela.takeefapp.ui.theme.BorderColor
@@ -50,6 +51,12 @@ data class WalletUiState(
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),
 )
 
+data class NotificationUiState(
+    val notifications: List<Notification>? = listOf(),
+    val isLoading: Boolean = false,
+    val onFailure: StateEventWithContent<ErrorsData> = consumed(),
+)
+
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val application: Application,
@@ -78,6 +85,8 @@ class AuthViewModel @Inject constructor(
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
     private val _walletUiState = MutableStateFlow(WalletUiState())
     val walletUiState: StateFlow<WalletUiState> = _walletUiState.asStateFlow()
+    private val _notificationUiState = MutableStateFlow(NotificationUiState())
+    val notificationUiState: StateFlow<NotificationUiState> = _notificationUiState.asStateFlow()
 
     private var state: AuthUiState
         get() = _uiState.value
@@ -88,6 +97,11 @@ class AuthViewModel @Inject constructor(
         get() = _walletUiState.value
         set(newState) {
             _walletUiState.update { newState }
+        }
+    private var notificationState: NotificationUiState
+        get() = _notificationUiState.value
+        set(newState) {
+            _notificationUiState.update { newState }
         }
 
     /**
@@ -305,8 +319,8 @@ class AuthViewModel @Inject constructor(
                 )
                 repository.updateProfile(
                     avatar = avatar,
-                    name   = name.value,
-                    email  = email.value,
+                    name = name.value,
+                    email = email.value,
                     mobile = mobile.value
                 )
                     .collect { result ->
@@ -363,16 +377,86 @@ class AuthViewModel @Inject constructor(
 
                         Status.ERROR ->
                             WalletUiState(
-                            onFailure = triggered(
-                                ErrorsData(
-                                    result.errors,
-                                    result.message,
-                                )
-                            ),
-                            responseMessage = result.message ?: "",
-                        )
+                                onFailure = triggered(
+                                    ErrorsData(
+                                        result.errors,
+                                        result.message,
+                                    )
+                                ),
+                                responseMessage = result.message ?: "",
+                            )
                     }
                     walletState = walletUiState
+                }
+        }
+    }
+
+    fun getNotification() {
+        viewModelScope.launch {
+            notificationState = notificationState.copy(
+                isLoading = true
+            )
+            repository.getNotification()
+                .collect { result ->
+                    val notificationUiState = when (result.status) {
+                        Status.SUCCESS -> {
+                            isLoaded = true
+                            NotificationUiState(
+                                notifications = result.data?.notifications
+                            )
+                        }
+
+                        Status.LOADING ->
+                            NotificationUiState(
+                                isLoading = true
+                            )
+
+                        Status.ERROR ->
+                            NotificationUiState(
+                                onFailure = triggered(
+                                    ErrorsData(
+                                        result.errors,
+                                        result.message,
+                                    )
+                                )
+                            )
+                    }
+                    notificationState = notificationUiState
+                }
+        }
+    }
+
+    fun deleteNotification(id: Int) {
+        viewModelScope.launch {
+            notificationState = notificationState.copy(
+                isLoading = true
+            )
+            repository.deleteNotification(id)
+                .collect { result ->
+                    val notificationUiState = when (result.status) {
+                        Status.SUCCESS -> {
+                            isLoaded = true
+                            NotificationUiState(
+                                notifications = result.data?.notifications
+                            )
+                        }
+
+                        Status.LOADING ->
+                            NotificationUiState(
+                                isLoading = true
+                            )
+
+                        Status.ERROR ->
+                            NotificationUiState(
+                                onFailure = triggered(
+                                    ErrorsData(
+                                        result.errors,
+                                        result.message,
+                                    )
+                                )
+                            )
+                    }
+                    notificationState = notificationUiState
                 }
         }
     }

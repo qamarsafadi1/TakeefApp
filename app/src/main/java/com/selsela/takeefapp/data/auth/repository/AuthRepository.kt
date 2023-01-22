@@ -3,6 +3,7 @@ package com.selsela.takeefapp.data.auth.repository
 import com.google.gson.Gson
 import com.selsela.takeefapp.data.auth.model.auth.AuthResponse
 import com.selsela.takeefapp.data.auth.model.auth.User
+import com.selsela.takeefapp.data.auth.model.notifications.NotificationResponse
 import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.data.auth.source.remote.AuthApi
 import com.selsela.takeefapp.utils.Common
@@ -195,6 +196,47 @@ class AuthRepository @Inject constructor(
                         responseUser?.user, responseUser?.responseMessage ?: response.message()
                     )
                 }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            handleExceptions(e)
+        }
+        data
+    }
+
+    suspend fun getNotification(): Flow<Resource<NotificationResponse>> = withContext(Dispatchers.IO) {
+        val data: Flow<Resource<NotificationResponse>> = try {
+            val response = api.getNotifications()
+            if (response.isSuccessful) {
+                 handleSuccess(
+                    response.body(),
+                    response.body()?.responseMessage ?: response.message()
+                )
+            } else {
+                val gson = Gson()
+                val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                handleExceptions(errorBase)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            handleExceptions(e)
+        }
+        data
+    }
+    suspend fun deleteNotification(
+        id: Int
+    ): Flow<Resource<NotificationResponse>> = withContext(Dispatchers.IO) {
+        val data: Flow<Resource<NotificationResponse>> = try {
+            val response = api.deleteNotification(id)
+            if (response.isSuccessful) {
+                 handleSuccess(
+                    response.body(),
+                    response.body()?.responseMessage ?: response.message()
+                )
+            } else {
+                val gson = Gson()
+                val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                handleExceptions(errorBase)
             }
         } catch (e: Exception) {
             e.printStackTrace()

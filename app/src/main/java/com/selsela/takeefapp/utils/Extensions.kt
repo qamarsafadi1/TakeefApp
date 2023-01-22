@@ -17,6 +17,7 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.text.format.DateUtils
 import android.util.Log
 import android.view.Gravity
 import android.widget.Toast
@@ -477,7 +478,41 @@ class Extensions {
 
             return ff
         }
+
+
+        fun String.getTimeAgo(): String {
+            var text = ""
+            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.ENGLISH)
+            val date: Date = sdf.parse(this)
+            val time = DateUtils.getRelativeTimeSpanString(
+                date.time,
+                Date().time, DateUtils.MINUTE_IN_MILLIS
+            )
+            text = if (time == "قبل ٠ دقيقة")
+                "الآن"
+            else time.toString().preventArabicNumber()
+            return text
+        }
+
+        fun String.preventArabicNumber(): String {
+            val input = this
+            if (input.isEmpty()) {
+                return input
+            }
+            val builder = StringBuilder()
+            for (element in input) {
+                val ch = element
+                if (Character.isDigit(ch) && !(ch in '0'..'9')) {
+                    val numericValue = Character.getNumericValue(ch)
+                    if (numericValue >= 0) {
+                        builder.append(numericValue)
+                    }
+                } else {
+                    builder.append(ch)
+                }
+            }
+            return builder.toString()
+        }
+
     }
-
-
 }

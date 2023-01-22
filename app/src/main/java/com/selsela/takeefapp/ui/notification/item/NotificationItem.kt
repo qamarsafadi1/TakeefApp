@@ -1,4 +1,4 @@
-package com.selsela.takeefapp.ui.notification.cell
+package com.selsela.takeefapp.ui.notification.item
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,7 +20,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,26 +29,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
-import com.selsela.takeefapp.ui.theme.Bg
+import com.selsela.takeefapp.data.auth.model.notifications.Notification
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.TextFieldBg
-import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text11NoLines
-import com.selsela.takeefapp.utils.Extensions.Companion.log
+import com.selsela.takeefapp.utils.Extensions.Companion.getTimeAgo
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-val swipeableItems = mutableListOf<Int>()
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun NotificationItem(
-    index: Int, isSelected: Boolean = false,
-    onSwipe: () -> Unit
-) {
+fun NotificationItem(notification: Notification,
+onDelete : (Int) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val squareSize = 75.dp
     var swipeableState = rememberSwipeableState(0)
@@ -82,9 +76,11 @@ fun NotificationItem(
             contentAlignment = alignment
         ) {
             IconButton(onClick = {
+                onDelete(notification.id)
                 coroutineScope.launch {
                     swipeableState.animateTo(0)
                 }
+
             }) {
                 Image(
                     painter = painterResource(id = R.drawable.deletebtn),
@@ -112,7 +108,6 @@ fun NotificationItem(
                     .fillMaxWidth()
 
             ) {
-
                 Column(
                     Modifier
                         .padding(top = 25.dp)
@@ -121,22 +116,21 @@ fun NotificationItem(
                         )
                         .fillMaxSize()
                 ) {
-
                     Text(
-                        text = "انهاء الطلب #1234",
+                        text = notification.title,
                         style = text11NoLines,
                         color = Color.White
                     )
 
                     Text(
-                        text = "منذ دقيقة",
+                        text = notification.createdAt.getTimeAgo(),
                         style = text11NoLines,
                         color = SecondaryColor,
                         modifier = Modifier.paddingTop(5)
                     )
 
                     Text(
-                        text = "هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد \n",
+                        text = notification.message,
                         style = text11NoLines,
                         color = Color.White.copy(0.85f),
                         modifier = Modifier.paddingTop(8)
@@ -145,7 +139,12 @@ fun NotificationItem(
             }
 
             Image(
-                painter = painterResource(id = R.drawable.notificationitemicon),
+                painter = painterResource(
+                    id =
+                    if (notification.isRead == 1)
+                        R.drawable.notificationitemicon
+                    else R.drawable.notreadnotification
+                ),
                 contentDescription = "",
                 modifier = Modifier.paddingTop(17)
             )

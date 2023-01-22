@@ -9,7 +9,7 @@ data class Wallet(
     @SerializedName("action_time")
     val actionTime: String = "",
     @SerializedName("amount")
-    val amount: Int = 0,
+    val amount: Double = 0.0,
     @SerializedName("created_at")
     val createdAt: String = "",
     @SerializedName("id")

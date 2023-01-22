@@ -4,13 +4,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.selsela.takeefapp.data.auth.model.wallet.Wallet
 import com.selsela.takeefapp.ui.theme.DarkGray
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.Red
@@ -18,10 +21,11 @@ import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text13Meduim
 import com.selsela.takeefapp.ui.theme.text14Meduim
+import com.selsela.takeefapp.utils.Constants.DEBIT
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Composable
-fun TransactionItem(it: Int){
+fun TransactionItem(it: Wallet) {
     Column(Modifier.fillMaxWidth()) {
         Row(
             Modifier.fillMaxWidth(),
@@ -33,12 +37,12 @@ fun TransactionItem(it: Int){
                     .weight(1f)
             ) {
                 Text(
-                    text = "دفع تكلفة طلب",
+                    text = it.action,
                     style = text12,
                     color = SecondaryColor
                 )
                 Text(
-                    text = "#1312",
+                    text = "#${it.reference}",
                     style = text13Meduim,
                     color = Color.White,
                     modifier = Modifier.paddingTop(1)
@@ -46,11 +50,11 @@ fun TransactionItem(it: Int){
             }
 
             Text(
-                text = "-200",
+                text = "${it.amount}",
                 style = text14Meduim,
-                color = if (it % 2 == 0)
-                    Red
-                else Purple40
+                color = if (it.type == DEBIT) Purple40 else Red,
+                textAlign = TextAlign.End,
+                modifier = Modifier.weight(1f)
             )
         }
         Divider(

@@ -15,4 +15,8 @@ object Constants {
 
     const val LOG_OUT = 1
     const val LOG_IN = 2
+
+    // Wallet Constants
+    const val CREDIT = "credit"
+    const val DEBIT = "debit"
 }

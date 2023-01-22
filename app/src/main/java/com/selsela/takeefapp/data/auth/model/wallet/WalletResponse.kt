@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class WalletResponse(
     @SerializedName("balance")
-    val balance: Int = 0,
+    val balance: Double = 0.0,
     @SerializedName("response_message")
     val responseMessage: String = "",
     @SerializedName("status")

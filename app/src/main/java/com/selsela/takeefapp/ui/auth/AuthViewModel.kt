@@ -79,7 +79,6 @@ class AuthViewModel @Inject constructor(
     private val _walletUiState = MutableStateFlow(WalletUiState())
     val walletUiState: StateFlow<WalletUiState> = _walletUiState.asStateFlow()
 
-
     private var state: AuthUiState
         get() = _uiState.value
         set(newState) {
@@ -306,8 +305,8 @@ class AuthViewModel @Inject constructor(
                 )
                 repository.updateProfile(
                     avatar = avatar,
-                    name = name.value,
-                    email = email.value,
+                    name   = name.value,
+                    email  = email.value,
                     mobile = mobile.value
                 )
                     .collect { result ->

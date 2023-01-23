@@ -15,10 +15,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -27,6 +29,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.common.LottieAnimationView
+import com.selsela.takeefapp.ui.theme.Bg
 import com.selsela.takeefapp.ui.theme.Shimmer
 import com.selsela.takeefapp.ui.theme.TextFieldBg
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
@@ -117,6 +121,25 @@ fun LoadingNotificationView(color: Color = Shimmer) {
                     modifier = Modifier.paddingTop(17)
                 )
             }
+        }
+    }
+}
+@Composable
+fun LoadingView() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Bg),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(50.dp)
+                .background(Shimmer, RoundedCornerShape(11.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            LottieAnimationView(raw = R.raw.whiteloading)
         }
     }
 }

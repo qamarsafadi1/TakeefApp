@@ -106,7 +106,7 @@ class MainActivity : ComponentActivity() {
                                             && currentRoute.value?.destination?.route != Destinations.INTRO_SCREEN
                                             && currentRoute.value?.destination?.route != Destinations.ADDRESS_SCREEN
                                             && currentRoute.value?.destination?.route != Destinations.MY_ACCOUNT
-                                            && currentRoute.value?.destination?.route != Destinations.ORDER_DETAILS
+                                            && currentRoute.value?.destination?.route != Destinations.ORDER_DETAILS_ARGS
                                             && currentRoute.value?.destination?.route != Destinations.PROFILE_SCREEN
                                         ) {
                                             if (currentRoute.value?.destination?.route != Destinations.VERIFY_SCREEN)
@@ -204,7 +204,7 @@ class MainActivity : ComponentActivity() {
         "${currentRoute.value?.destination?.route}".log("ROUTE")
         if (currentRoute.value?.destination?.route == Destinations.MY_ACCOUNT
             || currentRoute.value?.destination?.route == Destinations.ADDRESS_SCREEN
-            || currentRoute.value?.destination?.route == Destinations.ORDER_DETAILS
+            || currentRoute.value?.destination?.route == Destinations.ORDER_DETAILS_ARGS
             || currentRoute.value?.destination?.route == Destinations.PROFILE_SCREEN
         ) {
             WindowCompat.setDecorFitsSystemWindows(window, false)

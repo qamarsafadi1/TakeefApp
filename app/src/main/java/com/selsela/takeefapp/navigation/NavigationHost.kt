@@ -111,7 +111,7 @@ fun NavigationHost(
             }
         }
         composable(Destinations.SPECIAL_ORDER) {
-            PlaceSpecialOrderView(){
+            PlaceSpecialOrderView() {
                 navActions.navigateToHome()
             }
         }
@@ -151,8 +151,8 @@ fun NavigationHost(
         }
         composable(Destinations.ORDERS_SCREEN) {
             OrdersView(
-                goToDetails = {
-                    navActions.navigateToOrderDetails()
+                goToDetails = { id ->
+                    navActions.navigateToOrderDetails(id)
                 }
             ) {
                 navActions.navigateToOrderRoute()
@@ -161,8 +161,9 @@ fun NavigationHost(
         composable(Destinations.ORDER_ROUTE_SCREEN) {
             OrderRouteView()
         }
-        composable(Destinations.ORDER_DETAILS) {
-            OrderDetailsView() {
+        composable(Destinations.ORDER_DETAILS_ARGS) {
+            val id = it.arguments?.getString("id") ?: ""
+            OrderDetailsView(id.toInt()) {
                 navController.navigateUp()
             }
         }

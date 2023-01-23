@@ -11,4 +11,9 @@ interface OrderApi {
         @Query("page") page: Int = 1,
         @Query("case_id") caseId: Int = 1
     ): Response<OrderResponse>
+
+    @GET("user/order/order_details")
+    suspend fun getOrderDetails(
+        @Query("order_id") orderId: Int
+    ): Response<OrderResponse>
 }

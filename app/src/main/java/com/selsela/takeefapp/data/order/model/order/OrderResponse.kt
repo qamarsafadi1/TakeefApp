@@ -8,6 +8,8 @@ data class OrderResponse(
     val hasMorePage: Boolean = false,
     @SerializedName("orders")
     val orders: List<Order> = listOf(),
+    @SerializedName("order")
+    val order: Order = Order(),
     @SerializedName("response_message")
     val responseMessage: String = "",
     @SerializedName("status")

@@ -2,19 +2,16 @@ package com.selsela.takeefapp.ui.order
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -26,51 +23,99 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.selsela.takeefapp.R
-import com.selsela.takeefapp.ui.common.ElasticButton
+import com.selsela.takeefapp.data.order.model.order.AcTypes
+import com.selsela.takeefapp.data.order.model.order.Order
+import com.selsela.takeefapp.ui.common.State
 import com.selsela.takeefapp.ui.common.StepperView
+import com.selsela.takeefapp.ui.common.components.LoadingView
+import com.selsela.takeefapp.ui.order.componenets.AdditionalCostView
+import com.selsela.takeefapp.ui.order.componenets.CostView
+import com.selsela.takeefapp.ui.order.componenets.SelectedAddressView
+import com.selsela.takeefapp.ui.order.componenets.ServiceItem
+import com.selsela.takeefapp.ui.order.componenets.VisitDateView
 import com.selsela.takeefapp.ui.order.item.DateView
 import com.selsela.takeefapp.ui.order.rate.RateSheet
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.theme.Bg
-import com.selsela.takeefapp.ui.theme.ColorAccent
 import com.selsela.takeefapp.ui.theme.DividerColor
-import com.selsela.takeefapp.ui.theme.DividerColorBlue
-import com.selsela.takeefapp.ui.theme.LightBlue
-import com.selsela.takeefapp.ui.theme.Red
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor2
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
-import com.selsela.takeefapp.ui.theme.text11NoLines
-import com.selsela.takeefapp.ui.theme.text12
-import com.selsela.takeefapp.ui.theme.text12Meduim
-import com.selsela.takeefapp.ui.theme.text13
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text16Bold
-import com.selsela.takeefapp.ui.theme.text16Medium
-import com.selsela.takeefapp.utils.Constants.ACCEPT
-import com.selsela.takeefapp.utils.Constants.REJECT
-import com.selsela.takeefapp.utils.Constants.RIGHT
+import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.LocalData
-import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
-import kotlinx.coroutines.launch
+import de.palm.composestateevents.EventEffect
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OrderDetailsView(
+    orderId: Int,
+    viewModel: OrderViewModel = hiltViewModel(),
     onBack: () -> Unit
 ) {
+    val context = LocalContext.current
+    val viewState: OrderUiState by viewModel.uiState.collectAsStateLifecycleAware(
+        OrderUiState()
+    )
+
+    when (viewState.state) {
+        State.SUCCESS -> {
+            viewState.order?.let {
+                OrderDetailsContent(
+                    onBack,
+                    it
+                )
+            }
+        }
+
+        State.LOADING -> {
+            LoadingView()
+        }
+
+        else -> {}
+    }
+
+
+    /**
+     * Handle Ui state from flow
+     */
+
+    LaunchedEffect(Unit) {
+        if (!viewModel.isLoaded)
+            viewModel.getOrderDetails(orderId)
+    }
+
+    EventEffect(
+        event = viewState.onFailure,
+        onConsumed = viewModel::onFailure
+    ) { error ->
+        Common.handleErrors(
+            error.responseMessage,
+            error.errors,
+            context
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterialApi::class)
+private fun OrderDetailsContent(onBack: () -> Unit, order: Order) {
     Color.Transparent.ChangeStatusBarOnlyColor()
     val coroutineScope = rememberCoroutineScope()
     val paySheetState = rememberModalBottomSheetState(
@@ -90,45 +135,7 @@ fun OrderDetailsView(
             .padding(bottom = 45.dp)
     ) {
         Column {
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .requiredHeight(88.dp)
-                    .background(Color.White)
-                    .padding(top = 30.dp)
-                    .padding(horizontal = 6.dp),
-            ) {
-
-                IconButton(
-                    onClick = { onBack() },
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.backbutton),
-                        contentDescription = ""
-                    )
-                }
-                Text(
-                    text = stringResource(id = R.string.order_details),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center),
-                    textAlign = TextAlign.Center,
-                    style = text14Meduim
-                )
-
-                IconButton(
-                    onClick = { onBack() },
-                    modifier = Modifier
-                        .padding(end = 18.dp)
-                        .align(Alignment.CenterEnd)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.cancel_order),
-                        style = text14Meduim
-                    )
-                }
-            }
+            Header(onBack)
             Card(
                 modifier = Modifier
                     .padding(
@@ -136,7 +143,6 @@ fun OrderDetailsView(
                         horizontal = 19.dp
                     )
                     .fillMaxSize()
-
             ) {
                 Column(
                     Modifier
@@ -158,51 +164,38 @@ fun OrderDetailsView(
                                 color = SecondaryColor
                             )
                             Text(
-                                text = "#12342",
+                                text = "#${order.number}",
                                 style = text16Bold,
                                 color = TextColor
                             )
                         }
-                        DateView()
-
+                        DateView(order.createdAt)
                     }
                     Spacer(modifier = Modifier.height(22.dp))
                     StepperView(
                         isDetails = true,
-                        items = LocalData.cases?.filter { it.id != 5 }
+                        items = LocalData.cases?.filter { it.id != 6 },
+                        currentStep = order.logs.lastIndex
                     )
-                    MaintenanceCostWarning()
-                    AcceptRejectButtons() {
-                        coroutineScope.launch {
-                            when (it) {
-                                REJECT -> {
-                                    if (rateSheetState.isVisible)
-                                        rateSheetState.hide()
-                                    else rateSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                                }
-
-                                ACCEPT -> {
-                                    if (paySheetState.isVisible)
-                                        paySheetState.hide()
-                                    else paySheetState.animateTo(ModalBottomSheetValue.Expanded)
-                                }
-                            }
-
-                        }
-                    }
+                    AdditionalCostView(
+                        isVisible = order.needAdditionalCost == 1,
+                        coroutineScope,
+                        rateSheetState,
+                        paySheetState
+                    )
                     Divider(
                         thickness = 1.dp,
                         color = DividerColor,
                         modifier = Modifier.padding(top = 27.6.dp)
                     )
-                    VisitDateView()
+                    VisitDateView(order.workPeriod)
                     Divider(
                         thickness = 1.dp,
                         color = DividerColor,
                         modifier = Modifier.padding(top = 8.6.dp)
                     )
-                    SelectedAddressView()
-                    CostView()
+                    SelectedAddressView(order.address)
+                    CostView(order.price, order.payment, order.useWallet)
                     Box(
                         modifier = Modifier
                             .padding(top = 11.2.dp)
@@ -224,8 +217,14 @@ fun OrderDetailsView(
                             .fillMaxWidth()
                             .padding(bottom = 20.dp)
                     ) {
-                        repeat(2) {
-                            ServiceItem()
+
+                        val orderServices = order.orderService.groupBy {
+                            it.acTypes.add(AcTypes())
+                            it.service.id
+                        }
+                        // TODO: Handle the new way form API
+                        repeat(orderServices.size) {
+                            ServiceItem(order.orderService[it])
                         }
                     }
                 }
@@ -242,416 +241,46 @@ fun OrderDetailsView(
 }
 
 @Composable
-private fun ServiceItem() {
-    Column(
+private fun Header(onBack: () -> Unit) {
+    Box(
         Modifier
-            .paddingTop(11)
-            .background(Color.White, shape = RoundedCornerShape(6.dp))
-            .border(
-                width = 1.dp, color = SecondaryColor2,
-                RoundedCornerShape(6.dp)
-            )
-            .padding(bottom = 13.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(bottom = 7.dp)
-                .fillMaxWidth()
-                .padding(top = 23.2.dp)
-                .padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row {
-                Text(
-                    text = stringResource(R.string.maintinance_serivce),
-                    style = text12,
-                    color = TextColor,
-                )
-
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                androidx.compose.material3.Text(
-                    text = "100",
-                    style = text16Medium,
-                    color = TextColor
-                )
-                Spacer(modifier = Modifier.width(3.dp))
-                androidx.compose.material3.Text(
-                    text = stringResource(id = R.string.currency_1),
-                    style = text13,
-                    color = SecondaryColor
-                )
-
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 15.dp)
-                .padding(horizontal = 15.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row {
-                Text(
-                    text = "مكيف شباك",
-                    style = text12,
-                    color = SecondaryColor,
-                )
-
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                androidx.compose.material3.Text(
-                    text = "2",
-                    style = text16Medium,
-                    color = TextColor
-                )
-                Spacer(modifier = Modifier.width(3.dp))
-                androidx.compose.material3.Text(
-                    text = stringResource(R.string.device),
-                    style = text13,
-                    color = SecondaryColor
-                )
-
-            }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 14.dp)
-                .padding(horizontal = 15.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row {
-                Text(
-                    text = "مكيف سبليت",
-                    style = text12,
-                    color = SecondaryColor,
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End,
-            ) {
-                androidx.compose.material3.Text(
-                    text = "2",
-                    style = text16Medium,
-                    color = TextColor,
-                )
-                Spacer(modifier = Modifier.width(3.dp))
-                androidx.compose.material3.Text(
-                    text = stringResource(id = R.string.device),
-                    style = text13,
-                    color = SecondaryColor
-                )
-
-            }
-        }
-
-    }
-}
-
-@Composable
-private fun CostView() {
-    Column(
-        Modifier
-            .padding(top = 21.dp)
-            .padding(horizontal = 7.3.dp)
             .fillMaxWidth()
-            .defaultMinSize(minHeight = 134.dp)
-            .background(LightBlue.copy(.20f), shape = RoundedCornerShape(11.dp))
-            .padding(bottom = 23.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 23.2.dp)
-                .padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row {
-                Image(
-                    painter = painterResource(id = R.drawable.moneyicon),
-                    contentDescription = "",
-                    colorFilter = ColorFilter.tint(LightBlue.copy(0.30f))
-                )
-                Text(
-                    text = stringResource(id = R.string.cost_1),
-                    style = text14Meduim,
-                    color = TextColor,
-                    modifier = Modifier.padding(start = 13.3.dp)
-                )
-
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                androidx.compose.material3.Text(
-                    text = "100",
-                    style = text16Medium,
-                    color = TextColor
-                )
-                Spacer(modifier = Modifier.width(3.dp))
-                androidx.compose.material3.Text(
-                    text = stringResource(id = R.string.currency_1),
-                    style = text13,
-                    color = SecondaryColor
-                )
-
-            }
-        }
-
-        Divider(
-            thickness = 1.dp,
-            color = DividerColorBlue,
-            modifier = Modifier.paddingTop(15)
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 15.2.dp)
-                .padding(horizontal = 15.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row {
-                Text(
-                    text = stringResource(id = R.string.wallet_balance),
-                    style = text12,
-                    color = SecondaryColor,
-                )
-
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                androidx.compose.material3.Text(
-                    text = "100",
-                    style = text16Medium,
-                    color = TextColor
-                )
-                Spacer(modifier = Modifier.width(3.dp))
-                androidx.compose.material3.Text(
-                    text = stringResource(id = R.string.currency_1),
-                    style = text13,
-                    color = SecondaryColor
-                )
-
-            }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 14.dp)
-                .padding(horizontal = 15.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row {
-                Text(
-                    text = stringResource(id = R.string.other_pay),
-                    style = text12,
-                    color = SecondaryColor,
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End,
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.visa),
-                    contentDescription = ""
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                androidx.compose.material3.Text(
-                    text = "100",
-                    style = text16Medium,
-                    color = TextColor,
-                )
-                Spacer(modifier = Modifier.width(3.dp))
-                androidx.compose.material3.Text(
-                    text = stringResource(id = R.string.currency_1),
-                    style = text13,
-                    color = SecondaryColor
-                )
-
-            }
-        }
-
-    }
-}
-
-@Composable
-private fun AcceptRejectButtons(onClick: (Int) -> Unit) {
-    Row(
-        Modifier
-            .padding(top = 11.dp)
-            .padding(horizontal = 21.dp)
-            .fillMaxWidth()
+            .requiredHeight(88.dp)
+            .background(Color.White)
+            .padding(top = 30.dp)
+            .padding(horizontal = 6.dp),
     ) {
 
-        ElasticButton(
-            onClick = { onClick(REJECT) },
-            title = stringResource(R.string.reject_1),
-            colorBg = Red,
-            modifier = Modifier
-                .weight(1f)
-                .requiredHeight(36.dp)
-        )
-        Spacer(modifier = Modifier.width(18.dp))
-        ElasticButton(
-            onClick = {
-                onClick(ACCEPT)
-            },
-            title = stringResource(R.string.acccept_pay),
-            icon = R.drawable.pay,
-            modifier = Modifier
-                .weight(1f)
-                .requiredHeight(36.dp),
-            iconGravity = RIGHT
-        )
-    }
-}
-
-@Composable
-private fun MaintenanceCostWarning() {
-    Row(
-        modifier = Modifier
-            .padding(horizontal = 14.dp)
-            .padding(top = 12.dp)
-            .fillMaxWidth()
-            .requiredHeight(62.dp)
-            .background(
-                ColorAccent.copy(0.19f),
-                shape = RoundedCornerShape(12.dp)
-            )
-            .padding(horizontal = 13.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.info),
-            contentDescription = ""
-        )
-
-        Text(
-            text = stringResource(R.string.extra_cost),
-            style = text11NoLines,
-            color = TextColor,
-            modifier = Modifier.padding(start = 8.8.dp)
-        )
-    }
-}
-
-@Composable
-private fun VisitDateView() {
-    Row(
-        modifier = Modifier
-            .padding(top = 13.dp)
-            .padding(horizontal = 9.6.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(
-            modifier = Modifier.weight(1.5f),
-            verticalAlignment = Alignment.CenterVertically
+        IconButton(
+            onClick = { onBack() },
+            modifier = Modifier.align(Alignment.CenterStart)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.date_line),
+                painter = painterResource(id = R.drawable.backbutton),
                 contentDescription = ""
             )
-            androidx.compose.material3.Text(
-                text = stringResource(id = R.string.visit_date_1),
-                style = text12,
-                color = SecondaryColor,
-                modifier = Modifier.padding(start = 8.dp)
-            )
-
         }
-
-        Column(
-            modifier = Modifier.weight(1f),
-            horizontalAlignment = Alignment.End
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Spacer(modifier = Modifier.width(5.dp))
-                androidx.compose.material3.Text(
-                    text = stringResource(id = R.string.am_lbl),
-                    style = text14,
-                    color = TextColor
-                )
-            }
-            androidx.compose.material3.Text(
-                text = stringResource(R.string._08_00_am_12_00_pm),
-                style = text12,
-                color = SecondaryColor,
-                modifier = Modifier.paddingTop(
-                    7
-                )
-            )
-        }
-    }
-
-}
-
-@Composable
-private fun SelectedAddressView() {
-    Row(
-        modifier = Modifier
-            .padding(horizontal = 10.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.Top
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.location),
-            contentDescription = "",
-            modifier = Modifier.padding(end = 6.6.dp, top = 20.dp)
-        )
-        Column(
+        Text(
+            text = stringResource(id = R.string.order_details),
             modifier = Modifier
-                .paddingTop(20)
-                .weight(1f)
+                .fillMaxWidth()
+                .align(Alignment.Center),
+            textAlign = TextAlign.Center,
+            style = text14Meduim
         )
-        {
+
+        IconButton(
+            onClick = { onBack() },
+            modifier = Modifier
+                .padding(end = 18.dp)
+                .align(Alignment.CenterEnd)
+        ) {
             Text(
-                text = stringResource(R.string.selected_address),
-                style = text12Meduim,
-                color = SecondaryColor
-            )
-            Text(
-                text = "المنقطة ـ المدينة ، الاشعر ، اسم الCA 95673",
-                style = text14,
-                color = TextColor,
-                modifier = Modifier.paddingTop(11)
-            )
-            Text(
-                text = "شارع عبد العزيز م، مدينة السالم",
-                style = text14,
-                color = TextColor,
-                modifier = Modifier.paddingTop(9)
+                text = stringResource(id = R.string.cancel_order),
+                style = text14Meduim
             )
         }
-
     }
 }
+
+

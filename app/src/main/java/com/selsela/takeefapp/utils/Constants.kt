@@ -30,4 +30,5 @@ object Constants {
     const val ON_WAY = 3
     const val RECEIVED = 1
     const val FINISHED = 5
+    const val WALLET = 5
 }

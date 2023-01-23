@@ -19,7 +19,8 @@ object Destinations {
     const val MY_ACCOUNT = "my_account"
     const val ORDERS_SCREEN = "orders"
     const val ORDER_ROUTE_SCREEN = "order_route_screen"
-    const val ORDER_DETAILS = "order_details"
+    const val ORDER_DETAILS = "order_details/"
+    const val ORDER_DETAILS_ARGS = "order_details/{id}"
     const val SPECIAL_ORDERS = "special_orders"
     const val SPECIAL_ORDERS_ARGS = "special_orders_details/{id}"
     const val SPECIAL_ORDERS_DETAILS = "special_orders_details/"
@@ -98,8 +99,8 @@ class NavigationActions(private val navController: NavController) {
         navController.navigate(Destinations.ORDER_ROUTE_SCREEN)
     }
 
-    fun navigateToOrderDetails() {
-        navController.navigate(Destinations.ORDER_DETAILS)
+    fun navigateToOrderDetails(id: Int) {
+        navController.navigate("${Destinations.ORDER_DETAILS}${id}")
     }
 
     fun navigateToSpecialOrders() {

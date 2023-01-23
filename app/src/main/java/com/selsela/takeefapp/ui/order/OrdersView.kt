@@ -24,6 +24,7 @@ import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.order.model.order.Order
 import com.selsela.takeefapp.ui.common.LottieAnimationView
 import com.selsela.takeefapp.ui.common.components.EmptyView
+import com.selsela.takeefapp.ui.common.components.LoadingView
 import com.selsela.takeefapp.ui.order.item.OrderItem
 import com.selsela.takeefapp.ui.theme.Bg
 import com.selsela.takeefapp.ui.theme.Shimmer
@@ -31,7 +32,7 @@ import com.selsela.takeefapp.ui.theme.Shimmer
 @Composable
 fun OrdersView(
     viewModel: OrderViewModel = hiltViewModel(),
-    goToDetails: () -> Unit,
+    goToDetails: (Int) -> Unit,
     goToOrderRoute: () -> Unit
 ) {
     val lazyColumnListState = rememberLazyListState()
@@ -42,7 +43,7 @@ fun OrdersView(
                 ?: -9) >= (lazyColumnListState.layoutInfo.totalItemsCount - 6)
         }
     }
-    val orders = viewModel.newsList
+    val orders = viewModel.orderList
 
     OrderListContent(
         viewModel,
@@ -66,7 +67,7 @@ private fun OrderListContent(
     viewModel: OrderViewModel,
     lazyColumnListState: LazyListState,
     orders: List<Order>,
-    goToDetails: () -> Unit,
+    goToDetails: (Int) -> Unit,
     goToOrderRoute: () -> Unit
 ) {
     Box(
@@ -92,7 +93,7 @@ private fun OrderListContent(
 private fun OrderList(
     lazyColumnListState: LazyListState,
     orders: List<Order>,
-    goToDetails: () -> Unit,
+    goToDetails: (Int) -> Unit,
     goToOrderRoute: () -> Unit
 ) {
     if (orders.isEmpty().not()) {
@@ -104,7 +105,7 @@ private fun OrderList(
             items(orders) {
                 OrderItem(
                     it,
-                    onClick = { goToDetails() }
+                    onClick = { goToDetails(it) }
                 ) {
                     goToOrderRoute()
                 }
@@ -119,22 +120,3 @@ private fun OrderList(
     }
 }
 
-@Composable
-private fun LoadingView() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Bg),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .size(50.dp)
-                .background(Shimmer, RoundedCornerShape(11.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            LottieAnimationView(raw = R.raw.whiteloading)
-        }
-    }
-}

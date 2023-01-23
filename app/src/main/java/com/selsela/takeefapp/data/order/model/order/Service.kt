@@ -13,5 +13,5 @@ data class Service(
     @SerializedName("name")
     val name: String = "",
     @SerializedName("price")
-    val price: Int = 0
+    val price: Double = 0.0
 )

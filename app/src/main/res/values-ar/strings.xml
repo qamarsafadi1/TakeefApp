@@ -133,7 +133,7 @@
     <string name="cost_added">تكلفة اضافية للصيانة</string>
     <string name="maintinance_not_done_befor">لن يتم عمل الصيانة قبل دفع التكلفة</string>
     <string name="service_details">تفاصيل الخدمة</string>
-    <string name="maintinance_serivce">خدمة صيانة</string>
+    <string name="maintinance_serivce">خدمة %1$s</string>
     <string name="device">جهاز</string>
     <string name="reject_1">رفض</string>
     <string name="acccept_pay">قبول ودفع</string>

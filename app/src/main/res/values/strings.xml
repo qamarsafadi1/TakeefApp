@@ -132,7 +132,7 @@
     <string name="cost_added">additional cost for maintenance</string>
     <string name="maintinance_not_done_befor">Maintenance will not done until the cost is paid</string>
     <string name="service_details">Service details</string>
-    <string name="maintinance_serivce">Maintenance service</string>
+    <string name="maintinance_serivce">%1$s service</string>
     <string name="device">Device</string>
     <string name="reject_1">Cancel</string>
     <string name="acccept_pay">Accept and pay</string>

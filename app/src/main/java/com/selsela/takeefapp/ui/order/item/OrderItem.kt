@@ -51,7 +51,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 @Composable
 fun OrderItem(
     order: Order,
-    onClick: () -> Unit,
+    onClick: (Int) -> Unit,
     onRouteClick: () -> Unit
 ) {
     Card(
@@ -60,7 +60,7 @@ fun OrderItem(
             .fillMaxWidth()
             .defaultMinSize(minHeight = 191.dp)
             .clickable {
-                onClick()
+                onClick(order.id)
             },
         colors = CardDefaults.cardColors(
             containerColor = Color.White

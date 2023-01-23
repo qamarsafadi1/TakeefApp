@@ -240,6 +240,7 @@ class SpecialOrderViewModel @Inject constructor(
                 }
         }
     }
+
     fun getSpecialOrderDetails(id: Int) {
         viewModelScope.launch {
             state = state.copy(

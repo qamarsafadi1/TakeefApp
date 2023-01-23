@@ -23,4 +23,11 @@ object Constants {
     // Support Constants
     const val REPLY = "reply"
     const val CONTACT = "contact"
+
+    // Order Constants
+    const val NEW_ORDER = 1
+    const val UPCOMING_ORDERS = 2
+    const val ON_WAY = 3
+    const val RECEIVED = 1
+    const val FINISHED = 5
 }

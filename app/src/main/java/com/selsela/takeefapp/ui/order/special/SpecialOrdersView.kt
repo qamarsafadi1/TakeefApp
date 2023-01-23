@@ -11,9 +11,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.components.EmptyView
 import com.selsela.takeefapp.ui.order.item.SpecialOrderItem
 import com.selsela.takeefapp.ui.order.loading.SpecialOrderLoadingView
@@ -87,15 +89,15 @@ private fun SpecialOrderList(
                 )
         ) {
             items(viewState.orders ?: listOf()) {
-                SpecialOrderItem(it) {
-                    goToDetails(it)
+                SpecialOrderItem(it) { id ->
+                    goToDetails(id)
                 }
             }
         }
     } else {
         EmptyView(
-            "لا يوجد طلبات خاصة",
-            " لا يوجد طلبات خاصة حاليًا",
+            stringResource(R.string.no_orders_special),
+            stringResource(R.string.no_order_special_lbl),
             backgroundColor = Bg
         )
     }

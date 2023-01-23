@@ -41,16 +41,11 @@ fun SplashView(
 
     SplashContent(onFinish)
 
-
     LaunchedEffect(Unit) {
         /**
          * Get fcm token
          */
         receiveToken()
-        /**
-         * Get config api
-         */
-        viewModel.getConfig()
     }
 }
 

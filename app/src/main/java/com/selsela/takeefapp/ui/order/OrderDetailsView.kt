@@ -62,6 +62,7 @@ import com.selsela.takeefapp.ui.theme.text16Medium
 import com.selsela.takeefapp.utils.Constants.ACCEPT
 import com.selsela.takeefapp.utils.Constants.REJECT
 import com.selsela.takeefapp.utils.Constants.RIGHT
+import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.launch
 
@@ -116,7 +117,17 @@ fun OrderDetailsView(
                     style = text14Meduim
                 )
 
-
+                IconButton(
+                    onClick = { onBack() },
+                    modifier = Modifier
+                        .padding(end = 18.dp)
+                        .align(Alignment.CenterEnd)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.cancel_order),
+                        style = text14Meduim
+                    )
+                }
             }
             Card(
                 modifier = Modifier
@@ -158,12 +169,7 @@ fun OrderDetailsView(
                     Spacer(modifier = Modifier.height(22.dp))
                     StepperView(
                         isDetails = true,
-                        items = listOf(
-                            stringResource(R.string.recived_order),
-                            stringResource(R.string.on_way),
-                            stringResource(R.string.on_progress),
-                            stringResource(R.string.done_order)
-                        )
+                        items = LocalData.cases?.filter { it.id != 5 }
                     )
                     MaintenanceCostWarning()
                     AcceptRejectButtons() {

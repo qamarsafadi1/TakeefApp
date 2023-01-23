@@ -27,6 +27,7 @@ class ConfigurationsRepository @Inject constructor(
                     getAboutApp()
                 }
                 LocalData.configurations = response.body()?.configurations
+                LocalData.cases = response.body()?.cases
                 LocalData.acTypes = response.body()?.acTypes
                 LocalData.services = response.body()?.services
                 handleSuccess(

@@ -5,6 +5,7 @@ import com.orhanobut.hawk.Hawk
 import com.selsela.takeefapp.data.auth.model.auth.User
 import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.data.config.model.AcType
+import com.selsela.takeefapp.data.config.model.Case
 import com.selsela.takeefapp.data.config.model.Configurations
 import com.selsela.takeefapp.data.config.model.Service
 
@@ -48,6 +49,11 @@ open class LocalData {
             set(value) {
                 field = value
                 Hawk.put("configurations", value)
+            }
+        var cases: List<Case>? = Hawk.get("cases")
+            set(value) {
+                field = value
+                Hawk.put("cases", value)
             }
 
         var terms: com.selsela.takeefapp.data.config.model.page.Page? = Hawk.get("terms")

@@ -19,7 +19,6 @@ class HomeViewModel @Inject constructor(
     val services = LocalData.services
     var count = mutableStateOf(0)
 
-
     fun increment() {
         count.value++
     }

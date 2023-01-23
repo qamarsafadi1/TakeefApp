@@ -138,7 +138,7 @@ class DateHelper {
             val month = SimpleDateFormat("MM", Locale.ENGLISH)
             val hh = SimpleDateFormat("hh", Locale.ENGLISH)
             val mm = SimpleDateFormat("mm", Locale.ENGLISH)
-            val a = SimpleDateFormat("a", Locale.ENGLISH)
+            val a = SimpleDateFormat("a")
             try {
                 val d1 = h_mm_ss.parse(createdAt)
                 d1?.let {

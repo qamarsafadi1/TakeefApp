@@ -193,5 +193,10 @@
     <string name="no_transaction_lbl">لا يوجد عمليات حاليًا</string>
     <string name="no_notifications">لا يوجد اشعارات</string>
     <string name="no_notifications_lbl">لا توجد اشعارات حالياً</string>
+    <string name="no_orders_special">لا يوجد طلبات خاصة</string>
+    <string name="no_orders">لا يوجد طلبات </string>
+    <string name="no_orders_lbl">لا يوجد طلبات حاليًا </string>
+    <string name="no_order_special_lbl">" لا يوجد طلبات خاصة حاليًا"</string>
+    <string name="cancel_order">الغاء الطلب</string>
 
 </resources>

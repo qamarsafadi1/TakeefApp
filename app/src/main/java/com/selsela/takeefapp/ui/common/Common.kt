@@ -7,7 +7,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
@@ -75,13 +74,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.selsela.takeefapp.LocalMutableContext
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.config.model.Case
+import com.selsela.takeefapp.data.order.model.order.Order
+import com.selsela.takeefapp.data.order.model.order.OrderService
 import com.selsela.takeefapp.ui.auth.AuthViewModel
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.LightBlue
@@ -107,6 +108,7 @@ import com.selsela.takeefapp.ui.theme.text18
 import com.selsela.takeefapp.ui.theme.text8
 import com.selsela.takeefapp.utils.Constants.LEFT
 import com.selsela.takeefapp.utils.Constants.RIGHT
+import com.selsela.takeefapp.utils.Extensions.Companion.convertToDecimalPatter
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.LocalUtils.setLocale
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
@@ -394,6 +396,7 @@ fun LottieAnimationView(modifier: Modifier = Modifier, raw: Int) {
         iterations = LottieConstants.IterateForever,
     )
 }
+
 @Composable
 fun LottieAnimationSizeView(modifier: Modifier = Modifier, raw: Int) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(raw))
@@ -548,7 +551,7 @@ fun InputEditText(
     textAlign: TextAlign = TextAlign.Start,
     cornerRaduis: Dp = 8.dp,
     fillMax: Float = 1f,
-    hintColor: Color =  SecondaryColor.copy(0.39f),
+    hintColor: Color = SecondaryColor.copy(0.39f),
     borderColor: Color = BorderColor,
     isValid: Boolean = true,
     validationMessage: String = "",
@@ -1251,163 +1254,6 @@ private fun AreaListItem() {
 
 
 @Composable
-private fun OrderItem() {
-    Card(
-        modifier = Modifier
-            .padding(bottom = 11.dp, top = 11.dp)
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 191.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 15.dp
-        )
-    ) {
-
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 191.dp)
-                .padding(
-                    horizontal = 10.dp,
-                    vertical = 21.dp
-                )
-        ) {
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(
-                        text = "رقم الطلب",
-                        style = text11,
-                        color = SecondaryColor
-                    )
-                    Text(
-                        text = "#12342",
-                        style = text16Bold,
-                        color = TextColor
-                    )
-                    DateView()
-
-                }
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                )
-                StepperView(
-                    items = listOf(
-                        stringResource(R.string.recived_order),
-                        stringResource(R.string.on_way),
-                        stringResource(R.string.on_progress),
-                        stringResource(R.string.done_order)
-                    )
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .paddingTop(10)
-                    .fillMaxWidth()
-                    .requiredHeight(63.dp)
-                    .background(
-                        LightBlue.copy(0.10f),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(horizontal = 6.3.dp, vertical = 11.dp)
-            ) {
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(id = R.drawable.date_line),
-                            contentDescription = "",
-                            colorFilter = ColorFilter.tint(SecondaryColor)
-                        )
-                        Text(
-                            text = stringResource(R.string.visit_date_1),
-                            style = text11,
-                            color = SecondaryColor,
-                            modifier = Modifier.padding(start = 6.4.dp)
-                        )
-
-                    }
-                    DateTimeView()
-                }
-
-                Row(
-                    Modifier
-                        .paddingTop(10)
-                        .fillMaxWidth(),
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.moneyicon),
-                        contentDescription = ""
-                    )
-                    Text(
-                        text = stringResource(R.string.cost_dot),
-                        style = text11,
-                        color = TextColor,
-                        modifier = Modifier.padding(start = 9.dp)
-                    )
-
-                    Row {
-                        Text(
-                            text = "300",
-                            style = text12Bold,
-                            color = TextColor,
-                            modifier = Modifier.padding(start = 4.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.currency_1),
-                            style = text10,
-                            color = TextColor,
-                            modifier = Modifier.padding(start = 5.dp)
-                        )
-
-                    }
-
-                }
-            }
-
-            SelectedServicesView()
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                ElasticButton(
-                    onClick = { /*TODO*/ }, title = stringResource(R.string.follow_route),
-                    icon = R.drawable.map,
-                    iconGravity = RIGHT,
-                    modifier = Modifier
-                        .paddingTop(13)
-                        .requiredHeight(36.dp)
-                        .width(137.dp),
-                    buttonBg = LightBlue
-                )
-                AnimatedVisibility(visible = false) {
-                    ElasticButton(
-                        onClick = { /*TODO*/ }, title = stringResource(R.string.rate),
-                        icon = R.drawable.star,
-                        iconGravity = RIGHT,
-                        modifier = Modifier
-                            .paddingTop(13)
-                            .requiredHeight(36.dp)
-                            .width(137.dp),
-                        buttonBg = TextColor
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
 private fun DateView() {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
@@ -1470,19 +1316,16 @@ private fun DateTimeView() {
 @Composable
 fun StepperView(
     modifier: Modifier = Modifier
-        .fillMaxWidth(), currentStep: Int = 0,
+        .fillMaxWidth(),
+    currentStep: Int = 0,
     isDetails: Boolean = false,
-    items: List<String> = listOf(
-        "استلام الطلب",
-        "متوجه لك",
-        "جاري التنفيذ",
-        "انتهاء الطلب"
-    )
+    items: List<Case>?
 ) {
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
+
         Divider(
             Modifier
                 .fillMaxWidth(0.7f)
@@ -1496,10 +1339,10 @@ fun StepperView(
             horizontalArrangement = Arrangement.SpaceAround,
         ) {
             itemsIndexed(
-                items
+                items ?: listOf()
             ) { index, step ->
                 Step(
-                    step = step,
+                    step = step.name,
                     isCurrent = currentStep == index,
                     isCompleted = index < currentStep,
                     isDetails = isDetails
@@ -1566,37 +1409,25 @@ private fun Step(
 }
 
 @Composable
-fun SelectedServicesView() {
+fun SelectedServicesView(orderServices: List<OrderService>) {
     Row(
         modifier = Modifier
             .paddingTop(11)
+            .padding(horizontal = 34.dp)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Start
     ) {
-        Row {
-            Text(
-                text = stringResource(R.string.maintinance_dot), style = text11,
-                color = SecondaryColor
-            )
-            Text(text = "00", style = text12, color = TextColor)
+        repeat(orderServices.size) {
+            Row {
+                Text(
+                    text = "${orderServices[it].service.name} : ", style = text11,
+                    color = SecondaryColor
+                )
+                Text(text = orderServices[it].count.convertToDecimalPatter(), style = text12, color = TextColor)
+            }
+                Spacer(modifier = Modifier.width(41.1.dp))
         }
-        Spacer(modifier = Modifier.width(41.1.dp))
-        Row {
-            Text(
-                text = stringResource(R.string.clean_dot), style = text11,
-                color = SecondaryColor
-            )
-            Text(text = "00", style = text12, color = TextColor)
-        }
-        Spacer(modifier = Modifier.width(41.1.dp))
-        Row {
-            Text(
-                text = stringResource(R.string.installtion_dot), style = text11,
-                color = SecondaryColor
-            )
-            Text(text = "00", style = text12, color = TextColor)
-        }
-        Spacer(modifier = Modifier.width(14.1.dp))
+
     }
 }
 
@@ -1618,7 +1449,8 @@ fun AsyncImage(
         loading = {
             LottieAnimationSizeView(
                 raw = R.raw.imageloading,
-                modifier = Modifier.width(25.dp)
+                modifier = Modifier
+                    .width(25.dp)
                     .height(25.dp)
             )
         },

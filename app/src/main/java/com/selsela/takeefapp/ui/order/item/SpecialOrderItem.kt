@@ -69,7 +69,6 @@ fun SpecialOrderItem(
                     )
                 }
                 DateView(specificOrder.createdAt)
-
             }
             Row(
                 Modifier

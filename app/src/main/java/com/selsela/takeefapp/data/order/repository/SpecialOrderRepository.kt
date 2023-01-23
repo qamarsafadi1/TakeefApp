@@ -23,9 +23,9 @@ class SpecialOrderRepository @Inject constructor(
     private val api: SpecialOrderApi
 ) {
     suspend fun placeSpecialOrder(
-       username: String,
-       title: String,
-       description: String,
+        username: String,
+        title: String,
+        description: String,
         photos: List<File>?,
     ): Flow<Resource<SpecificOrder>> = withContext(Dispatchers.IO) {
         val data: Flow<Resource<SpecificOrder>> = try {
@@ -49,7 +49,8 @@ class SpecialOrderRepository @Inject constructor(
             val response = api.placeSpecialOrder(parts, map)
             if (response.isSuccessful) {
                 handleSuccess(
-                    response.body()?.specificOrder, response.body()?.responseMessage ?: response.message()
+                    response.body()?.specificOrder,
+                    response.body()?.responseMessage ?: response.message()
                 )
             } else {
                 val gson = Gson()
@@ -63,25 +64,50 @@ class SpecialOrderRepository @Inject constructor(
         }
         data
     }
-    suspend fun getSpecialOrders(): Flow<Resource<SpecialOrderResponse>> = withContext(Dispatchers.IO) {
-        val data: Flow<Resource<SpecialOrderResponse>> = try {
-            val response = api.getSpecialOrders()
-            if (response.isSuccessful) {
-                handleSuccess(
-                    response.body(),
-                    response.body()?.responseMessage ?: response.message()
-                )
-            } else {
-                val gson = Gson()
-                val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
-                handleExceptions(errorBase)
+
+    suspend fun getSpecialOrders(): Flow<Resource<SpecialOrderResponse>> =
+        withContext(Dispatchers.IO) {
+            val data: Flow<Resource<SpecialOrderResponse>> = try {
+                val response = api.getSpecialOrders()
+                if (response.isSuccessful) {
+                    handleSuccess(
+                        response.body(),
+                        response.body()?.responseMessage ?: response.message()
+                    )
+                } else {
+                    val gson = Gson()
+                    val errorBase =
+                        gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    handleExceptions(errorBase)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                handleExceptions(e)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            handleExceptions(e)
+            data
         }
-        data
-    }
+
+    suspend fun getSpecialOrderDetails(id: Int): Flow<Resource<SpecialOrderResponse>> =
+        withContext(Dispatchers.IO) {
+            val data: Flow<Resource<SpecialOrderResponse>> = try {
+                val response = api.getSpecialOrderDetails(id)
+                if (response.isSuccessful) {
+                    handleSuccess(
+                        response.body(),
+                        response.body()?.responseMessage ?: response.message()
+                    )
+                } else {
+                    val gson = Gson()
+                    val errorBase =
+                        gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    handleExceptions(errorBase)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                handleExceptions(e)
+            }
+            data
+        }
 
 
 }

@@ -1606,7 +1606,8 @@ fun AsyncImage(
     modifier: Modifier
     = Modifier
         .size(90.dp)
-        .padding(horizontal = 8.dp)
+        .padding(horizontal = 8.dp),
+    contentScale: ContentScale = ContentScale.Fit
 ) {
     SubcomposeAsyncImage(
         modifier = modifier,
@@ -1622,5 +1623,6 @@ fun AsyncImage(
             )
         },
         contentDescription = "",
+        contentScale = contentScale
     )
 }

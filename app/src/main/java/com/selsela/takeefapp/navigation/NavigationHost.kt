@@ -28,6 +28,7 @@ import com.selsela.takeefapp.ui.splash.SplashView
 import com.selsela.takeefapp.ui.support.SupportScreen
 import com.selsela.takeefapp.ui.terms.TermsView
 import com.selsela.takeefapp.ui.wallet.WalletScreen
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
 
 @Composable
@@ -167,11 +168,12 @@ fun NavigationHost(
         }
         composable(Destinations.SPECIAL_ORDERS) {
             SpecialOrders() {
-                navActions.navigateToSpecialOrderDetails()
+                navActions.navigateToSpecialOrderDetails(it)
             }
         }
-        composable(Destinations.SPECIAL_ORDERS_DETAILS) {
-            SpecialOrderDetailsView()
+        composable(Destinations.SPECIAL_ORDERS_ARGS) {
+            val id = it.arguments?.getString("id") ?: ""
+            SpecialOrderDetailsView(id.toInt())
         }
         composable(Destinations.NOTIFICATION_SCREEN) {
             NotificationView()

@@ -39,6 +39,7 @@ import javax.inject.Inject
 data class SpecialOrderUiState(
     val onSuccess: StateEvent = consumed,
     val orders: List<SpecificOrder>? = null,
+    val order: SpecificOrder? = null,
     val isLoading: Boolean = false,
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),
 )
@@ -218,6 +219,39 @@ class SpecialOrderViewModel @Inject constructor(
                             isLoaded = true
                             SpecialOrderUiState(
                                 orders = result.data?.specificOrders
+                            )
+                        }
+
+                        Status.LOADING ->
+                            SpecialOrderUiState(
+                                isLoading = true
+                            )
+
+                        Status.ERROR -> SpecialOrderUiState(
+                            onFailure = triggered(
+                                ErrorsData(
+                                    result.errors,
+                                    result.message,
+                                )
+                            ),
+                        )
+                    }
+                    state = specialOrderUiState
+                }
+        }
+    }
+    fun getSpecialOrderDetails(id: Int) {
+        viewModelScope.launch {
+            state = state.copy(
+                isLoading = true
+            )
+            repository.getSpecialOrderDetails(id)
+                .collect { result ->
+                    val specialOrderUiState = when (result.status) {
+                        Status.SUCCESS -> {
+                            isLoaded = true
+                            SpecialOrderUiState(
+                                order = result.data?.specificOrder
                             )
                         }
 

@@ -9,6 +9,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.PartMap
+import retrofit2.http.Query
 
 interface SpecialOrderApi {
 
@@ -24,4 +25,9 @@ interface SpecialOrderApi {
 
     @GET("user/specific_order/user_specific_orders")
     suspend fun getSpecialOrders(): Response<SpecialOrderResponse>
+
+    @GET("user/specific_order/specific_order_details")
+    suspend fun getSpecialOrderDetails(
+        @Query("specific_order_id") specific_order_id: Int
+    ): Response<SpecialOrderResponse>
 }

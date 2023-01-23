@@ -9,23 +9,34 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.order.model.special.Image
+import com.selsela.takeefapp.data.order.model.special.SpecificOrder
+import com.selsela.takeefapp.ui.common.AsyncImage
 import com.selsela.takeefapp.ui.order.item.DateView
+import com.selsela.takeefapp.ui.order.loading.OrderDetailsLoadingView
 import com.selsela.takeefapp.ui.theme.Bg
 import com.selsela.takeefapp.ui.theme.Gray2
 import com.selsela.takeefapp.ui.theme.SecondaryColor
@@ -33,11 +44,56 @@ import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text16Bold
+import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import de.palm.composestateevents.EventEffect
 
 @Composable
-fun SpecialOrderDetailsView() {
+fun SpecialOrderDetailsView(
+    orderID: Int,
+    viewModel: SpecialOrderViewModel = hiltViewModel()
+) {
+    val context = LocalContext.current
+    val viewState: SpecialOrderUiState by viewModel.uiState.collectAsStateLifecycleAware(
+        SpecialOrderUiState()
+    )
 
+    OrderDetailsContent(viewState)
+
+
+    /**
+     * Handle Ui state from flow
+     */
+
+    LaunchedEffect(Unit) {
+        if (!viewModel.isLoaded)
+            viewModel.getSpecialOrderDetails(orderID)
+    }
+
+    EventEffect(
+        event = viewState.onFailure,
+        onConsumed = viewModel::onFailure
+    ) { error ->
+        Common.handleErrors(
+            error.responseMessage,
+            error.errors,
+            context
+        )
+    }
+}
+
+@Composable
+private fun OrderDetailsContent(viewState: SpecialOrderUiState) {
+
+    when (viewState.isLoading) {
+        false -> OrderDetailsView(viewState.order)
+        true -> OrderDetailsLoadingView()
+    }
+}
+
+@Composable
+private fun OrderDetailsView(order: SpecificOrder?) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -79,7 +135,7 @@ fun SpecialOrderDetailsView() {
                                 color = SecondaryColor
                             )
                             Text(
-                                text = "#12342",
+                                text = "#${order?.orderNumber}",
                                 style = text16Bold,
                                 color = TextColor,
                                 modifier = Modifier.paddingTop(9)
@@ -106,7 +162,7 @@ fun SpecialOrderDetailsView() {
                             color = SecondaryColor
                         )
                         Text(
-                            text = stringResource(id = R.string.address_name_here),
+                            text = "${order?.title}",
                             style = text12,
                             color = TextColor
                         )
@@ -135,7 +191,7 @@ fun SpecialOrderDetailsView() {
                         verticalAlignment = Alignment.Bottom
                     ) {
                         Text(
-                            text = stringResource(id = R.string.temp_details),
+                            text = "${order?.description}",
                             style = text12,
                             color = TextColor.copy(0.56f),
                             modifier = Modifier
@@ -146,23 +202,23 @@ fun SpecialOrderDetailsView() {
                     }
 
                 }
-                item(
-                    span = {
-                        GridItemSpan(3)
+                if (order?.images.isNullOrEmpty().not()) {
+                    item(
+                        span = {
+                            GridItemSpan(3)
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.attachment),
+                            style = text11,
+                            color = SecondaryColor,
+                            modifier = Modifier.paddingTop(9)
+                        )
+
                     }
-                ) {
-                    Text(
-                        text = stringResource(R.string.attachment),
-                        style = text11,
-                        color = SecondaryColor,
-                        modifier = Modifier.paddingTop(9)
-                    )
-
-
-                }
-
-                items(5) { photo ->
-                    AttachmentItem()
+                    items(order?.images ?: listOf()) { photo ->
+                        AttachmentItem(photo)
+                    }
                 }
             }
 
@@ -172,13 +228,14 @@ fun SpecialOrderDetailsView() {
 }
 
 @Composable
-fun AttachmentItem() {
-    Image(
-        painter = painterResource(id = R.drawable.attachment1),
-        contentDescription = "",
+fun AttachmentItem(photo: Image) {
+    AsyncImage(
+        imageUrl = photo.imageUrl,
         modifier = Modifier
+            .width(92.dp)
+            .height(67.dp)
             .clip(RoundedCornerShape(4.dp))
             .border(width = 1.dp, color = Gray2, RoundedCornerShape(4.dp)),
-        contentScale = ContentScale.FillBounds
+        contentScale = ContentScale.Crop
     )
 }

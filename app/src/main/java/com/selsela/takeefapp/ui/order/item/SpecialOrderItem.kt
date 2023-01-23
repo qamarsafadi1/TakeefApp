@@ -32,7 +32,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 @Composable
 fun SpecialOrderItem(
     specificOrder: SpecificOrder,
-    onClick: () -> Unit
+    onClick: (Int) -> Unit
 ) {
     Card(
         Modifier
@@ -41,7 +41,7 @@ fun SpecialOrderItem(
             .requiredHeight(187.dp)
             .padding(bottom = 8.4.dp)
             .clickable {
-                onClick()
+                onClick(specificOrder.id)
             }
     ) {
         Column(

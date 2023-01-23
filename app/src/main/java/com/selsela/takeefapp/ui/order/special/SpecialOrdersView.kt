@@ -26,7 +26,7 @@ import de.palm.composestateevents.EventEffect
 @Composable
 fun SpecialOrders(
     viewModel: SpecialOrderViewModel = hiltViewModel(),
-    goToDetails: () -> Unit
+    goToDetails: (Int) -> Unit
 ) {
     val context = LocalContext.current
     val viewState: SpecialOrderUiState by viewModel.uiState.collectAsStateLifecycleAware(
@@ -59,7 +59,7 @@ fun SpecialOrders(
 }
 
 @Composable
-private fun SpecialOrdersContent(viewState: SpecialOrderUiState, goToDetails: () -> Unit) {
+private fun SpecialOrdersContent(viewState: SpecialOrderUiState, goToDetails: (Int) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -76,7 +76,7 @@ private fun SpecialOrdersContent(viewState: SpecialOrderUiState, goToDetails: ()
 @Composable
 private fun SpecialOrderList(
     viewState: SpecialOrderUiState,
-    goToDetails: () -> Unit
+    goToDetails: (Int) -> Unit
 ) {
     if (viewState.orders.isNullOrEmpty().not()) {
         LazyColumn(
@@ -88,7 +88,7 @@ private fun SpecialOrderList(
         ) {
             items(viewState.orders ?: listOf()) {
                 SpecialOrderItem(it) {
-                    goToDetails()
+                    goToDetails(it)
                 }
             }
         }

@@ -275,7 +275,7 @@ fun ServiceItem(orderService: OrderService) {
                 horizontalArrangement = Arrangement.End
             ) {
                 androidx.compose.material3.Text(
-                    text = "${orderService.service.price}",
+                    text = "${orderService.totalServicePrice}",
                     style = text16Medium,
                     color = TextColor
                 )
@@ -288,7 +288,7 @@ fun ServiceItem(orderService: OrderService) {
 
             }
         }
-        repeat(LocalData.acTypes?.size ?: 0) {
+        repeat(orderService.acType.size) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -299,7 +299,7 @@ fun ServiceItem(orderService: OrderService) {
         ) {
                 Row {
                     Text(
-                        text = "${LocalData.acTypes?.get(it)?.name}",
+                        text = orderService.acType[it].acType.name,
                         style = text12,
                         color = SecondaryColor,
                     )
@@ -311,7 +311,7 @@ fun ServiceItem(orderService: OrderService) {
                     horizontalArrangement = Arrangement.End
                 ) {
                     androidx.compose.material3.Text(
-                        text = "${ if (orderService.acType.id == LocalData.acTypes?.get(it)?.id) orderService.count else 0 }",
+                        text = "${orderService.acType[it].count}",
                         style = text16Medium,
                         color = TextColor
                     )
@@ -321,7 +321,6 @@ fun ServiceItem(orderService: OrderService) {
                         style = text13,
                         color = SecondaryColor
                     )
-
                 }
             }
         }

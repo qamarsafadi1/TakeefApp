@@ -68,10 +68,10 @@ class OrderViewModel @Inject constructor(
             _uiState.update { newState }
         }
 
-    fun getNewOrders() = viewModelScope.launch {
+    fun getNewOrders(caseID:Int) = viewModelScope.launch {
         if (page == 1 || (page != 1 && canPaginate) && listState == OrderState.IDLE) {
             listState = if (page == 1) OrderState.LOADING else OrderState.PAGINATING
-            repository.getOrders(page).collect { result ->
+            repository.getOrders(page,caseID).collect { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
                         isLoaded = true

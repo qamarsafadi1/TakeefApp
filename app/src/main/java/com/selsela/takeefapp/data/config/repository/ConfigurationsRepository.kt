@@ -30,6 +30,7 @@ class ConfigurationsRepository @Inject constructor(
                 LocalData.cases = response.body()?.cases
                 LocalData.acTypes = response.body()?.acTypes
                 LocalData.services = response.body()?.services
+              "${response.body()?.services}".log("Services")
                 handleSuccess(
                     response.body()?.configurations,
                     response.body()?.responseMessage ?: response.message()

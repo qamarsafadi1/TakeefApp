@@ -59,6 +59,7 @@ import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text16Bold
 import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Constants.NEW_ORDER
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.LocalData
 import de.palm.composestateevents.EventEffect
@@ -135,7 +136,7 @@ private fun OrderDetailsContent(onBack: () -> Unit, order: Order) {
             .padding(bottom = 45.dp)
     ) {
         Column {
-            Header(onBack)
+            Header(order,onBack)
             Card(
                 modifier = Modifier
                     .padding(
@@ -172,11 +173,13 @@ private fun OrderDetailsContent(onBack: () -> Unit, order: Order) {
                         DateView(order.createdAt)
                     }
                     Spacer(modifier = Modifier.height(22.dp))
-                    StepperView(
-                        isDetails = true,
-                        items = LocalData.cases?.filter { it.id != 6 },
-                        currentStep = order.logs.lastIndex
-                    )
+                    if (order.case.id != 6) {
+                        StepperView(
+                            isDetails = true,
+                            items = LocalData.cases?.filter { it.id != 6 },
+                            currentStep = order.logs.lastIndex
+                        )
+                    }
                     AdditionalCostView(
                         isVisible = order.needAdditionalCost == 1,
                         coroutineScope,
@@ -218,12 +221,7 @@ private fun OrderDetailsContent(onBack: () -> Unit, order: Order) {
                             .padding(bottom = 20.dp)
                     ) {
 
-                        val orderServices = order.orderService.groupBy {
-                            it.acTypes.add(AcTypes())
-                            it.service.id
-                        }
-                        // TODO: Handle the new way form API
-                        repeat(orderServices.size) {
+                        repeat(order.orderService.size) {
                             ServiceItem(order.orderService[it])
                         }
                     }
@@ -241,7 +239,9 @@ private fun OrderDetailsContent(onBack: () -> Unit, order: Order) {
 }
 
 @Composable
-private fun Header(onBack: () -> Unit) {
+private fun Header(
+    order: Order,
+    onBack: () -> Unit) {
     Box(
         Modifier
             .fillMaxWidth()
@@ -269,16 +269,18 @@ private fun Header(onBack: () -> Unit) {
             style = text14Meduim
         )
 
-        IconButton(
-            onClick = { onBack() },
-            modifier = Modifier
-                .padding(end = 18.dp)
-                .align(Alignment.CenterEnd)
-        ) {
-            Text(
-                text = stringResource(id = R.string.cancel_order),
-                style = text14Meduim
-            )
+        if (order.case.id == NEW_ORDER) {
+            IconButton(
+                onClick = { onBack() },
+                modifier = Modifier
+                    .padding(end = 18.dp)
+                    .align(Alignment.CenterEnd)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.cancel_order),
+                    style = text14Meduim
+                )
+            }
         }
     }
 }

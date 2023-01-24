@@ -146,11 +146,14 @@ fun NavigationHost(
                 }
             )
             {
-                navActions.navigateToOrders()
+                navActions.navigateToOrders(it)
             }
         }
-        composable(Destinations.ORDERS_SCREEN) {
+        composable(Destinations.ORDERS_SCREEN_ARGS) {
+            val caseID = it.arguments?.getString("case") ?: ""
+
             OrdersView(
+                caseID.toInt(),
                 goToDetails = { id ->
                     navActions.navigateToOrderDetails(id)
                 }

@@ -4,8 +4,8 @@ package com.selsela.takeefapp.data.order.model.order
 import com.google.gson.annotations.SerializedName
 
 data class OrderService(
-    @SerializedName("ac_type")
-    val acType: AcType = AcType(),
+    @SerializedName("ac_types")
+    val acType: List<AcTypes> = listOf(),
     @SerializedName("count")
     val count: Int = 0,
     @SerializedName("is_calculated_in_total")
@@ -13,9 +13,9 @@ data class OrderService(
     @SerializedName("service")
     val service: Service = Service(),
     @SerializedName("service_price")
-    val servicePrice: Int = 0,
-    @SerializedName("total_service_price")
-    val totalServicePrice: Int = 0,
+    val servicePrice: Double = 0.0,
+    @SerializedName("price")
+    val totalServicePrice: Double = 0.0,
     val acTypes: MutableList<AcTypes> = mutableListOf()
 )
 

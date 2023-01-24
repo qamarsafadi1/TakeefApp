@@ -32,6 +32,7 @@ import com.selsela.takeefapp.ui.theme.ColorAccent
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.text10NoLines
 import com.selsela.takeefapp.ui.theme.text12
+import com.selsela.takeefapp.utils.Constants.FINISHED
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 
@@ -39,6 +40,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 fun SettingsCards(
     uiState: AuthUiState,
     goToProfile: () -> Unit,
+    goToOrder: (Int) -> Unit,
     goToNotification: () -> Unit
 ) {
     Row(
@@ -51,7 +53,10 @@ fun SettingsCards(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .requiredHeight(88.dp),
+                .requiredHeight(88.dp)
+                .clickable {
+                    goToOrder(FINISHED)
+                },
             shape = RoundedCornerShape(13.dp),
             elevation = 20.dp,
             backgroundColor = Color.White

@@ -15,10 +15,10 @@ import javax.inject.Inject
 class OrderRepository @Inject constructor(
     private val api: OrderApi
 ) {
-    suspend fun getOrders(page: Int): Flow<Resource<OrderResponse>> =
+    suspend fun getOrders(page: Int,caseID: Int): Flow<Resource<OrderResponse>> =
         withContext(Dispatchers.IO) {
             val data: Flow<Resource<OrderResponse>> = try {
-                val response = api.getOrder(page)
+                val response = api.getOrder(page,caseID)
                 if (response.isSuccessful) {
                     Extensions.handleSuccess(
                         response.body(),

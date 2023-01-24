@@ -5,6 +5,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.navigation.Destinations
+import com.selsela.takeefapp.utils.Constants.FINISHED
+import com.selsela.takeefapp.utils.Constants.NEW_ORDER
+import com.selsela.takeefapp.utils.Constants.UPCOMING_ORDERS
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 
 object Navigation {
     fun NavController.bindToolbarTitle(currentRoute: NavBackStackEntry): String {
@@ -15,11 +19,22 @@ object Navigation {
 
             Destinations.SEARCH_ADDRESS_SCREEN_WITH_ARGUMENT -> this.context.getString(R.string.chosse_address)
             Destinations.REVIEW_ORDER -> this.context.getString(R.string.review_order)
-            Destinations.ORDERS_SCREEN -> this.context.getString(R.string.new_orders)
+            Destinations.ORDERS_SCREEN_ARGS -> {
+                val caseID = currentRoute.arguments?.getString("case") ?: ""
+                when (caseID.toInt()) {
+                    NEW_ORDER -> this.context.getString(R.string.new_orders)
+                    UPCOMING_ORDERS -> this.context.getString(R.string.ongoing_order)
+                    else -> this.context.getString(R.string.archive)
+                }
+            }
+
             Destinations.ORDER_ROUTE_SCREEN -> this.context.getString(R.string.order_route)
-            Destinations.ORDER_DETAILS,Destinations.ORDER_DETAILS_ARGS -> this.context.getString(R.string.order_details)
+            Destinations.ORDER_DETAILS, Destinations.ORDER_DETAILS_ARGS -> this.context.getString(R.string.order_details)
             Destinations.SPECIAL_ORDERS -> this.context.getString(R.string.special_order)
-            Destinations.SPECIAL_ORDERS_DETAILS,Destinations.SPECIAL_ORDERS_ARGS -> this.context.getString(R.string.special_order_detail)
+            Destinations.SPECIAL_ORDERS_DETAILS, Destinations.SPECIAL_ORDERS_ARGS -> this.context.getString(
+                R.string.special_order_detail
+            )
+
             Destinations.NOTIFICATION_SCREEN -> this.context.getString(R.string.notification)
             Destinations.TECHNICAL_SUPPORT -> this.context.getString(R.string.tech_support)
             Destinations.PROFILE_SCREEN -> this.context.getString(R.string.profile)

@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.ui.order
 
+import android.os.IBinder
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -31,6 +32,7 @@ import com.selsela.takeefapp.ui.theme.Shimmer
 
 @Composable
 fun OrdersView(
+    caseID: Int,
     viewModel: OrderViewModel = hiltViewModel(),
     goToDetails: (Int) -> Unit,
     goToOrderRoute: () -> Unit
@@ -54,11 +56,11 @@ fun OrdersView(
 
     LaunchedEffect(Unit) {
         if (!viewModel.isLoaded)
-            viewModel.getNewOrders()
+            viewModel.getNewOrders(caseID)
     }
     LaunchedEffect(key1 = shouldStartPaginate.value) {
         if (shouldStartPaginate.value && viewModel.listState == OrderState.IDLE)
-            viewModel.getNewOrders()
+            viewModel.getNewOrders(caseID)
     }
 }
 

@@ -1180,7 +1180,7 @@ fun LanguageSheet(
                                 context.getActivity()?.setLocale("en")
                             }
                             {
-                                mutableContext.value =false
+                                mutableContext.value = false
                             }.withDelay(9000)
                             onConfirm()
                         },
@@ -1435,7 +1435,9 @@ fun SelectedServicesView(orderServices: List<OrderService>) {
                     color = SecondaryColor
                 )
                 Text(
-                    text = orderServices[it].count.convertToDecimalPatter(),
+                    text = orderServices[it].acType.sumOf {
+                        it.count
+                    }.convertToDecimalPatter(),
                     style = text12,
                     color = TextColor
                 )

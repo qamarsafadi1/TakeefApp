@@ -240,9 +240,6 @@ fun IntroItem(intro: Intro, index: Int) {
                         .align(Alignment.TopEnd)
                         .clickable {
                             context.setLocale("en")
-                            val locale = Locale("en")
-                            configuration.setLocale(locale)
-                            mutableContext.value = context.createConfigurationContext(configuration)
                         }
                 )
 

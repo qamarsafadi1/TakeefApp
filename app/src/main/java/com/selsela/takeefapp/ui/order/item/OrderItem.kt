@@ -101,13 +101,15 @@ fun OrderItem(
                     DateView(order.createdAt)
                 }
 
-                StepperView(
-                    Modifier
-                        .fillMaxWidth()
-                        .weight(1.5f),
-                    items = LocalData.cases?.filter { it.id != 6 },
-                    currentStep = order.logs.lastIndex
-                )
+                if (order.case.id != 6) {
+                    StepperView(
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1.5f),
+                        items = LocalData.cases?.filter { it.id != 6 },
+                        currentStep = order.logs.lastIndex
+                    )
+                }
             }
 
             Column(

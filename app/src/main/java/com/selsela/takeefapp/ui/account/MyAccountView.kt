@@ -74,7 +74,7 @@ fun MyAccountView(
     goToSupport: () -> Unit,
     goToProfile: () -> Unit,
     goToWallet: () -> Unit,
-    goToOrder: () -> Unit
+    goToOrder: (Int) -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
     Color.White.ChangeNavigationBarColor()
@@ -139,7 +139,7 @@ private fun AccountViewContent(
     goToLogin: () -> Unit,
     goToWallet: () -> Unit,
     goToSpecialOrders: () -> Unit,
-    goToOrder: () -> Unit,
+    goToOrder: (Int) -> Unit,
     goToProfile: () -> Unit,
     goToNotification: () -> Unit,
     goToSupport: () -> Unit,
@@ -207,12 +207,15 @@ private fun AccountViewContent(
                         goToSpecialOrder = {
                             goToSpecialOrders()
                         }) {
-                        goToOrder()
+                        goToOrder(it)
                     }
                     SettingsCards(
                         uiState,
                         goToProfile = {
                             goToProfile()
+                        },
+                        goToOrder = {
+                            goToOrder(it)
                         }
                     ) {
                         goToNotification()

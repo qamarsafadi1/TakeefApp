@@ -1,6 +1,7 @@
 package com.selsela.takeefapp.navigation
 
 import androidx.navigation.NavController
+import com.selsela.takeefapp.data.config.model.Case
 import com.selsela.takeefapp.navigation.Navigation.navigateWithClearBackStack
 
 object Destinations {
@@ -17,7 +18,8 @@ object Destinations {
     const val ERROR = "error"
     const val SPECIAL_ORDER = "special_order"
     const val MY_ACCOUNT = "my_account"
-    const val ORDERS_SCREEN = "orders"
+    const val ORDERS_SCREEN = "orders/"
+    const val ORDERS_SCREEN_ARGS = "orders/{case}"
     const val ORDER_ROUTE_SCREEN = "order_route_screen"
     const val ORDER_DETAILS = "order_details/"
     const val ORDER_DETAILS_ARGS = "order_details/{id}"
@@ -82,9 +84,8 @@ class NavigationActions(private val navController: NavController) {
         navController.navigate(Destinations.MY_ACCOUNT)
     }
 
-    fun navigateToOrders() {
-        navController.navigate(Destinations.ORDERS_SCREEN){
-
+    fun navigateToOrders(case: Int) {
+        navController.navigate("${Destinations.ORDERS_SCREEN}${case}"){
         }
     }
     fun navigateToOrdersWithoutBackStack() {

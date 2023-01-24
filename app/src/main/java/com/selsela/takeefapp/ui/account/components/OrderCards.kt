@@ -26,6 +26,8 @@ import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text16Medium
+import com.selsela.takeefapp.utils.Constants.NEW_ORDER
+import com.selsela.takeefapp.utils.Constants.UPCOMING_ORDERS
 import com.selsela.takeefapp.utils.Extensions.Companion.convertToDecimalPatter
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
@@ -34,7 +36,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 fun OrderCards(
     uiState: AuthUiState,
     goToSpecialOrder: () -> Unit,
-    goToOrder: () -> Unit
+    goToOrder: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -48,7 +50,7 @@ fun OrderCards(
                 .weight(1f)
                 .requiredHeight(88.dp)
                 .clickable {
-                    goToOrder()
+                    goToOrder(NEW_ORDER)
                 },
             shape = RoundedCornerShape(13.dp),
             elevation = 20.dp,
@@ -108,7 +110,7 @@ fun OrderCards(
                 .weight(1f)
                 .requiredHeight(88.dp)
                 .clickable {
-                    goToOrder()
+                    goToOrder(UPCOMING_ORDERS)
                 },
             shape = RoundedCornerShape(13.dp),
             elevation = 20.dp,

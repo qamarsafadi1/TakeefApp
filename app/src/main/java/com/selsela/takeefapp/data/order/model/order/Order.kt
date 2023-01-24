@@ -41,28 +41,4 @@ data class Order(
     val price: Price = Price(),
     @SerializedName("payment")
     val payment: Payment = Payment(),
-) {
-    fun getServices(): List<OrderServiceItem> {
-        val orderServicesList = mutableListOf<OrderServiceItem>()
-        val acTypes = mutableListOf<AcTypes>()
-        var service = OrderService()
-        orderService.forEachIndexed { index, item ->
-            if (orderService.find { it.service.id == item.service.id } != null) {
-                service = item
-                acTypes.add(
-                    AcTypes(
-                        item.acType,
-                        item.count,
-                        item.isCalculatedInTotal,
-                        item.servicePrice,
-                        item.totalServicePrice
-                    )
-                )
-            }
-        }
-        orderServicesList.add(OrderServiceItem(service,acTypes))
-        orderServicesList.distinctBy { it.service.service.id }
-        orderServicesList.log("orderServicesList")
-        return orderServicesList
-    }
-}
+)

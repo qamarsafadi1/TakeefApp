@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.di
 
+import android.app.Application
 import com.selsela.takeefapp.data.auth.source.remote.AuthApi
 import com.selsela.takeefapp.data.config.source.remote.ConfigApi
 import com.selsela.takeefapp.data.order.remote.OrderApi
@@ -16,6 +17,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkingModule {
+
+
     @Provides
     @Singleton
     fun provideRetrofit(

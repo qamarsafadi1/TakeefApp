@@ -28,7 +28,7 @@ open class LocalData {
                 field = value
                 Hawk.put("fcmToken", value)
             }
-        var accessToken: String = Hawk.get("token", "")
+        var accessToken: String? = Hawk.get("token", "")
             set(value) {
                 field = value
                 Hawk.put("token", value)

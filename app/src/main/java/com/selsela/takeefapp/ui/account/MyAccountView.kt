@@ -31,6 +31,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.selsela.takeefapp.LocalMutableContext
+import com.selsela.takeefapp.MainActivity
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.account.components.Header
 import com.selsela.takeefapp.ui.account.components.OrderCards
@@ -41,6 +43,7 @@ import com.selsela.takeefapp.ui.auth.AuthUiState
 import com.selsela.takeefapp.ui.common.LanguageSheet
 import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
+import com.selsela.takeefapp.ui.splash.ConfigViewModel
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text12
@@ -48,6 +51,9 @@ import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
+import com.selsela.takeefapp.utils.Extensions.Companion.getActivity
+import com.selsela.takeefapp.utils.Extensions.Companion.log
+import com.selsela.takeefapp.utils.Extensions.Companion.navigate
 import com.selsela.takeefapp.utils.Extensions.Companion.showAlertDialog
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
@@ -104,8 +110,11 @@ fun MyAccountView(
      */
 
     LaunchedEffect(Unit) {
-        if (!viewModel.isLoaded)
-            viewModel.me()
+        if (LocalData.accessToken.isNullOrEmpty().not()) {
+            if (!viewModel.isLoaded) {
+                viewModel.me()
+            }
+        }
     }
 
     EventEffect(
@@ -320,7 +329,9 @@ private fun AccountViewContent(
 
             }
         }
-        LanguageSheet(languageSheet) {
+        val configViewModel: ConfigViewModel = hiltViewModel()
+
+        LanguageSheet(languageSheet,configViewModel) {
             coroutineScope.launch {
                 if (languageSheet.isVisible)
                     languageSheet.hide()

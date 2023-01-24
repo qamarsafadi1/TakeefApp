@@ -1,7 +1,9 @@
 package com.selsela.takeefapp.ui.common
 
+import android.content.res.Configuration
 import android.os.CountDownTimer
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
@@ -73,6 +75,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
 import coil.compose.SubcomposeAsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -84,6 +87,7 @@ import com.selsela.takeefapp.data.config.model.Case
 import com.selsela.takeefapp.data.order.model.order.Order
 import com.selsela.takeefapp.data.order.model.order.OrderService
 import com.selsela.takeefapp.ui.auth.AuthViewModel
+import com.selsela.takeefapp.ui.splash.ConfigViewModel
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
@@ -109,6 +113,8 @@ import com.selsela.takeefapp.ui.theme.text8
 import com.selsela.takeefapp.utils.Constants.LEFT
 import com.selsela.takeefapp.utils.Constants.RIGHT
 import com.selsela.takeefapp.utils.Extensions.Companion.convertToDecimalPatter
+import com.selsela.takeefapp.utils.Extensions.Companion.getActivity
+import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.LocalUtils.setLocale
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
@@ -1125,11 +1131,16 @@ fun ListedBottomSheet(sheetState: ModalBottomSheetState) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LanguageSheet(sheetState: ModalBottomSheetState, onConfirm: () -> Unit) {
+fun LanguageSheet(
+    sheetState: ModalBottomSheetState,
+    configViewModel: ConfigViewModel,
+    onConfirm: () -> Unit
+) {
     Box() {
         val context = LocalContext.current
         val configuration = LocalConfiguration.current
         val mutableContext = LocalMutableContext.current
+
         var check by remember {
             if (LocalData.appLocal == "ar")
                 mutableStateOf(0)
@@ -1164,13 +1175,13 @@ fun LanguageSheet(sheetState: ModalBottomSheetState, onConfirm: () -> Unit) {
                     ElasticButton(
                         onClick = {
                             if (check == 0) {
-                                context.setLocale("ar")
+                                context.getActivity()?.setLocale("ar")
                             } else {
-                                context.setLocale("en")
+                                context.getActivity()?.setLocale("en")
                             }
-                            val locale = Locale(LocalData.appLocal)
-                            configuration.setLocale(locale)
-                            mutableContext.value = context.createConfigurationContext(configuration)
+                            {
+                                mutableContext.value =false
+                            }.withDelay(9000)
                             onConfirm()
                         },
                         title = stringResource(R.string.confirm_lbl),
@@ -1423,9 +1434,13 @@ fun SelectedServicesView(orderServices: List<OrderService>) {
                     text = "${orderServices[it].service.name} : ", style = text11,
                     color = SecondaryColor
                 )
-                Text(text = orderServices[it].count.convertToDecimalPatter(), style = text12, color = TextColor)
+                Text(
+                    text = orderServices[it].count.convertToDecimalPatter(),
+                    style = text12,
+                    color = TextColor
+                )
             }
-                Spacer(modifier = Modifier.width(41.1.dp))
+            Spacer(modifier = Modifier.width(41.1.dp))
         }
 
     }

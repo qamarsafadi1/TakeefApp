@@ -184,7 +184,7 @@
     <string name="warning_phone_length_pattern_2">رقم الهاتف الصحيح لـ %2$s يتكون من : %1$s أرقام</string>
     <string name="_msg_failed">Something went wrong, please try again</string>
     <string name="not_start_with_zero">Phone number can\'t start with zero</string>
-    <string name="unvalid_code">رمز التفعيل غير صحيح</string>
+    <string name="unvalid_code">Invalid Code</string>
     <string name="logout_lbl">هل انت متأكد من رغبتك في تسجيل الخروج؟</string>
     <string name="yes">نعم</string>
     <string name="no">لا</string>

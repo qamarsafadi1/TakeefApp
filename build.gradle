@@ -2,8 +2,8 @@
 buildscript {
     ext {
         kotlinVersion = '1.7.0'
-        hiltVersion = '2.42'
-        hiltAndroidXVersion = '1.0.0'
+        hiltVersion = '2.44'
+        hiltAndroidXVersion = '1.1.0-alpha01'
         archLifecycleVersion = '2.5.1'
     }
     dependencies {

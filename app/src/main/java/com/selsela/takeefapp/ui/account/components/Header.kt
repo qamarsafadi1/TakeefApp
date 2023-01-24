@@ -102,7 +102,7 @@ private fun LogoutButton(
     isLoggedIn:Boolean,
     onClick: (Int) -> Unit) {
     ElasticView(onClick = {
-        if (LocalData.accessToken.isEmpty())
+        if (LocalData.accessToken.isNullOrEmpty())
             onClick(LOG_IN)
         else onClick(LOG_OUT)
     }) {

@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -61,7 +62,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     @OptIn(
         ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
     )
@@ -82,10 +83,11 @@ class MainActivity : ComponentActivity() {
                 )
 
                 CompositionLocalProvider(
-                    LocalMutableContext provides remember { mutableStateOf(context) },
+                    LocalMutableContext provides remember { mutableStateOf(true) },
                 ) {
+                    "heeeyChanges".log("mutableContext")
                     CompositionLocalProvider(
-                        LocalContext provides LocalMutableContext.current.value,
+                        LocalContext provides LocalContext.current,
                     ) {
                         // Handle layout direction based on language
                         CompositionLocalProvider(
@@ -215,6 +217,6 @@ class MainActivity : ComponentActivity() {
 
 }
 
-val LocalMutableContext = staticCompositionLocalOf<MutableState<Context>> {
+val LocalMutableContext = staticCompositionLocalOf<MutableState<Boolean>> {
     error("LocalMutableContext not provided")
 }

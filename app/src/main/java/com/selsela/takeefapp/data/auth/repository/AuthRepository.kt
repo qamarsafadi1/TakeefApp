@@ -136,7 +136,7 @@ class AuthRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             val data: Flow<Resource<Boolean>> = try {
                 val response =
-                    if (LocalData.accessToken.isEmpty() || LocalData.user?.status == NOT_VERIFIED)
+                    if (LocalData.accessToken.isNullOrEmpty() || LocalData.user?.status == NOT_VERIFIED)
                         api.updateFCM()
                     else api.updateUserFCM()
                 if (response.isSuccessful) {

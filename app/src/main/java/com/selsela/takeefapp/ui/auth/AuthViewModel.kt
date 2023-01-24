@@ -88,7 +88,7 @@ class AuthViewModel @Inject constructor(
     var isLoaded = false
     var message: MutableState<String> = mutableStateOf("")
     var contactId = -1
-    val userLoggedIn = mutableStateOf(LocalData.accessToken.isEmpty().not())
+    val userLoggedIn = mutableStateOf(LocalData.accessToken.isNullOrEmpty().not())
 
     /**
      * State Subscribers

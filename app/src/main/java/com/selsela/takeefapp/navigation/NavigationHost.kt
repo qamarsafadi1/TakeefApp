@@ -58,7 +58,7 @@ fun NavigationHost(
             }, goToMyAccount = {
                 navActions.navigateToMyAccount()
             }) {
-                if (LocalData.accessToken.isEmpty())
+                if (LocalData.accessToken.isNullOrEmpty())
                     navActions.navigateToLogin()
                 else navActions.navigateToAddress()
             }

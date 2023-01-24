@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -22,12 +23,18 @@ import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.config.model.Service
 import com.selsela.takeefapp.ui.common.AsyncImage
+import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text20
+import androidx.compose.runtime.*
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 
 @Composable
-fun ServiceItem(arrowVisibility: Boolean, service: Service) {
+fun ServiceItem(
+    arrowVisibility: Boolean, service: Service,
+    isSelected: Boolean =false
+) {
     Row(
         modifier =
         Modifier
@@ -42,7 +49,6 @@ fun ServiceItem(arrowVisibility: Boolean, service: Service) {
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(imageUrl = service.imageUtl)
-
         }
 
         Column(
@@ -76,7 +82,10 @@ fun ServiceItem(arrowVisibility: Boolean, service: Service) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.unchecked),
+                painter =
+                if (isSelected)
+                    painterResource(id = R.drawable.checked)
+                else painterResource(id = R.drawable.unchecked),
                 contentDescription = ""
             )
 

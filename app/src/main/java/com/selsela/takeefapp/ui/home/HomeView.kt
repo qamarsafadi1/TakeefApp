@@ -59,12 +59,13 @@ import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text16Medium
 import com.selsela.takeefapp.ui.theme.text18
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeView(
-    viewModel: HomeViewModel = hiltViewModel(),
+    viewModel: HomeViewModel,
     goToSpecialOrder: () -> Unit,
     goToMyAccount: () -> Unit,
     goToLogin: () -> Unit,
@@ -78,8 +79,12 @@ fun HomeView(
                 .background(Color.White)
         ) {
             var costVisible by remember {
-                mutableStateOf(false)
+                mutableStateOf(viewModel.selectedOrderService.value.services.isEmpty().not())
             }
+            val servic by remember {
+                mutableStateOf(viewModel.selectedOrderService.value)
+            }
+            servic.getTotalPrice().log("totalPricetotalPrice")
             Column(
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
@@ -89,15 +94,15 @@ fun HomeView(
             ) {
                 Header(goToMyAccount)
                 TitleView()
-
                 val servicesList = remember { viewModel.services!!.map { it }.toMutableStateList() }
                 LazyColumn(modifier = Modifier.padding(top = 24.dp)) {
                     items(servicesList,
                         key = { it.id }) {
                         AnimContent(
                             it,
+                            viewModel = viewModel,
                             onSelect = {
-                                costVisible = !costVisible
+                                costVisible = viewModel.selectedOrderService.value.services.isEmpty().not()
                             }
                         ) {
                         }
@@ -163,7 +168,7 @@ fun HomeView(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "300", style = text16Medium,
+                                    text = "${servic.totalServicesPrice?.value}", style = text16Medium,
                                     color = Color.White
                                 )
                                 Text(
@@ -267,6 +272,7 @@ private fun TitleView() {
 @Composable
 fun AnimContent(
     service: Service,
+    viewModel: HomeViewModel,
     onSelect: (Boolean) -> Unit,
     onExpand: (Boolean) -> Unit
 ) {
@@ -289,12 +295,24 @@ fun AnimContent(
             horizontalAlignment = Alignment.Start
 
         ) {
-            ServiceItem(arrowVisibility, service)
+
+            val selectedISService by remember {
+                viewModel.selectedOrderService
+            }
+            val isSelected =
+                if (selectedISService.services.isEmpty().not())
+                    selectedISService.services.any { it.serviceId == service.id }
+                else false
+            ServiceItem(arrowVisibility, service, isSelected)
             contentTransition.AnimatedContent { targetState ->
                 if (targetState) {
                     onExpand(true)
                     arrowVisibility = false
-                    DetailsView(service) {
+                    DetailsView(
+                        isSelected, service,
+                        viewModel,
+                        viewModel::addAcTypeCount
+                    ) {
                         itemExpanded = !itemExpanded
                         onSelect(itemExpanded)
                     }

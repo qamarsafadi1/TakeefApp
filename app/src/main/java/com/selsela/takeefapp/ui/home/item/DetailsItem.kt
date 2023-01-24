@@ -13,15 +13,14 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.config.model.AcType
 import com.selsela.takeefapp.data.config.model.Service
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.home.HomeViewModel
@@ -31,13 +30,20 @@ import com.selsela.takeefapp.ui.theme.TextColorHintAlpha60
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text12Meduim
 import com.selsela.takeefapp.ui.theme.text16Medium
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 
 
 @Composable
 fun DetailsView(
+    isSelected: Boolean? = false,
     service: Service,
-    viewModel: HomeViewModel = hiltViewModel(),
-    onCollapse: () -> Unit) {
+    viewModel: HomeViewModel,
+    onChange: ( service: Service,
+                count: Int,
+                acyType: AcType
+    ) -> Unit,
+    onCollapse: () -> Unit
+) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Divider(
             thickness = 1.dp,
@@ -52,11 +58,31 @@ fun DetailsView(
             style = text12,
             color = TextColorHint
         )
-        val acsType = remember { viewModel.acTypes!!.map { it }.toMutableStateList() }
+        val acsType = remember {
+            viewModel.acTypes!!.map { acyType ->
+                if (isSelected == true) {
+                    if (viewModel.selectedOrderService.value.services.isEmpty().not()) {
+                        acyType.count = viewModel.selectedOrderService.value.services.find {
+                            it.acyTypeOd == acyType.id && it.serviceId == service.id
+                        }?.count ?: 0
+                    } else {
+                        acyType.count = 0
+                        "heeyEmpty${acyType.count}".log()
+
+                    }
+                }else acyType.count = 0
+                acyType.count.log(" acyType.count")
+                acyType
+            }
+        }
 
         Column(modifier = Modifier.padding(top = 12.dp)) {
             repeat(acsType.size) {
-                ConditionTypeView(acsType[it])
+                acsType[it].count.log("acsType[it]")
+                ConditionTypeView(acsType[it]) { count, acyType ->
+                    count.log("countcount")
+                    onChange(service, count, acyType)
+                }
             }
             Row(
                 modifier = Modifier.padding(top = 49.dp),
@@ -112,7 +138,10 @@ fun DetailsView(
                 }
 
                 ElasticButton(
-                    onClick = { onCollapse() },
+                    onClick = {
+                        viewModel.updateServiceToOrderItem()
+                        onCollapse()
+                    },
                     title = stringResource(R.string.select),
                     modifier = Modifier
                         .width(167.dp)

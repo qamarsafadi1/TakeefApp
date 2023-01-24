@@ -28,8 +28,11 @@ import com.selsela.takeefapp.utils.Extensions.Companion.convertToDecimalPatter
 
 
 @Composable
-fun ConditionTypeView(acType: AcType) {
-    var count by remember { mutableStateOf(0) }
+fun ConditionTypeView(
+    acType: AcType,
+    onCountChange: (Int,AcType) -> Unit
+) {
+    var count by remember { mutableStateOf(acType.count) }
     Row(
         modifier = Modifier
             .padding(bottom = 7.dp)
@@ -53,6 +56,7 @@ fun ConditionTypeView(acType: AcType) {
                 contentDescription = "",
                 modifier = Modifier.clickable {
                     count++
+                    onCountChange(count, acType)
                 }
             )
 
@@ -65,8 +69,10 @@ fun ConditionTypeView(acType: AcType) {
                 painter = painterResource(id = R.drawable.minus),
                 contentDescription = "",
                 modifier = Modifier.clickable {
-                    if (count != 0)
+                    if (count != 0) {
                         count--
+                        onCountChange(count, acType)
+                    }
                 }
             )
 

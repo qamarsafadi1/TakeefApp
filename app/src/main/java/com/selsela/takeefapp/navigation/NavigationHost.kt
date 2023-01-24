@@ -2,6 +2,7 @@ package com.selsela.takeefapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,6 +15,7 @@ import com.selsela.takeefapp.ui.auth.LoginView
 import com.selsela.takeefapp.ui.auth.VerifyView
 import com.selsela.takeefapp.ui.general.SuccessView
 import com.selsela.takeefapp.ui.home.HomeView
+import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.ui.intro.IntroView
 import com.selsela.takeefapp.ui.notification.NotificationView
 import com.selsela.takeefapp.ui.order.OrderDetailsView
@@ -28,7 +30,6 @@ import com.selsela.takeefapp.ui.splash.SplashView
 import com.selsela.takeefapp.ui.support.SupportScreen
 import com.selsela.takeefapp.ui.terms.TermsView
 import com.selsela.takeefapp.ui.wallet.WalletScreen
-import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
 
 @Composable
@@ -53,11 +54,15 @@ fun NavigationHost(
             }
         }
         composable(Destinations.HOME_SCREEN) {
-            HomeView(goToSpecialOrder = {
-                navActions.navigateToSpecialOrder()
-            }, goToMyAccount = {
-                navActions.navigateToMyAccount()
-            }) {
+            val viewModel = hiltViewModel<HomeViewModel>()
+
+            HomeView(
+                viewModel,
+                goToSpecialOrder = {
+                    navActions.navigateToSpecialOrder()
+                }, goToMyAccount = {
+                    navActions.navigateToMyAccount()
+                }) {
                 if (LocalData.accessToken.isNullOrEmpty())
                     navActions.navigateToLogin()
                 else navActions.navigateToAddress()
@@ -84,7 +89,11 @@ fun NavigationHost(
             }
         }
         composable(Destinations.ADDRESS_SCREEN) {
-            AddressView(
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(Destinations.HOME_SCREEN)
+            }
+            val parentViewModel = hiltViewModel<HomeViewModel>(parentEntry)
+            AddressView(parentViewModel,
                 goToSearchView = { query ->
                     val queryResult = query.ifEmpty { "none" }
                     navActions.navigateToSearchAddress(queryResult)

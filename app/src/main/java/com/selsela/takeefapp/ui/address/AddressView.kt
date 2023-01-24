@@ -55,10 +55,12 @@ import com.selsela.takeefapp.ui.address.components.Headerview
 import com.selsela.takeefapp.ui.common.EditTextAddress
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.ListedBottomSheet
+import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.launch
@@ -66,10 +68,12 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun AddressView(
+    parentViewModel: HomeViewModel,
     goToSearchView: (String) -> Unit,
     goToReviewOrder: () -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
+    parentViewModel.selectedOrderService.value.totalServicesPrice?.value?.log("fromAddress")
     BottomSheetLayout(
         goToReviewOrder = {
             goToReviewOrder()

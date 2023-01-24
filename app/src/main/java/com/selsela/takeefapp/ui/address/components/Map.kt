@@ -1,39 +1,49 @@
 package com.selsela.takeefapp.ui.address.components
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.Extensions.Companion.RequestPermission
+import com.selsela.takeefapp.utils.GetLocationDetail
 
 
 @Composable
 fun GoogleMapView(
-    @DrawableRes markerDrawable: Int = R.drawable.marker
+    viewModel: HomeViewModel,
+    @DrawableRes markerDrawable: Int = R.drawable.marker,
 ) {
     val context = LocalContext.current
     var permissionIsGranted by remember {
         mutableStateOf(false)
     }
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 15f)
-    }
+    // To control and observe the map camera
+    val cameraPositionState = rememberCameraPositionState()
+
     val markerState = MarkerState(position = LatLng(0.0, 0.0))
 
     context.RequestPermission(
@@ -64,14 +74,42 @@ fun GoogleMapView(
                 compassEnabled = false,
                 zoomControlsEnabled = false
             )
+        )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Marker(
-                state = markerState,
-                icon = Extensions.bitmapDescriptor(
-                    context = context,
-                    vectorResId = markerDrawable
-                )
+            Image(
+                painter = painterResource(id = markerDrawable),
+                contentDescription = ""
             )
+        };
+
+    }
+    UpdateSelectedAddress(
+        cameraPositionState,
+        updateSelectedAddress = viewModel::updateSelectedAddress
+    )
+
+}
+
+@Composable
+private fun UpdateSelectedAddress(
+    cameraPositionState: CameraPositionState,
+    updateSelectedAddress: (String) -> Unit
+) {
+    val context = LocalContext.current
+    Column(
+        Modifier
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.Center
+    ) {
+        if (cameraPositionState.isMoving.not()) {
+            val newAddress = GetLocationDetail(context).getCurrentAddress(
+                cameraPositionState.position.target.latitude,
+                cameraPositionState.position.target.longitude
+            ) ?: ""
+            updateSelectedAddress(newAddress)
         }
     }
 }

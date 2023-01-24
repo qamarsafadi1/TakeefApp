@@ -12,20 +12,48 @@ data class SelectedServicesOrder(
     val paymentId: Int = -1,
     val orderDate: String = "",
     val workPeriodId: Int = -1,
-    var totalServicesPrice: MutableState<Double> ? = mutableStateOf(0.0)
+    var totalServicesPrice: MutableState<Double>? = mutableStateOf(0.0),
+    var maintenanceCount: MutableState<Int>? = mutableStateOf(0),
+    var cleanCount: MutableState<Int>? = mutableStateOf(0),
+    var installCount: MutableState<Int>? = mutableStateOf(0),
 ) {
     fun getTotalPrice() {
         val total =
-            services.sumOf {
-            if (it.serviceId != MAINTENANCE) {
-                it.servicePrice.times(it.count)
+            if (services.any { it.serviceId == CLEANING || it.serviceId == INSTALLATION }) {
+                services.sumOf {
+                    if (it.serviceId != MAINTENANCE) {
+                        it.servicePrice.times(it.count)
+                    } else {
+                        0.0
+                    }
+                }
             } else {
-                if (services.any { it.serviceId != CLEANING || it.serviceId != INSTALLATION })
+                services.sumOf {
                     it.servicePrice
-                else 0.0
+                }
             }
-        }
         totalServicesPrice?.value = total
+    }
+
+    fun getMaintenanceCount() {
+        val count = services.filter {
+            it.serviceId == MAINTENANCE
+        }.size
+        maintenanceCount?.value = count
+    }
+    fun getCleaningCount() {
+        val count = services.filter {
+            it.serviceId == CLEANING
+
+        }.size
+        cleanCount?.value = count
+        cleanCount?.value?.log("cleaningCount")
+    }
+    fun getInstallationCount() {
+        val count = services.filter {
+            it.serviceId == INSTALLATION
+        }.size
+        installCount?.value = count
     }
 }
 

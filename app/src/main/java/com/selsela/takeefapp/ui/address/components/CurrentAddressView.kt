@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
@@ -39,6 +40,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 @Composable
 @OptIn(ExperimentalAnimationApi::class)
  fun CurrentAddressView(
+    viewModel: HomeViewModel,
     modifier: Modifier, addressVisible: Boolean,
     onFav: () -> Unit
 ) {
@@ -90,7 +92,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
                             color = SecondaryColor
                         )
                         Text(
-                            text = "اسم المنطقة , المدينة , الحي ",
+                            text = viewModel.selectedAddress.value,
                             style = text12,
                             color = TextColor,
                             modifier = Modifier.paddingTop(3)

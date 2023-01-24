@@ -39,10 +39,10 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 fun OrderRouteView() {
 
     Box(modifier = Modifier.fillMaxSize()) {
-        GoogleMapView(
-            markerDrawable = R.drawable.markerroute
-        )
-
+//        GoogleMapView(
+//            markerDrawable = R.drawable.markerroute
+//        ){}
+//
 
         Column(
             modifier = Modifier

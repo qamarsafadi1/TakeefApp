@@ -42,10 +42,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.config.model.Service
+import com.selsela.takeefapp.data.order.model.order.SelectedServicesOrder
 import com.selsela.takeefapp.ui.common.AppLogoImage
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.home.item.DetailsView
@@ -59,6 +59,7 @@ import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text16Medium
 import com.selsela.takeefapp.ui.theme.text18
+import com.selsela.takeefapp.utils.Extensions.Companion.convertToDecimalPatter
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
@@ -102,7 +103,8 @@ fun HomeView(
                             it,
                             viewModel = viewModel,
                             onSelect = {
-                                costVisible = viewModel.selectedOrderService.value.services.isEmpty().not()
+                                costVisible =
+                                    viewModel.selectedOrderService.value.services.isEmpty().not()
                             }
                         ) {
                         }
@@ -168,7 +170,8 @@ fun HomeView(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "${servic.totalServicesPrice?.value}", style = text16Medium,
+                                    text = "${servic.totalServicesPrice?.value}",
+                                    style = text16Medium,
                                     color = Color.White
                                 )
                                 Text(
@@ -188,7 +191,7 @@ fun HomeView(
                                 .height(48.dp)
                         )
                     }
-                    SelectedServicesView()
+                    SelectedServicesView(viewModel.selectedOrderService.value)
                 }
             }
 
@@ -223,32 +226,57 @@ private fun Header(goToMyAccount: () -> Unit) {
 }
 
 @Composable
-private fun SelectedServicesView() {
+private fun SelectedServicesView(service: SelectedServicesOrder) {
     Row(modifier = Modifier.fillMaxWidth()) {
-        Row {
-            Text(
-                text = stringResource(id = R.string.maintinance_dot), style = text11,
-                color = SecondaryColor2
-            )
-            Text(text = "00", style = text12, color = Color.White)
+        if (service.maintenanceCount?.value != 0) {
+            Row {
+                Text(
+                    text = stringResource(id = R.string.maintinance_dot), style = text11,
+                    color = SecondaryColor2
+                )
+                service.maintenanceCount?.value?.convertToDecimalPatter()?.let {
+                    Text(
+                        text = it,
+                        style = text12,
+                        color = Color.White
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(14.1.dp))
         }
-        Spacer(modifier = Modifier.width(14.1.dp))
-        Row {
-            Text(
-                text = stringResource(id = R.string.clean_dot), style = text11,
-                color = SecondaryColor2
-            )
-            Text(text = "00", style = text12, color = Color.White)
+        if (service.cleanCount?.value != 0) {
+            Row {
+                Text(
+                    text = stringResource(id = R.string.clean_dot), style = text11,
+                    color = SecondaryColor2
+                )
+                service.cleanCount?.value?.convertToDecimalPatter()?.let {
+                    Text(
+                        text = it,
+                        style = text12,
+                        color = Color.White
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(14.1.dp))
         }
-        Spacer(modifier = Modifier.width(14.1.dp))
-        Row {
-            Text(
-                text = stringResource(id = R.string.installtion_dot), style = text11,
-                color = SecondaryColor2
-            )
-            Text(text = "00", style = text12, color = Color.White)
+        if (service.installCount?.value != 0) {
+            Row {
+                Text(
+                    text = stringResource(id = R.string.installtion_dot), style = text11,
+                    color = SecondaryColor2
+                )
+                service.installCount?.value?.convertToDecimalPatter()?.let {
+                    Text(
+                        text = it,
+                        style = text12,
+                        color = Color.White
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(14.1.dp))
         }
-        Spacer(modifier = Modifier.width(14.1.dp))
+
     }
 }
 

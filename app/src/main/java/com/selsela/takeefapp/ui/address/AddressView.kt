@@ -43,6 +43,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -75,6 +76,7 @@ fun AddressView(
     Color.Transparent.ChangeStatusBarOnlyColor()
     parentViewModel.selectedOrderService.value.totalServicesPrice?.value?.log("fromAddress")
     BottomSheetLayout(
+        parentViewModel,
         goToReviewOrder = {
             goToReviewOrder()
         }
@@ -87,6 +89,7 @@ fun AddressView(
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun BottomSheetLayout(
+    parentViewModel: HomeViewModel,
     goToReviewOrder: () -> Unit,
     onSearch: (String) -> Unit,
 ) {
@@ -169,11 +172,13 @@ fun BottomSheetLayout(
                         .background(Color.White),
                 )
                 {
-                    GoogleMapView()
+
+                    GoogleMapView(viewModel = parentViewModel)
                     Headerview() {
                         onSearch(it)
                     }
                     CurrentAddressView(
+                        parentViewModel,
                         Modifier
                             .paddingTop(16)
                             .fillMaxWidth()

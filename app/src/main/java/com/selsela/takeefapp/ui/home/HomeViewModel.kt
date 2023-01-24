@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel
 import com.selsela.takeefapp.data.config.model.AcType
 import com.selsela.takeefapp.data.order.model.order.SelectedService
 import com.selsela.takeefapp.data.order.model.order.SelectedServicesOrder
+import com.selsela.takeefapp.utils.Constants.CLEANING
+import com.selsela.takeefapp.utils.Constants.INSTALLATION
+import com.selsela.takeefapp.utils.Constants.MAINTENANCE
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,10 +24,15 @@ class HomeViewModel @Inject constructor(
     var count = mutableStateOf(0)
     var selectedOrderService = mutableStateOf(SelectedServicesOrder())
     var acyTypes = mutableListOf<SelectedService>()
+    var selectedAddress = mutableStateOf("")
 
     fun updateServiceToOrderItem() {
         val services = acyTypes
         selectedOrderService.value.services = services
+        selectedOrderService.value.getTotalPrice()
+        selectedOrderService.value.getMaintenanceCount()
+        selectedOrderService.value.getCleaningCount()
+        selectedOrderService.value.getInstallationCount()
     }
 
     fun addAcTypeCount(
@@ -39,7 +47,8 @@ class HomeViewModel @Inject constructor(
             acyTypeOd = acyType.id
         )
         if (count != 0) {
-            val isFound = acyTypes.any { it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId }
+            val isFound =
+                acyTypes.any { it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId }
             isFound.log("contains")
             val index = acyTypes.indexOfFirst {
                 it.acyTypeOd == newItem.acyTypeOd
@@ -66,18 +75,22 @@ class HomeViewModel @Inject constructor(
             acyTypes.distinctBy { Pair(it.acyTypeOd, it.serviceId) }
                 .log("   viewModel.acyTypes")
         } else {
+            val newItem = SelectedService(
+                service.id,
+                service.price,
+                count = count,
+                acyTypeOd = acyType.id
+            )
             acyTypes.removeIf {
-                it.acyTypeOd == SelectedService(
-                    service.id,
-                    service.price,
-                    count = count,
-                    acyTypeOd = acyType.id
-                ).acyTypeOd
+                it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId
             }
-           // updateServiceToOrderItem()
+            // updateServiceToOrderItem()
             //  selectedOrderService.value.services = acyTypes
         }
-        selectedOrderService.value.getTotalPrice()
+
     }
 
+    fun updateSelectedAddress(newAddress: String){
+        selectedAddress.value = newAddress
+    }
 }

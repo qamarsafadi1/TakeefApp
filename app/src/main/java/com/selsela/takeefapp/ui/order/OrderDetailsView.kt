@@ -59,7 +59,11 @@ import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text16Bold
 import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Constants.FINISHED
 import com.selsela.takeefapp.utils.Constants.NEW_ORDER
+import com.selsela.takeefapp.utils.Constants.ON_WAY
+import com.selsela.takeefapp.utils.Constants.RECEIVED
+import com.selsela.takeefapp.utils.Constants.UPCOMING_ORDERS
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.LocalData
 import de.palm.composestateevents.EventEffect
@@ -177,7 +181,10 @@ private fun OrderDetailsContent(onBack: () -> Unit, order: Order) {
                         StepperView(
                             isDetails = true,
                             items = LocalData.cases?.filter { it.id != 6 },
-                            currentStep = order.logs.lastIndex
+                            currentStep = order.logs.filter {
+                                it.case.id == RECEIVED ||   it.case.id == ON_WAY ||
+                                it.case.id == UPCOMING_ORDERS || it.case.id == FINISHED
+                            }.distinctBy { it.case.id }.lastIndex
                         )
                     }
                     AdditionalCostView(

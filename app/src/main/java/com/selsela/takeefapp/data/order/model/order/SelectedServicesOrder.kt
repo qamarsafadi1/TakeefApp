@@ -38,7 +38,9 @@ data class SelectedServicesOrder(
     fun getMaintenanceCount() {
         val count = services.filter {
             it.serviceId == MAINTENANCE
-        }.size
+        }.sumOf {
+            it.count
+        }
         maintenanceCount?.value = count
     }
 
@@ -46,15 +48,18 @@ data class SelectedServicesOrder(
         val count = services.filter {
             it.serviceId == CLEANING
 
-        }.size
+        }.sumOf {
+            it.count
+        }
         cleanCount?.value = count
-        cleanCount?.value?.log("cleaningCount")
     }
 
     fun getInstallationCount() {
         val count = services.filter {
             it.serviceId == INSTALLATION
-        }.size
+        }.sumOf {
+            it.count
+        }
         installCount?.value = count
     }
 

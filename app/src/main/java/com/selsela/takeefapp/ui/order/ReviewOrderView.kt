@@ -190,8 +190,7 @@ private fun ReviewOrderContent(viewState: OrderUiState, vm: HomeViewModel, place
                 repeat(services.keys.size) {
                     val itemIndex = services.keys.elementAt(it)
                     val item = services.getValue(itemIndex)
-                    item.log("itemitem")
-                    ServiceItem(item, isNotMaintinance)
+                    ServiceItem(item, isNotMaintinance, vm)
                 }
 
             }
@@ -448,8 +447,10 @@ private fun PaymentItem(
 @Composable
 private fun ServiceItem(
     selectedService: List<SelectedService>,
-    isNotMaintinance: Boolean = false
+    isNotMaintinance: Boolean = false,
+    vm: HomeViewModel,
 ) {
+
     Row(
         modifier = Modifier
             .padding(bottom = 5.dp)
@@ -469,9 +470,10 @@ private fun ServiceItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
+                modifier= Modifier.weight(2f),
                 text = stringResource(
                     id = R.string.maintinance_serivce,
                     LocalData.services?.find {
@@ -481,18 +483,22 @@ private fun ServiceItem(
                 style = text12,
                 color = SecondaryColor
             )
-            Spacer(modifier = Modifier.width(28.dp))
+            Row(
+                modifier= Modifier.weight(1f),
+                horizontalArrangement = Arrangement.End) {
+                Text(
+                    text = "${vm.getCount(selectedService.first().serviceId)}", style = text14,
+                    color = TextColor,
+                )
+                Spacer(modifier = Modifier.width(4.dp))
 
-            Text(
-                text = "${selectedService.size}", style = text14,
-                color = TextColor,
-                modifier = Modifier.padding(end = 7.dp)
-            )
-            Text(
-                text = stringResource(id = R.string.device),
-                style = text12,
-                color = SecondaryColor
-            )
+                Text(
+                    text = stringResource(id = R.string.device),
+                    style = text12,
+                    color = SecondaryColor
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+            }
 
         }
 
@@ -512,11 +518,16 @@ private fun ServiceItem(
         ) {
             selectedService.size.log("selectedService")
             Text(
-                text = "${selectedService.sumOf { it.servicePrice }}",
+                text = "${
+                    selectedService.sumOf {
+                        if (it.serviceId != MAINTENANCE)
+                            it.servicePrice.times(it.count)
+                        else it.servicePrice
+                    }
+                }",
                 style = if (isNotMaintinance && selectedService.first().serviceId == MAINTENANCE) text14Strike else text14,
-                color = TextColor
+                color = TextColor,
             )
-            Spacer(modifier = Modifier.width(3.dp))
             Text(
                 text = stringResource(id = R.string.currency_1, getCurrency()),
                 style = if (isNotMaintinance && selectedService.first().serviceId == MAINTENANCE) text14Strike else text14,

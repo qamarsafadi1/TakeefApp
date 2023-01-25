@@ -40,6 +40,8 @@ fun NavigationHost(
         NavigationActions(navController)
     },
 ) {
+
+    // TODO: refactor this code with Kotlin reflection ::
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Destinations.SPLASH_SCREEN) {
             SplashView() {
@@ -94,7 +96,7 @@ fun NavigationHost(
             }
             val parentViewModel = hiltViewModel<HomeViewModel>(parentEntry)
             AddressView(parentViewModel,
-                onBack = {navController.navigateUp()},
+                onBack = { navController.navigateUp() },
                 goToSearchView = { query ->
                     val queryResult = query.ifEmpty { "none" }
                     navActions.navigateToSearchAddress(queryResult)
@@ -131,9 +133,7 @@ fun NavigationHost(
         }
         composable(Destinations.MY_ACCOUNT) {
             MyAccountView(
-                onBack = {
-                    navController.navigateUp()
-                },
+                onBack = navController::navigateUp,
                 goToLogin = {
                     navActions.navigateToLogin()
                 },
@@ -143,9 +143,7 @@ fun NavigationHost(
                 goToNotification = {
                     navActions.navigateToNotification()
                 },
-                goToAboutApp = {
-                    navActions.navigateToAboutApp()
-                },
+                goToAboutApp = navActions::navigateToAboutApp,
                 goToTerms = {
                     navActions.navigateToTermsScreen()
                 },

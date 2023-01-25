@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import com.selsela.takeefapp.data.auth.repository.AuthRepository
 import com.selsela.takeefapp.data.config.model.AcType
 import com.selsela.takeefapp.data.config.model.WorkPeriod
 import com.selsela.takeefapp.data.order.model.order.Order
@@ -11,6 +12,8 @@ import com.selsela.takeefapp.data.order.model.order.SelectedService
 import com.selsela.takeefapp.data.order.model.order.SelectedServicesOrder
 import com.selsela.takeefapp.data.order.repository.OrderRepository
 import com.selsela.takeefapp.ui.order.OrderState
+import com.selsela.takeefapp.utils.Constants.CLEANING
+import com.selsela.takeefapp.utils.Constants.MAINTENANCE
 import com.selsela.takeefapp.utils.Extensions.Companion.calculateDiscount
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
@@ -41,7 +44,8 @@ data class OrderUiState(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: OrderRepository
+    private val repository: OrderRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
     val acTypes = LocalData.acTypes
@@ -72,6 +76,7 @@ class HomeViewModel @Inject constructor(
         val services = acyTypes
         selectedOrderService.value.services = services
         selectedOrderService.value.getTotalPrice()
+        services.log("services")
         selectedOrderService.value.getMaintenanceCount()
         selectedOrderService.value.getCleaningCount()
         selectedOrderService.value.getInstallationCount()
@@ -89,11 +94,10 @@ class HomeViewModel @Inject constructor(
             acyTypeOd = acyType.id
         )
         if (count != 0) {
-            val isFound =
-                acyTypes.any { it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId }
+            val isFound = acyTypes.any { it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId }
             isFound.log("contains")
             val index = acyTypes.indexOfFirst {
-                it.acyTypeOd == newItem.acyTypeOd
+                it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId
             }
             if (!isFound) {
                 acyTypes.add(
@@ -172,7 +176,15 @@ class HomeViewModel @Inject constructor(
         return isEnough
     }
 
-    fun getServices(): String {
+    fun getCount(serviceId: Int): Int{
+        return  when(serviceId){
+            MAINTENANCE -> selectedOrderService.value.maintenanceCount?.value ?: 0
+            CLEANING -> selectedOrderService.value.cleanCount?.value ?: 0
+            else -> selectedOrderService.value.installCount?.value ?: 0
+        }
+    }
+
+    private fun getServices(): String {
         return selectedOrderService.value.services
             .map {
                 listOf(it.serviceId, it.acyTypeOd, it.count)
@@ -184,7 +196,6 @@ class HomeViewModel @Inject constructor(
             state = state.copy(
                 isLoading = true
             )
-            getServices().log("getServices()")
             repository.placeOrder(
                 services = getServices(),
                 orderDate = selectedOrderService.value.orderDate,
@@ -196,10 +207,10 @@ class HomeViewModel @Inject constructor(
                 districtId = address?.districtId ?: -1,
                 lat = address?.lat ?: 0.0,
                 lng = address?.lng ?: 0.0,
+                isFav = address?.isFav ?: 0,
                 note = address?.note
 
-            )
-                .collect { result ->
+            ).collect { result ->
                     val orderUiState = when (result.status) {
                         Status.SUCCESS -> {
                             OrderUiState(
@@ -234,11 +245,15 @@ class HomeViewModel @Inject constructor(
      * reset handlers
      */
     fun onSuccess() {
+        viewModelScope.launch{
+            authRepository.getWallet()
+
+        }
         state = state.copy(onSuccess = consumed)
-//        selectedOrderService.value = SelectedServicesOrder()
-//        selectedAddress.value = ""
-//        selectedPeriodId.value = WorkPeriod()
-//        selectedPaymentId.value = -1
+        selectedOrderService.value = SelectedServicesOrder()
+        selectedAddress.value = ""
+        selectedPeriodId.value = WorkPeriod()
+        selectedPaymentId.value = -1
         onCleared()
     }
 
@@ -256,5 +271,5 @@ data class Address(
     var lat: Double? = 0.0,
     var lng: Double? = 0.0,
     val note: String? = "",
-    val isFav: Int = 0
+    var isFav: Int = 0
 )

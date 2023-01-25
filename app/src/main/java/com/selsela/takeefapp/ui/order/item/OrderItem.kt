@@ -107,8 +107,10 @@ fun OrderItem(
                             .fillMaxWidth()
                             .weight(1.5f),
                         items = LocalData.cases?.filter { it.id != 6 },
-                        currentStep = order.logs.lastIndex
-                    )
+                        currentStep = order.logs.filter {
+                            it.case.id == RECEIVED ||   it.case.id == ON_WAY ||
+                                    it.case.id == Constants.UPCOMING_ORDERS || it.case.id == FINISHED
+                        }.distinctBy { it.case.id }.lastIndex                    )
                 }
             }
 

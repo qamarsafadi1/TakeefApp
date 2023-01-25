@@ -213,10 +213,11 @@ fun BottomSheetLayout(
                             .align(Alignment.BottomCenter),
                         addressVisible
                     ) {
-                        addressVisible = !addressVisible
-                        {
-                            addressCardVisible = !addressCardVisible
-                        }.withDelay(100)
+                        parentViewModel.address?.isFav.let {
+                            if (it == 1)
+                                parentViewModel.address?.isFav = 0
+                            else parentViewModel.address?.isFav = 1
+                        }
                     }
                     // Add address info form
                     AnimatedVisibility(
@@ -283,8 +284,7 @@ fun BottomSheetLayout(
                                     }.withDelay(100)
                                 }
                                 DistrictView(addressViewModel) {
-                                    if (addressViewModel.getDistrictOfCities().isNullOrEmpty()
-                                            .not()
+                                    if (addressViewModel.getDistrictOfCities().isEmpty().not()
                                     ) {
                                         addressVisible = !addressVisible
                                         {
@@ -313,14 +313,14 @@ fun BottomSheetLayout(
                                     onClick = {
                                         parentViewModel.address = addressViewModel.createAddress()
                                         addressCardVisible = true
-                                       if (parentViewModel.address != null){
-                                           coroutineScope.launch {
-                                               if (modalSheetState.isVisible)
-                                                   modalSheetState.hide()
-                                               else
-                                                   modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                                           }
-                                       }
+                                        if (parentViewModel.address != null) {
+                                            coroutineScope.launch {
+                                                if (modalSheetState.isVisible)
+                                                    modalSheetState.hide()
+                                                else
+                                                    modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                            }
+                                        } else context.showError("الرجاء تعبئة تفاصيل العنوان")
                                     },
                                     title = stringResource(R.string.continue_lbl),
                                     icon = R.drawable.nexticon,

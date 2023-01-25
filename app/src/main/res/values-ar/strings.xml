@@ -198,4 +198,5 @@
     <string name="no_orders">لا يوجد طلبات </string>
     <string name="no_orders_lbl">لا يوجد طلبات حاليًا </string>
     <string name="cancel_order">الغاء الطلب</string>
+    <string name="tax">الضريبة المضافة</string>
 </resources>

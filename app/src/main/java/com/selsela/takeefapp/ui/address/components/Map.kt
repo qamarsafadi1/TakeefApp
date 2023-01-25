@@ -43,7 +43,6 @@ fun GoogleMapView(
     }
     // To control and observe the map camera
     val cameraPositionState = rememberCameraPositionState()
-
     val markerState = MarkerState(position = LatLng(0.0, 0.0))
 
     context.RequestPermission(
@@ -96,7 +95,7 @@ fun GoogleMapView(
 @Composable
 private fun UpdateSelectedAddress(
     cameraPositionState: CameraPositionState,
-    updateSelectedAddress: (String) -> Unit
+    updateSelectedAddress: (String,LatLng) -> Unit
 ) {
     val context = LocalContext.current
     Column(
@@ -105,11 +104,12 @@ private fun UpdateSelectedAddress(
         verticalArrangement = Arrangement.Center
     ) {
         if (cameraPositionState.isMoving.not()) {
+
             val newAddress = GetLocationDetail(context).getCurrentAddress(
                 cameraPositionState.position.target.latitude,
                 cameraPositionState.position.target.longitude
             ) ?: ""
-            updateSelectedAddress(newAddress)
+            updateSelectedAddress(newAddress,cameraPositionState.position.target)
         }
     }
 }

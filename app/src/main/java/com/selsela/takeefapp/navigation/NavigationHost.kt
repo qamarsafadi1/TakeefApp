@@ -94,6 +94,7 @@ fun NavigationHost(
             }
             val parentViewModel = hiltViewModel<HomeViewModel>(parentEntry)
             AddressView(parentViewModel,
+                onBack = {navController.navigateUp()},
                 goToSearchView = { query ->
                     val queryResult = query.ifEmpty { "none" }
                     navActions.navigateToSearchAddress(queryResult)
@@ -106,7 +107,11 @@ fun NavigationHost(
             SearchAddressView(query)
         }
         composable(Destinations.REVIEW_ORDER) {
-            ReviewOrderView {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(Destinations.HOME_SCREEN ?: "")
+            }
+            val parentViewModel = hiltViewModel<HomeViewModel>(parentEntry)
+            ReviewOrderView(parentViewModel) {
                 navActions.navigateToSuccess()
             }
         }

@@ -21,6 +21,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Composable
 fun Headerview(
+    onBack:() -> Unit,
     onSearch: (String) -> Unit
 ) {
     Column(
@@ -29,7 +30,9 @@ fun Headerview(
             .fillMaxWidth()
             .fillMaxHeight(0.53f)
     ) {
-        BackButton()
+        BackButton(){
+            onBack()
+        }
         Card(
             modifier = Modifier
                 .paddingTop(16)

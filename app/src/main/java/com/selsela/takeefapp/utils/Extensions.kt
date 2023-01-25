@@ -570,5 +570,12 @@ class Extensions {
                 elements.toList().toMutableStateList()
             }
         }
+        fun String.calculateDiscount(totalPrice: Double, discount: Float?): String {
+            var taxString = " "
+            val cost = totalPrice.times(discount!!)
+            taxString = "${cost.div(100)}"
+            return taxString
+        }
+
     }
 }

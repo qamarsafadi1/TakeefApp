@@ -1,9 +1,7 @@
 package com.selsela.takeefapp.ui.common
 
-import android.content.res.Configuration
 import android.os.CountDownTimer
 import android.util.Log
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
@@ -20,7 +18,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +30,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,8 +48,6 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -63,7 +59,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -75,7 +70,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.os.LocaleListCompat
 import coil.compose.SubcomposeAsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -84,12 +78,14 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.selsela.takeefapp.LocalMutableContext
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.config.model.Case
-import com.selsela.takeefapp.data.order.model.order.Order
+import com.selsela.takeefapp.data.config.model.city.Area
+import com.selsela.takeefapp.data.config.model.city.Children
+import com.selsela.takeefapp.data.config.model.city.City
 import com.selsela.takeefapp.data.order.model.order.OrderService
+import com.selsela.takeefapp.ui.address.AddressViewModel
 import com.selsela.takeefapp.ui.auth.AuthViewModel
 import com.selsela.takeefapp.ui.splash.ConfigViewModel
 import com.selsela.takeefapp.ui.theme.BorderColor
-import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.Red
 import com.selsela.takeefapp.ui.theme.SecondaryColor
@@ -98,22 +94,20 @@ import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.TextFieldBg
 import com.selsela.takeefapp.ui.theme.VerifiedBg
 import com.selsela.takeefapp.ui.theme.buttonText
-import com.selsela.takeefapp.ui.theme.text10
 import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text12
-import com.selsela.takeefapp.ui.theme.text12Bold
 import com.selsela.takeefapp.ui.theme.text13
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text14White
 import com.selsela.takeefapp.ui.theme.text14WhiteCenter
-import com.selsela.takeefapp.ui.theme.text16Bold
 import com.selsela.takeefapp.ui.theme.text18
 import com.selsela.takeefapp.ui.theme.text8
 import com.selsela.takeefapp.utils.Constants.LEFT
 import com.selsela.takeefapp.utils.Constants.RIGHT
 import com.selsela.takeefapp.utils.Extensions.Companion.convertToDecimalPatter
 import com.selsela.takeefapp.utils.Extensions.Companion.getActivity
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.LocalUtils.setLocale
@@ -1073,8 +1067,15 @@ fun Spinner(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ListedBottomSheet(sheetState: ModalBottomSheetState) {
+fun <T> ListedBottomSheet(
+    sheetState: ModalBottomSheetState,
+    title: String? = stringResource(id = R.string.area_name),
+    ciites: List<T>?,
+    onSelectedItem: (String, Int) -> Unit,
+    onClickItem: () -> Unit
+) {
     Box() {
+        ciites?.size?.log("ciites")
         ModalBottomSheetLayout(
             sheetState = sheetState,
             sheetShape = RoundedCornerShape(topEnd = 42.dp, topStart = 42.dp),
@@ -1091,7 +1092,7 @@ fun ListedBottomSheet(sheetState: ModalBottomSheetState) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = stringResource(id = R.string.area_name),
+                        text = "${title}",
                         style = text18,
                         color = Color.White
                     )
@@ -1118,8 +1119,25 @@ fun ListedBottomSheet(sheetState: ModalBottomSheetState) {
                             .paddingTop(42)
                             .fillMaxWidth()
                     ) {
-                        items(10) {
-                            AreaListItem()
+                        items(ciites ?: listOf()) {
+                            AreaListItem<T>(
+                                it
+                            ) {
+                                when (it) {
+                                    is Area -> {
+                                        onSelectedItem(it.name, it.id)
+                                    }
+
+                                    is City -> {
+                                        onSelectedItem(it.name, it.id)
+                                    }
+
+                                    is Children -> {
+                                        onSelectedItem(it.name, it.id)
+                                    }
+                                }
+                                onClickItem()
+                            }
                         }
                     }
                 }
@@ -1243,11 +1261,17 @@ private fun LanguageItem(selectedItem: Int, onCheck: (Int) -> Unit) {
 }
 
 @Composable
-private fun AreaListItem() {
+private fun <T> AreaListItem(
+    item: T,
+    onClick: (T) -> Unit
+) {
     Row(
         modifier = Modifier
             .padding(bottom = 7.dp)
-            .requiredHeight(48.dp),
+            .requiredHeight(48.dp)
+            .clickable {
+                onClick(item)
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -1256,7 +1280,15 @@ private fun AreaListItem() {
         )
         Spacer(modifier = Modifier.width(13.6.dp))
         Text(
-            text = stringResource(id = R.string.area_name),
+            text = when (item) {
+                is Area -> {
+                    item.name
+                }
+
+                is City -> item.name
+                is Children -> item.name
+                else -> ""
+            },
             style = text14,
             color = Color.White
         )

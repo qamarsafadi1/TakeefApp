@@ -28,19 +28,25 @@ import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextFieldBg
 import com.selsela.takeefapp.ui.theme.text11
+import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import androidx.compose.runtime.*
+import com.selsela.takeefapp.ui.address.AddressViewModel
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 
 @Composable
 fun CityAreaView(
     onAreaClick: () -> Unit,
+    addressViewModel: AddressViewModel,
     onCityClick: () -> Unit
 ) {
     Row(modifier = Modifier.fillMaxWidth()) {
-        CityView(Modifier.weight(1f)) {
+        CityView(Modifier.weight(1f), addressViewModel.selectedAreaName) {
             onCityClick()
         }
         Spacer(modifier = Modifier.width(width = 8.dp))
         AreaView(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            addressViewModel.selectedCityName
         ) {
             onAreaClick()
         }
@@ -50,6 +56,7 @@ fun CityAreaView(
 @Composable
 private fun AreaView(
     modifier: Modifier,
+    selectedName: MutableState<String>,
     onAreaClick: () -> Unit
 ) {
     Column(modifier) {
@@ -72,7 +79,47 @@ private fun AreaView(
 
         ) {
             Text(
-                stringResource(id = R.string.city_name),
+                selectedName.value.ifEmpty { stringResource(id = R.string.city_name) },
+                style = text11,
+                color = Color.White,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.spinnerarrow),
+                contentDescription = "",
+                modifier = Modifier.align(Alignment.CenterEnd)
+
+            )
+        }
+    }
+}
+
+@Composable
+fun DistrictView(
+    viewModel: AddressViewModel,
+    modifier: Modifier = Modifier
+        .paddingTop(9)
+        .fillMaxWidth(),
+    onAreaClick: () -> Unit
+) {
+    viewModel.selectedDistrictName.value.log("selectedDistrictName")
+    Column(modifier) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .requiredHeight(46.dp)
+                .background(TextFieldBg, RoundedCornerShape(8.dp))
+                .border(1.dp, color = BorderColor, RoundedCornerShape(8.dp))
+                .clickable(onClick = {
+                    onAreaClick()
+                })
+                .padding(horizontal = 16.dp)
+        ) {
+            Text(
+                viewModel.selectedDistrictName.value.ifEmpty {
+                    stringResource(id = R.string.district)
+                },
                 style = text11,
                 color = Color.White,
                 modifier = Modifier
@@ -93,6 +140,7 @@ private fun AreaView(
 @Composable
 private fun CityView(
     weight: Modifier,
+    selectedName: MutableState<String>,
     onCityClick: () -> Unit
 ) {
 
@@ -116,7 +164,7 @@ private fun CityView(
 
         ) {
             Text(
-                stringResource(id = R.string.area_name),
+                selectedName.value.ifEmpty { stringResource(id = R.string.area_name) },
                 style = text11,
                 color = Color.White,
                 modifier = Modifier

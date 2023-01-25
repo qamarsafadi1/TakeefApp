@@ -1,5 +1,7 @@
 package com.selsela.takeefapp.data.config.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Configurations(
     val address: String = "",
     val addressEn: String = "",
@@ -19,6 +21,7 @@ data class Configurations(
     val mobile: String = "",
     val nameAr: String = "",
     val nameEn: String = "",
+    @SerializedName("tax_percent")
     val taxPercent: String = "",
     val twitter: String = "",
     val updateAndroid: String = "",

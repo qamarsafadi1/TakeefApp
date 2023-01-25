@@ -3,6 +3,7 @@ package com.selsela.takeefapp.ui.splash
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.selsela.takeefapp.data.auth.repository.AuthRepository
 import com.selsela.takeefapp.data.config.model.page.Page
 import com.selsela.takeefapp.data.config.repository.ConfigurationsRepository
 import com.selsela.takeefapp.ui.auth.AuthUiState
@@ -34,7 +35,8 @@ data class GeneralUiState(
 @HiltViewModel
 class ConfigViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val repository: ConfigurationsRepository
+    private val repository: ConfigurationsRepository,
+    private val repositoryAuth: AuthRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(GeneralUiState())
     val uiState: StateFlow<GeneralUiState> = _uiState.asStateFlow()
@@ -49,7 +51,8 @@ class ConfigViewModel @Inject constructor(
         getConfig()
     }
     fun getConfig() {
-        viewModelScope.launch { repository.getConfigurations() }
+        viewModelScope.launch { repository.getConfigurations()
+            repositoryAuth.getWallet()}
     }
 
     fun getAboutApp() {

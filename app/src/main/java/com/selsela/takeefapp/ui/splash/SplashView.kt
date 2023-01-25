@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -86,7 +87,7 @@ private fun SplashContent(onFinish: () -> Unit) {
             )
         };
         LaunchedEffect(Unit) {
-            delay(3000)
+            delay(6000)
             onFinish()
         }
     }
@@ -120,10 +121,12 @@ fun Color.ChangeStatusBarColor(
 @Composable
 fun Color.ChangeNavigationBarColor() {
     val systemUiController = rememberSystemUiController()
-    systemUiController.setNavigationBarColor(
-        color = this,
-        darkIcons = false
-    )
+  //  SideEffect {
+       systemUiController.setNavigationBarColor(
+           color = this,
+           darkIcons = false
+       )
+   //}
 }
 
 @Composable

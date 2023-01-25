@@ -2,7 +2,10 @@ package com.selsela.takeefapp.data.config.repository
 
 import com.google.gson.Gson
 import com.selsela.takeefapp.data.config.model.Configurations
+import com.selsela.takeefapp.data.config.model.city.Area
+import com.selsela.takeefapp.data.config.model.city.City
 import com.selsela.takeefapp.data.config.model.page.Page
+import com.selsela.takeefapp.data.config.model.payments.Payment
 import com.selsela.takeefapp.data.config.source.remote.ConfigApi
 import com.selsela.takeefapp.utils.Extensions.Companion.handleExceptions
 import com.selsela.takeefapp.utils.Extensions.Companion.handleSuccess
@@ -25,11 +28,14 @@ class ConfigurationsRepository @Inject constructor(
                 withContext(Dispatchers.Default){
                     getTerms()
                     getAboutApp()
+                    getCities()
+                    getPayments()
                 }
                 LocalData.configurations = response.body()?.configurations
                 LocalData.cases = response.body()?.cases
                 LocalData.acTypes = response.body()?.acTypes
                 LocalData.services = response.body()?.services
+                LocalData.workPeriods = response.body()?.workPeriod
               "${response.body()?.services}".log("Services")
                 handleSuccess(
                     response.body()?.configurations,
@@ -73,6 +79,46 @@ class ConfigurationsRepository @Inject constructor(
                 LocalData.aboutApp = response.body()?.page
                 handleSuccess(
                     response.body()?.page,
+                    response.body()?.responseMessage ?: response.message()
+                )
+            } else {
+                val gson = Gson()
+                val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                handleExceptions(errorBase)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            handleExceptions(e)
+        }
+        data
+    }
+    private suspend fun getCities(): Flow<Resource<List<Area>>> = withContext(Dispatchers.IO) {
+        val data: Flow<Resource<List<Area>>> = try {
+            val response = api.getCities()
+            if (response.isSuccessful) {
+                LocalData.ciites = response.body()?.areas
+                handleSuccess(
+                    response.body()?.areas,
+                    response.body()?.responseMessage ?: response.message()
+                )
+            } else {
+                val gson = Gson()
+                val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                handleExceptions(errorBase)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            handleExceptions(e)
+        }
+        data
+    }
+    private suspend fun getPayments(): Flow<Resource<List<Payment>>> = withContext(Dispatchers.IO) {
+        val data: Flow<Resource<List<Payment>>> = try {
+            val response = api.getPayments()
+            if (response.isSuccessful) {
+                LocalData.paymentsType = response.body()?.payments
+                handleSuccess(
+                    response.body()?.payments,
                     response.body()?.responseMessage ?: response.message()
                 )
             } else {

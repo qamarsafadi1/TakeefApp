@@ -14,8 +14,8 @@ data class Wallet(
     val createdAt: String = "",
     @SerializedName("id")
     val id: Int = 0,
-    @SerializedName("reference")
-    val reference: Int = 0,
+    @SerializedName("order_number")
+    val reference: String = "",
     @SerializedName("type")
     val type: String = ""
 )

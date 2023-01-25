@@ -10,8 +10,8 @@ import com.selsela.takeefapp.utils.Extensions.Companion.log
 data class SelectedServicesOrder(
     var services: List<SelectedService> = listOf(),
     val paymentId: Int = -1,
-    val orderDate: String = "",
-    val workPeriodId: Int = -1,
+    var orderDate: String = "",
+    var workPeriodId: Int = -1,
     var totalServicesPrice: MutableState<Double>? = mutableStateOf(0.0),
     var maintenanceCount: MutableState<Int>? = mutableStateOf(0),
     var cleanCount: MutableState<Int>? = mutableStateOf(0),
@@ -41,6 +41,7 @@ data class SelectedServicesOrder(
         }.size
         maintenanceCount?.value = count
     }
+
     fun getCleaningCount() {
         val count = services.filter {
             it.serviceId == CLEANING
@@ -49,12 +50,14 @@ data class SelectedServicesOrder(
         cleanCount?.value = count
         cleanCount?.value?.log("cleaningCount")
     }
+
     fun getInstallationCount() {
         val count = services.filter {
             it.serviceId == INSTALLATION
         }.size
         installCount?.value = count
     }
+
 }
 
 data class SelectedService(

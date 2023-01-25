@@ -8,6 +8,10 @@ import com.selsela.takeefapp.data.config.model.AcType
 import com.selsela.takeefapp.data.config.model.Case
 import com.selsela.takeefapp.data.config.model.Configurations
 import com.selsela.takeefapp.data.config.model.Service
+import com.selsela.takeefapp.data.config.model.WorkPeriod
+import com.selsela.takeefapp.data.config.model.city.Area
+import com.selsela.takeefapp.data.config.model.city.City
+import com.selsela.takeefapp.data.config.model.payments.Payment
 
 
 open class LocalData {
@@ -66,6 +70,16 @@ open class LocalData {
                 field = value
                 Hawk.put("aboutApp", value)
             }
+        var ciites: List<Area>? = Hawk.get("ciites")
+            set(value) {
+                field = value
+                Hawk.put("ciites", value)
+            }
+        var paymentsType: List<Payment>? = Hawk.get("paymentsType")
+            set(value) {
+                field = value
+                Hawk.put("paymentsType", value)
+            }
         var acTypes: List<AcType>? = Hawk.get("acTypes")
             set(value) {
                 field = value
@@ -76,6 +90,11 @@ open class LocalData {
             set(value) {
                 field = value
                 Hawk.put("services", value)
+            }
+        var workPeriods: List<WorkPeriod>? = Hawk.get("workPeriods")
+            set(value) {
+                field = value
+                Hawk.put("workPeriods", value)
             }
         var userWallet: WalletResponse? = Hawk.get("wallet")
             set(value) {

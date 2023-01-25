@@ -3,6 +3,7 @@ package com.selsela.takeefapp.navigation
 import androidx.navigation.NavController
 import com.selsela.takeefapp.data.config.model.Case
 import com.selsela.takeefapp.navigation.Navigation.navigateWithClearBackStack
+import com.selsela.takeefapp.utils.Constants.NEW_ORDER
 
 object Destinations {
     const val SPLASH_SCREEN = "splash"
@@ -89,7 +90,7 @@ class NavigationActions(private val navController: NavController) {
         }
     }
     fun navigateToOrdersWithoutBackStack() {
-        navController.navigate(Destinations.ORDERS_SCREEN){
+        navController.navigate("${Destinations.ORDERS_SCREEN}${NEW_ORDER}"){
             popUpTo(Destinations.HOME_SCREEN ) {
                 inclusive = false
             }

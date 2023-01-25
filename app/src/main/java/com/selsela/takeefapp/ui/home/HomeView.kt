@@ -50,6 +50,7 @@ import com.selsela.takeefapp.ui.common.AppLogoImage
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.home.item.DetailsView
 import com.selsela.takeefapp.ui.home.item.ServiceItem
+import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
 import com.selsela.takeefapp.ui.theme.NoRippleTheme
 import com.selsela.takeefapp.ui.theme.SecondaryColor2
@@ -103,8 +104,7 @@ fun HomeView(
                             it,
                             viewModel = viewModel,
                             onSelect = {
-                                costVisible =
-                                    viewModel.selectedOrderService.value.services.isEmpty().not()
+                                costVisible = viewModel.selectedOrderService.value.services.isEmpty().not()
                             }
                         ) {
                         }

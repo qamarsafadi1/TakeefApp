@@ -6,6 +6,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
@@ -55,6 +56,19 @@ val text14 = TextStyle(
     color = TextColor,
     lineHeight = 25.sp,
     letterSpacing = 0.5.sp,
+    lineHeightStyle = LineHeightStyle(
+        alignment = LineHeightStyle.Alignment.Center,
+        trim = LineHeightStyle.Trim.Both
+    )
+)
+val text14Strike = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 14.sp,
+    color = TextColor,
+    lineHeight = 25.sp,
+    letterSpacing = 0.5.sp,
+    textDecoration = TextDecoration.LineThrough,
     lineHeightStyle = LineHeightStyle(
         alignment = LineHeightStyle.Alignment.Center,
         trim = LineHeightStyle.Trim.Both

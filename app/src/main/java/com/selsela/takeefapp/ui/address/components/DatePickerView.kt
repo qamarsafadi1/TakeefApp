@@ -31,18 +31,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.config.model.WorkPeriod
 import com.selsela.takeefapp.ui.common.IconedButton
+import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextFieldBg
 import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text20Book
+import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 
 @Composable
 fun DatePickerView(
+    viewModel: HomeViewModel,
     onBack: () -> Unit,
     goToReviewOrder: () -> Unit
 ) {
@@ -50,8 +54,7 @@ fun DatePickerView(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 28.dp, vertical = 40.dp)
-            .padding(bottom = 20.dp)
-        ,
+            .padding(bottom = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
@@ -89,14 +92,14 @@ fun DatePickerView(
             color = Color.White,
             modifier = Modifier.paddingTop(13.5)
         )
-        Calendar()
+        Calendar(
+            onDateSelection = viewModel::selectDate
+        )
 
-        var check by remember {
-            mutableStateOf(-1)
-        }
-        PmAmView(check) {
-            check = it
-        }
+        PmAmView(
+            selectedItem = viewModel.selectedPeriodId.value.id,
+            onCheck = viewModel::selectWorkPeriod
+        )
         Spacer(modifier = Modifier.weight(1f))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -120,12 +123,14 @@ fun DatePickerView(
 }
 
 @Composable
-fun PmAmView(selectedItem: Int = -1, onCheck: (Int) -> Unit) {
+fun PmAmView(selectedItem: Int = -1, onCheck: (WorkPeriod) -> Unit) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        repeat(2) {
+        repeat(LocalData.workPeriods?.size ?: 0) {
+            val isSelected = LocalData.workPeriods?.get(it)?.id == selectedItem
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -136,26 +141,28 @@ fun PmAmView(selectedItem: Int = -1, onCheck: (Int) -> Unit) {
                     .clickable(
 
                     ) {
-                        onCheck(it)
+                        onCheck(LocalData.workPeriods?.get(it)!!)
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
 
                 Text(
-                    text = if (it == 0) stringResource(R.string.am_lbl) else stringResource(R.string.pm_lbl),
+                    text = LocalData.workPeriods?.get(it)?.name ?: "",
                     style = text14,
                     color = Color.White
                 )
 
                 Text(
-                    text = if (it == 0) "08:00 AM - 12:00 PM" else "12:00 PM - 05:00 PM",
+                    text = "${
+                        LocalData.workPeriods?.get(it)?.getTimeFromFormatted()
+                    } - ${LocalData.workPeriods?.get(it)?.getTimeToFormatted()}",
                     style = text14,
                     color = SecondaryColor
                 )
                 Image(
                     painter =
-                    if (it == selectedItem)
+                    if (isSelected)
                         painterResource(id = R.drawable.checked)
                     else painterResource(id = R.drawable.uncheckedrb),
                     contentDescription = ""

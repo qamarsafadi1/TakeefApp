@@ -47,22 +47,27 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.address.components.CityAreaView
 import com.selsela.takeefapp.ui.address.components.CurrentAddressView
 import com.selsela.takeefapp.ui.address.components.DatePickerView
+import com.selsela.takeefapp.ui.address.components.DistrictView
 import com.selsela.takeefapp.ui.address.components.GoogleMapView
 import com.selsela.takeefapp.ui.address.components.Headerview
 import com.selsela.takeefapp.ui.common.EditTextAddress
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.ListedBottomSheet
+import com.selsela.takeefapp.ui.home.Address
 import com.selsela.takeefapp.ui.home.HomeViewModel
+import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
-import com.selsela.takeefapp.utils.Extensions.Companion.log
+import com.selsela.takeefapp.utils.Extensions.Companion.showError
 import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
+import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.launch
 
@@ -70,13 +75,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddressView(
     parentViewModel: HomeViewModel,
+    onBack: () -> Unit,
     goToSearchView: (String) -> Unit,
     goToReviewOrder: () -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
-    parentViewModel.selectedOrderService.value.totalServicesPrice?.value?.log("fromAddress")
+    TextColor.ChangeNavigationBarColor()
     BottomSheetLayout(
-        parentViewModel,
+        parentViewModel = parentViewModel,
+        onBack = onBack,
         goToReviewOrder = {
             goToReviewOrder()
         }
@@ -90,9 +97,12 @@ fun AddressView(
 @Composable
 fun BottomSheetLayout(
     parentViewModel: HomeViewModel,
+    addressViewModel: AddressViewModel = hiltViewModel(),
+    onBack: () -> Unit,
     goToReviewOrder: () -> Unit,
     onSearch: (String) -> Unit,
 ) {
+
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -100,6 +110,11 @@ fun BottomSheetLayout(
         skipHalfExpanded = true
     )
     val citySheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
+    val districtSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true
@@ -137,6 +152,13 @@ fun BottomSheetLayout(
             }
         }
     }
+    LaunchedEffect(districtSheetState) {
+        snapshotFlow { districtSheetState.isVisible }.collect { isVisible ->
+            if (!isVisible) {
+                addressVisible = true
+            }
+        }
+    }
 
     BackHandler(modalSheetState.isVisible) {
         addressVisible = !addressVisible
@@ -148,6 +170,10 @@ fun BottomSheetLayout(
     BackHandler(areaSheetState.isVisible) {
         coroutineScope.launch { areaSheetState.hide() }
     }
+    BackHandler(districtSheetState.isVisible) {
+        coroutineScope.launch { districtSheetState.hide() }
+    }
+    val context = LocalContext.current
     Box {
         ModalBottomSheetLayout(
             sheetState = modalSheetState,
@@ -156,6 +182,7 @@ fun BottomSheetLayout(
             sheetContent = {
                 Column(modifier = Modifier.fillMaxHeight(0.85f)) {
                     DatePickerView(
+                        viewModel = parentViewModel,
                         onBack = {
 
                         }
@@ -174,7 +201,7 @@ fun BottomSheetLayout(
                 {
 
                     GoogleMapView(viewModel = parentViewModel)
-                    Headerview() {
+                    Headerview(onBack = { onBack() }) {
                         onSearch(it)
                     }
                     CurrentAddressView(
@@ -208,12 +235,12 @@ fun BottomSheetLayout(
                                     // Slide in/out the inner box.
                                     enter = slideInVertically(
                                         initialOffsetY = {
-                                            it / 2
+                                            it/2
                                         },
                                     ),
                                     exit = slideOutVertically(
                                         targetOffsetY = {
-                                            it / 2
+                                            it/2
                                         },
                                     ),
                                 ),
@@ -221,6 +248,7 @@ fun BottomSheetLayout(
                             shape = RoundedCornerShape(topStart = 45.dp, topEnd = 45.dp),
                             backgroundColor = TextColor
                         ) {
+
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -231,16 +259,19 @@ fun BottomSheetLayout(
                                 horizontalAlignment = Alignment.End
                             ) {
                                 CityAreaView(onAreaClick = {
-                                    addressVisible = !addressVisible
-                                    {
-                                        coroutineScope.launch {
-                                            if (areaSheetState.isVisible)
-                                                areaSheetState.hide()
-                                            else
-                                                areaSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                                        }
-                                    }.withDelay(100)
-                                }) {
+                                    if (addressViewModel.selectedAreaName.value != "") {
+                                        addressVisible = !addressVisible
+                                        {
+                                            coroutineScope.launch {
+                                                if (areaSheetState.isVisible)
+                                                    areaSheetState.hide()
+                                                else
+                                                    areaSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                            }
+                                        }.withDelay(100)
+                                    }
+                                }, addressViewModel) {
+                                    addressViewModel.clearSelected()
                                     addressVisible = !addressVisible
                                     {
                                         coroutineScope.launch {
@@ -251,35 +282,47 @@ fun BottomSheetLayout(
                                         }
                                     }.withDelay(100)
                                 }
-                                var district by remember {
-                                    mutableStateOf("")
+                                DistrictView(addressViewModel) {
+                                    if (addressViewModel.getDistrictOfCities().isNullOrEmpty()
+                                            .not()
+                                    ) {
+                                        addressVisible = !addressVisible
+                                        {
+                                            coroutineScope.launch {
+                                                if (districtSheetState.isVisible)
+                                                    districtSheetState.hide()
+                                                else
+                                                    districtSheetState.animateTo(
+                                                        ModalBottomSheetValue.Expanded
+                                                    )
+                                            }
+                                        }.withDelay(100)
+                                    } else {
+                                        context.showError("لا يوجد احياء لهذه المدينة")
+                                    }
                                 }
                                 EditTextAddress(
                                     onValueChange = {
-                                        district = it
+                                        addressViewModel.note.value = it
                                     }, text =
-                                    district,
-                                    hint = stringResource(R.string.district),
-                                    modifier = Modifier.paddingTop(8)
-                                )
-                                EditTextAddress(
-                                    onValueChange = {
-                                        district = it
-                                    }, text =
-                                    district,
+                                    addressViewModel.note.value,
                                     hint = stringResource(R.string.add_note),
                                     modifier = Modifier.paddingTop(8)
                                 )
                                 ElasticButton(
                                     onClick = {
+                                        parentViewModel.address = addressViewModel.createAddress()
                                         addressCardVisible = true
-                                        coroutineScope.launch {
-                                            if (modalSheetState.isVisible)
-                                                modalSheetState.hide()
-                                            else
-                                                modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                                        }
-                                    }, title = stringResource(R.string.continue_lbl),
+                                       if (parentViewModel.address != null){
+                                           coroutineScope.launch {
+                                               if (modalSheetState.isVisible)
+                                                   modalSheetState.hide()
+                                               else
+                                                   modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                           }
+                                       }
+                                    },
+                                    title = stringResource(R.string.continue_lbl),
                                     icon = R.drawable.nexticon,
                                     modifier = Modifier
                                         .paddingTop(14)
@@ -294,6 +337,7 @@ fun BottomSheetLayout(
                 }
             }
         }
+
 
         if (addressCardVisible.not()) {
             Card(
@@ -370,8 +414,51 @@ fun BottomSheetLayout(
             }
         }
 
-        ListedBottomSheet(sheetState = citySheetState)
-        ListedBottomSheet(sheetState = areaSheetState)
+        ListedBottomSheet(
+            sheetState = citySheetState, ciites = LocalData.ciites,
+            onSelectedItem = addressViewModel::setSelectedArea
+        ) {
+            addressVisible = !addressVisible
+            {
+                coroutineScope.launch {
+                    if (citySheetState.isVisible)
+                        citySheetState.hide()
+                    else
+                        citySheetState.animateTo(ModalBottomSheetValue.Expanded)
+                }
+            }.withDelay(100)
+        }
+        ListedBottomSheet(
+            sheetState = areaSheetState,
+            ciites = addressViewModel.getCitiesOfAreas(),
+            onSelectedItem = addressViewModel::setSelectedCity
+        ) {
+            addressVisible = !addressVisible
+            {
+                coroutineScope.launch {
+                    if (areaSheetState.isVisible)
+                        areaSheetState.hide()
+                    else
+                        areaSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                }
+            }.withDelay(100)
+        }
+
+        ListedBottomSheet(
+            sheetState = districtSheetState,
+            ciites = addressViewModel.getDistrictOfCities(),
+            onSelectedItem = addressViewModel::setSelectedDistrict
+        ) {
+            addressVisible = !addressVisible
+            {
+                coroutineScope.launch {
+                    if (districtSheetState.isVisible)
+                        districtSheetState.hide()
+                    else
+                        districtSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                }
+            }.withDelay(100)
+        }
 
     }
 
@@ -379,9 +466,11 @@ fun BottomSheetLayout(
 
 
 @Composable
-fun BackButton() {
+fun BackButton(
+    onBack: () -> Unit
+) {
     IconButton(
-        onClick = { /*TODO*/ },
+        onClick = { onBack() },
     ) {
         Image(
             painter = painterResource(id = R.drawable.circleback),

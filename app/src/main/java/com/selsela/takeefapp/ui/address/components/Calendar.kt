@@ -21,14 +21,17 @@ import java.util.Locale
 
 @Preview
 @Composable
-fun Calendar() {
+fun Calendar(
+    onDateSelection: (String) -> Unit
+) {
     CompositionLocalProvider(
         LocalLayoutDirection provides
                 LayoutDirection.Ltr
     ) {
-        val dateFormat = SimpleDateFormat("dd:MM:yyyy", Locale.ENGLISH)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
         val cal = java.util.Calendar.getInstance()
         val date = remember { mutableStateOf(dateFormat.format(cal.time)) }
+        onDateSelection(date.value)
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -42,6 +45,7 @@ fun Calendar() {
                     views.setOnDateChangeListener { _, year, month, dayOfMonth ->
                         cal.set(year, month, dayOfMonth)
                         date.value = dateFormat.format(cal.time).toString()
+                        onDateSelection(date.value)
                     }
                 })
         }

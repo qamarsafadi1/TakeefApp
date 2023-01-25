@@ -62,6 +62,7 @@ class OrderViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(OrderUiState())
     val uiState: StateFlow<OrderUiState> = _uiState.asStateFlow()
 
+
     private var state: OrderUiState
         get() = _uiState.value
         set(newState) {

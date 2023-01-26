@@ -58,13 +58,13 @@ import com.selsela.takeefapp.ui.address.components.Headerview
 import com.selsela.takeefapp.ui.common.EditTextAddress
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.ListedBottomSheet
-import com.selsela.takeefapp.ui.home.Address
 import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.showError
 import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
 import com.selsela.takeefapp.utils.LocalData
@@ -200,7 +200,7 @@ fun BottomSheetLayout(
                 )
                 {
 
-                    GoogleMapView(viewModel = parentViewModel)
+                    GoogleMapView(viewModel = parentViewModel,addressViewModel)
                     Headerview(onBack = { onBack() }) {
                         onSearch(it)
                     }
@@ -213,11 +213,9 @@ fun BottomSheetLayout(
                             .align(Alignment.BottomCenter),
                         addressVisible
                     ) {
-                        parentViewModel.address?.isFav.let {
-                            if (it == 1)
-                                parentViewModel.address?.isFav = 0
-                            else parentViewModel.address?.isFav = 1
-                        }
+                        if (it) addressViewModel.isFav = 1
+                        else addressViewModel.isFav = 0
+                        addressViewModel.isFav.log("isFAV")
                     }
                     // Add address info form
                     AnimatedVisibility(

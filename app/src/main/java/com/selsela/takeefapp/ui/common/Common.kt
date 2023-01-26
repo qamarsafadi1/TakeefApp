@@ -785,6 +785,7 @@ fun SearchBar(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         ),
+        enabled = false,
         textStyle = text12,
         placeholder = {
             Text(
@@ -808,7 +809,10 @@ fun SearchBar(
             if (text.isEmpty())
                 onSearch("")
             else onSearch(text)
-        })
+        }),
+        modifier = Modifier.clickable {
+            onSearch("")
+        }
 
     )
 }
@@ -1151,7 +1155,6 @@ fun <T> ListedBottomSheet(
 @Composable
 fun LanguageSheet(
     sheetState: ModalBottomSheetState,
-    configViewModel: ConfigViewModel,
     onConfirm: () -> Unit
 ) {
     Box() {

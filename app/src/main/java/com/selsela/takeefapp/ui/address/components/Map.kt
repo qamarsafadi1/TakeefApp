@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.maps.android.compose.CameraMoveStartedReason
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -26,6 +28,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.address.AddressViewModel
 import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.Extensions.Companion.RequestPermission
@@ -35,6 +38,7 @@ import com.selsela.takeefapp.utils.GetLocationDetail
 @Composable
 fun GoogleMapView(
     viewModel: HomeViewModel,
+    addressViewModel: AddressViewModel,
     @DrawableRes markerDrawable: Int = R.drawable.marker,
 ) {
     val context = LocalContext.current
@@ -51,13 +55,15 @@ fun GoogleMapView(
         permissionIsGranted = it
         if (it) {
             Extensions.getMyLocation(context = context) {
-                cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 15f)
+                cameraPositionState.position =
+                    CameraPosition.fromLatLngZoom(viewModel.currentLocation.value, 15f)
                 markerState.position = it
             }
         }
     }
 
     if (permissionIsGranted) {
+
         val mapStyleOptions: MapStyleOptions = MapStyleOptions.loadRawResourceStyle(
             context,
             R.raw.styledark
@@ -82,11 +88,28 @@ fun GoogleMapView(
                 painter = painterResource(id = markerDrawable),
                 contentDescription = ""
             )
+
+            IconButton(
+                modifier = Modifier.align(Alignment.CenterStart),
+                onClick = {
+                    Extensions.getMyLocation(context = context) {
+                        cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 15f)
+                        markerState.position = it
+
+                    }
+                }) {
+                Image(
+                    painter = painterResource(id = R.drawable.mylocation),
+                    contentDescription = ""
+                )
+            }
         };
+
 
     }
     UpdateSelectedAddress(
         cameraPositionState,
+        addressViewModel,
         updateSelectedAddress = viewModel::updateSelectedAddress
     )
 
@@ -95,7 +118,8 @@ fun GoogleMapView(
 @Composable
 private fun UpdateSelectedAddress(
     cameraPositionState: CameraPositionState,
-    updateSelectedAddress: (String,LatLng) -> Unit
+    addressViewModel: AddressViewModel,
+    updateSelectedAddress: (String, LatLng) -> Unit
 ) {
     val context = LocalContext.current
     Column(
@@ -103,13 +127,15 @@ private fun UpdateSelectedAddress(
             .fillMaxWidth(),
         verticalArrangement = Arrangement.Center
     ) {
-        if (cameraPositionState.isMoving.not()) {
-
+        if (cameraPositionState.isMoving.not() && cameraPositionState.cameraMoveStartedReason == CameraMoveStartedReason.GESTURE) {
             val newAddress = GetLocationDetail(context).getCurrentAddress(
                 cameraPositionState.position.target.latitude,
                 cameraPositionState.position.target.longitude
             ) ?: ""
-            updateSelectedAddress(newAddress,cameraPositionState.position.target)
+
+            addressViewModel.lat = cameraPositionState.position.target.latitude
+            addressViewModel.lng = cameraPositionState.position.target.longitude
+            updateSelectedAddress(newAddress, cameraPositionState.position.target)
         }
     }
 }

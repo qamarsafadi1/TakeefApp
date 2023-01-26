@@ -43,9 +43,11 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.model.CameraPosition
 import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.config.model.Service
@@ -65,8 +67,10 @@ import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text16Medium
 import com.selsela.takeefapp.ui.theme.text18
+import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.Extensions.Companion.convertToDecimalPatter
 import com.selsela.takeefapp.utils.Extensions.Companion.log
+import com.selsela.takeefapp.utils.GetLocationDetail
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.launch
 
@@ -78,19 +82,19 @@ fun HomeView(
     goToMyAccount: () -> Unit,
     goToLogin: () -> Unit,
 ) {
-    Color.Transparent.ChangeStatusBarColor()
-    Color.White.ChangeNavigationBarColor()
+    Color.White.ChangeStatusBarColor()
+    TextColor.ChangeNavigationBarColor()
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true
     )
+    val context = LocalContext.current
     // hide ripple effect
     CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
         Box(
             modifier = Modifier
-                .padding(vertical = 30.dp)
                 .fillMaxSize()
                 .background(Color.White)
         ) {
@@ -118,7 +122,8 @@ fun HomeView(
                             it,
                             viewModel = viewModel,
                             onSelect = {
-                                costVisible = viewModel.selectedOrderService.value.services.isEmpty().not()
+                                costVisible =
+                                    viewModel.selectedOrderService.value.services.isEmpty().not()
                             }
                         ) {
                         }
@@ -225,6 +230,14 @@ fun HomeView(
 //    AddedCostSheet(sheetState = sheetState) {
 //
 //    }
+
+    Extensions.getMyLocation(context = context) {
+        viewModel.selectedAddress.value =
+            GetLocationDetail(context).getCurrentAddress(it.latitude, it.longitude) ?: ""
+        viewModel.currentLocation.value = it
+        "getMyLocation:${viewModel.selectedAddress.value}".log()
+    }
+
 }
 
 @Composable

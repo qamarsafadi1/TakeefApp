@@ -3,7 +3,10 @@ package com.selsela.takeefapp.ui.home
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.model.Place
+import com.selsela.takeefapp.data.auth.model.address.FavouriteAddresse
 import com.selsela.takeefapp.data.auth.repository.AuthRepository
 import com.selsela.takeefapp.data.config.model.AcType
 import com.selsela.takeefapp.data.config.model.WorkPeriod
@@ -14,11 +17,15 @@ import com.selsela.takeefapp.data.order.repository.OrderRepository
 import com.selsela.takeefapp.ui.order.OrderState
 import com.selsela.takeefapp.utils.Constants.CLEANING
 import com.selsela.takeefapp.utils.Constants.MAINTENANCE
+import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.Extensions.Companion.calculateDiscount
+import com.selsela.takeefapp.utils.Extensions.Companion.getMyLocation
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
+import com.selsela.takeefapp.utils.fromJson
 import com.selsela.takeefapp.utils.retrofit.model.ErrorsData
 import com.selsela.takeefapp.utils.retrofit.model.Status
+import com.selsela.takeefapp.utils.toJson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.palm.composestateevents.StateEvent
 import de.palm.composestateevents.StateEventWithContent
@@ -57,8 +64,10 @@ class HomeViewModel @Inject constructor(
     var selectedAddress = mutableStateOf("")
     var selectedPeriodId = mutableStateOf(WorkPeriod())
     var selectedPaymentId = mutableStateOf(-1)
+    var currentLocation = mutableStateOf(LatLng(0.0, 0.0))
     var tax = ""
     var useWallet = 0
+
 
     /**
      * State Subscribers
@@ -94,7 +103,8 @@ class HomeViewModel @Inject constructor(
             acyTypeOd = acyType.id
         )
         if (count != 0) {
-            val isFound = acyTypes.any { it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId }
+            val isFound =
+                acyTypes.any { it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId }
             isFound.log("contains")
             val index = acyTypes.indexOfFirst {
                 it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId
@@ -140,6 +150,8 @@ class HomeViewModel @Inject constructor(
         selectedAddress.value = newAddress
         address?.lat = latLng.latitude
         address?.lng = latLng.longitude
+        currentLocation.value = latLng
+
     }
 
     fun selectDate(date: String) {
@@ -176,8 +188,8 @@ class HomeViewModel @Inject constructor(
         return isEnough
     }
 
-    fun getCount(serviceId: Int): Int{
-        return  when(serviceId){
+    fun getCount(serviceId: Int): Int {
+        return when (serviceId) {
             MAINTENANCE -> selectedOrderService.value.maintenanceCount?.value ?: 0
             CLEANING -> selectedOrderService.value.cleanCount?.value ?: 0
             else -> selectedOrderService.value.installCount?.value ?: 0
@@ -196,6 +208,7 @@ class HomeViewModel @Inject constructor(
             state = state.copy(
                 isLoading = true
             )
+            address?.isFav?.log(" address?.isFav")
             repository.placeOrder(
                 services = getServices(),
                 orderDate = selectedOrderService.value.orderDate,
@@ -211,32 +224,33 @@ class HomeViewModel @Inject constructor(
                 note = address?.note
 
             ).collect { result ->
-                    val orderUiState = when (result.status) {
-                        Status.SUCCESS -> {
-                            OrderUiState(
-                                onSuccess = triggered
-                            )
-                        }
-
-                        Status.LOADING ->
-                            OrderUiState(
-                                isLoading = true
-                            )
-
-                        Status.ERROR -> OrderUiState(
-                            onFailure = triggered(
-                                ErrorsData(
-                                    result.errors,
-                                    result.message,
-                                )
-                            ),
+                val orderUiState = when (result.status) {
+                    Status.SUCCESS -> {
+                        OrderUiState(
+                            onSuccess = triggered
                         )
                     }
-                    state = orderUiState
+
+                    Status.LOADING ->
+                        OrderUiState(
+                            isLoading = true
+                        )
+
+                    Status.ERROR -> OrderUiState(
+                        onFailure = triggered(
+                            ErrorsData(
+                                result.errors,
+                                result.message,
+                            )
+                        ),
+                    )
                 }
+                state = orderUiState
+            }
         }
 
     }
+
     override fun onCleared() {
         super.onCleared()
     }
@@ -245,7 +259,7 @@ class HomeViewModel @Inject constructor(
      * reset handlers
      */
     fun onSuccess() {
-        viewModelScope.launch{
+        viewModelScope.launch {
             authRepository.getWallet()
 
         }
@@ -261,6 +275,58 @@ class HomeViewModel @Inject constructor(
         state = state.copy(onFailure = consumed())
     }
 
+    fun selectAddressFromFav(favAddress: FavouriteAddresse) {
+        val selectAddress = Address(
+            areaId = favAddress.area.id,
+            cityId = favAddress.city.id,
+            districtId = favAddress.district.id,
+            lat = favAddress.latitude,
+            lng = favAddress.longitude,
+            note = favAddress.note,
+            isFav = 1,
+        )
+        address = selectAddress
+        updateSelectedAddress(
+            favAddress.getFullAddress(),
+            LatLng(favAddress.latitude, favAddress.longitude)
+        )
+    }
+
+    fun selectAddressFromFav(favAddress: Place, isFav: Int) {
+
+        var areaId = -1
+        var cityId = -1
+        var districtId = -1
+
+        val area = LocalData.ciites?.find {
+            favAddress.address.contains(it.name)
+        }
+       val city =  area?.cities?.find {
+           favAddress.address.contains(it.name)
+       }
+       val district =  city?.children?.find {
+           favAddress.address.contains(it.name)
+       }
+
+        cityId = city?.id ?: -1
+        areaId = area?.id ?: -1
+        districtId = district?.id ?: -1
+
+        val selectAddress = Address(
+            areaId = areaId,
+            cityId = cityId,
+            districtId = districtId,
+            lat = favAddress.latLng.latitude,
+            lng = favAddress.latLng.longitude,
+            note = "",
+            isFav = isFav,
+        )
+        address = selectAddress
+        updateSelectedAddress(
+            favAddress.address,
+            LatLng(favAddress.latLng.latitude, favAddress.latLng.longitude)
+        )
+    }
 }
 
 

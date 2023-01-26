@@ -15,13 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.ui.address.AddressViewModel
 import com.selsela.takeefapp.ui.address.BackButton
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 
 @Composable
 fun Headerview(
-    onBack:() -> Unit,
+    onBack: () -> Unit,
     onSearch: (String) -> Unit
 ) {
     Column(
@@ -45,12 +46,6 @@ fun Headerview(
                 onSearch(it)
             }
         }
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = { /*TODO*/ }) {
-            Image(
-                painter = painterResource(id = R.drawable.mylocation),
-                contentDescription = ""
-            )
-        }
+
     }
 }

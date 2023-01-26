@@ -34,6 +34,7 @@ import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text12
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 
@@ -42,7 +43,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
  fun CurrentAddressView(
     viewModel: HomeViewModel,
     modifier: Modifier, addressVisible: Boolean,
-    onFav: () -> Unit
+    onFav: (Boolean) -> Unit
 ) {
     AnimatedVisibility(
         visible = addressVisible,
@@ -102,7 +103,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
                         mutableStateOf(false)
                     }
                     IconButton(onClick = { isFav = !isFav
-                        onFav()}) {
+                        onFav(isFav)}) {
                         Image(
                             painter = painterResource(
                                 id =

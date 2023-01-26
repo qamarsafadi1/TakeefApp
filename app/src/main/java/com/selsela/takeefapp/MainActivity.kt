@@ -193,7 +193,6 @@ class MainActivity : AppCompatActivity() {
             || currentRoute.value?.destination?.route == Destinations.ADDRESS_SCREEN
             || currentRoute.value?.destination?.route == Destinations.ORDER_DETAILS_ARGS
             || currentRoute.value?.destination?.route == Destinations.PROFILE_SCREEN
-            || currentRoute.value?.destination?.route == Destinations.HOME_SCREEN
         ) {
             WindowCompat.setDecorFitsSystemWindows(window, false)
         } else {

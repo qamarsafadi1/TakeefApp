@@ -332,9 +332,8 @@ private fun AccountViewContent(
 
             }
         }
-        val configViewModel: ConfigViewModel = hiltViewModel()
 
-        LanguageSheet(languageSheet,configViewModel) {
+        LanguageSheet(languageSheet) {
             coroutineScope.launch {
                 if (languageSheet.isVisible)
                     languageSheet.hide()

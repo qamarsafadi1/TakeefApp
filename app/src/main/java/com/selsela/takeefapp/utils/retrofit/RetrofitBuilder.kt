@@ -15,7 +15,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RetrofitBuilder @Inject constructor(@ApplicationContext private val context: Context) {
+class RetrofitBuilder @Inject constructor(
+    @ApplicationContext private val context: Context) {
     private var okHttpClientBuilder: OkHttpClient.Builder? = null
     private var interceptors = mutableListOf<Interceptor>()
     private var authenticator: Authenticator? = null

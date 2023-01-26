@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.di
 
+import com.selsela.takeefapp.data.address.GooglePlacesRepository
 import com.selsela.takeefapp.data.auth.repository.AuthRepository
 import com.selsela.takeefapp.data.auth.source.remote.AuthApi
 import com.selsela.takeefapp.data.config.repository.ConfigurationsRepository
@@ -37,6 +38,13 @@ object RepositoryModule {
         return AuthRepository(apiService)
     }
 
+    @Provides
+    @Singleton
+    fun providerGoogleRepository(
+    ): GooglePlacesRepository {
+        return GooglePlacesRepository()
+    }
+
     /**
      * Order Repository
      */
@@ -46,7 +54,9 @@ object RepositoryModule {
         apiService: SpecialOrderApi
     ): SpecialOrderRepository {
         return SpecialOrderRepository(apiService)
-    }  @Provides
+    }
+
+    @Provides
     @Singleton
     fun providerOrderRepository(
         apiService: OrderApi

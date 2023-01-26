@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.selsela.takeefapp.ui.aboutapp.AboutAppView
 import com.selsela.takeefapp.ui.account.MyAccountView
 import com.selsela.takeefapp.ui.address.AddressView
+import com.selsela.takeefapp.ui.address.AddressViewModel
 import com.selsela.takeefapp.ui.address.SearchAddressView
 import com.selsela.takeefapp.ui.auth.LoginView
 import com.selsela.takeefapp.ui.auth.VerifyView
@@ -94,6 +95,7 @@ fun NavigationHost(
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(Destinations.HOME_SCREEN)
             }
+
             val parentViewModel = hiltViewModel<HomeViewModel>(parentEntry)
             AddressView(parentViewModel,
                 onBack = { navController.navigateUp() },
@@ -105,8 +107,16 @@ fun NavigationHost(
             }
         }
         composable(Destinations.SEARCH_ADDRESS_SCREEN_WITH_ARGUMENT) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(Destinations.HOME_SCREEN)
+            }
+            val parentViewModel = hiltViewModel<HomeViewModel>(parentEntry)
+            val addressEntry = remember(it) {
+                navController.getBackStackEntry(Destinations.ADDRESS_SCREEN)
+            }
+            val addressViewModel = hiltViewModel<AddressViewModel>(addressEntry)
             val query = it.arguments?.getString("query") ?: ""
-            SearchAddressView(query)
+            SearchAddressView(query,parentViewModel,addressViewModel)
         }
         composable(Destinations.REVIEW_ORDER) {
             val parentEntry = remember(it) {

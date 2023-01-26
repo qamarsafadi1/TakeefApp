@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.data.auth.source.remote
 
+import com.selsela.takeefapp.data.auth.model.address.AddressResponse
 import com.selsela.takeefapp.data.auth.model.auth.AuthResponse
 import com.selsela.takeefapp.data.auth.model.general.GeneralResponse
 import com.selsela.takeefapp.data.auth.model.notifications.NotificationResponse
@@ -66,6 +67,9 @@ interface AuthApi {
 
     @GET("user/get_user_notifications")
     suspend fun getNotifications(): Response<NotificationResponse>
+
+    @GET("user/get_user_addresses")
+    suspend fun getAddress(): Response<AddressResponse>
 
     @POST("user/delete_notification")
     @FormUrlEncoded

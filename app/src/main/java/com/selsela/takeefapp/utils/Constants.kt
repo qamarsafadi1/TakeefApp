@@ -31,4 +31,5 @@ object Constants {
     const val RECEIVED = 1
     const val FINISHED = 5
     const val WALLET = 5
+    const val COD = 4
 }

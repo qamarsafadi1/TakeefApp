@@ -7,6 +7,8 @@ import com.selsela.takeefapp.data.order.model.special.SpecialOrderResponse
 import com.selsela.takeefapp.data.order.model.special.SpecificOrder
 import com.selsela.takeefapp.data.order.remote.OrderApi
 import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Constants.COD
+import com.selsela.takeefapp.utils.Constants.WALLET
 import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.retrofit.model.ErrorBase
 import com.selsela.takeefapp.utils.retrofit.model.Resource
@@ -16,6 +18,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.time.temporal.TemporalAmount
 import javax.inject.Inject
 
 class OrderRepository @Inject constructor(
@@ -97,21 +100,66 @@ class OrderRepository @Inject constructor(
 
             val response = api.placeOrder(body)
             if (response.isSuccessful) {
-                Extensions.handleSuccess(
-                    response.body()?.order,
-                    response.body()?.responseMessage ?: response.message()
-                )
+                if (paymentTypeId == -1 || paymentTypeId == WALLET || paymentTypeId == COD) {
+                    Extensions.handleSuccess(
+                        response.body()?.order,
+                        response.body()?.responseMessage ?: response.message()
+                    )
+                } else {
+                    if (confirmPayment(
+                            transactionId = response.body()?.order?.transaction?.transactionId
+                                ?: "",
+                            amount = response.body()?.order?.transaction?.amount ?: 0.0,
+                            paymentTypeId = response.body()?.order?.transaction?.paymentType ?: 0,
+
+                            )
+                    ) {
+                        Extensions.handleSuccess(
+                            response.body()?.order,
+                            response.body()?.responseMessage ?: response.message()
+                        )
+                    } else {
+                        Extensions.handleExceptions(
+                            ErrorBase(
+                                null,
+                                null,
+                                "Something went wrong",
+                                status = false
+                            )
+                        )
+                    }
+                }
             } else {
                 val gson = Gson()
                 val errorBase =
                     gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
-                Extensions.Companion.handleExceptions(errorBase)
+                Extensions.handleExceptions(errorBase)
             }
         } catch (e: Exception) {
             e.printStackTrace()
             Extensions.handleExceptions(e)
         }
         data
+    }
+
+    suspend fun confirmPayment(
+        transactionId: String,
+        amount: Double,
+        paymentTypeId: Int
+    ): Boolean = withContext(Dispatchers.IO) {
+        val isConfirmed: Boolean = try {
+            val body = HashMap<String, Any>()
+            body["transaction_id"] = transactionId
+            body["amount_paid"] = amount
+            body["return_response"] = "$paymentTypeId"
+            val response = api.confirmPayment(body)
+            response.isSuccessful
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Extensions.handleExceptions<java.lang.Exception>(e)
+            false
+        }
+        isConfirmed
     }
 
 }

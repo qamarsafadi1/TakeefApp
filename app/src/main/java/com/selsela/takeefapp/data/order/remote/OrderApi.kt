@@ -28,4 +28,13 @@ interface OrderApi {
         @FieldMap
         body: Map<String, Any>
     ): Response<OrderResponse>
+    @POST("app/confirm_payment")
+    @JvmSuppressWildcards
+    @FormUrlEncoded
+    suspend fun confirmPayment(
+        @FieldMap
+        body: Map<String, Any>
+    ): Response<OrderResponse>
+
+
 }

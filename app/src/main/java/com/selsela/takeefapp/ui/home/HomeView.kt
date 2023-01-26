@@ -27,13 +27,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
@@ -50,6 +54,7 @@ import com.selsela.takeefapp.ui.common.AppLogoImage
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.home.item.DetailsView
 import com.selsela.takeefapp.ui.home.item.ServiceItem
+import com.selsela.takeefapp.ui.order.AddedCostSheet
 import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
 import com.selsela.takeefapp.ui.theme.NoRippleTheme
@@ -63,8 +68,9 @@ import com.selsela.takeefapp.ui.theme.text18
 import com.selsela.takeefapp.utils.Extensions.Companion.convertToDecimalPatter
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun HomeView(
     viewModel: HomeViewModel,
@@ -72,11 +78,19 @@ fun HomeView(
     goToMyAccount: () -> Unit,
     goToLogin: () -> Unit,
 ) {
-    Color.White.ChangeStatusBarColor()
+    Color.Transparent.ChangeStatusBarColor()
+    Color.White.ChangeNavigationBarColor()
+    val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
     // hide ripple effect
     CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
         Box(
             modifier = Modifier
+                .padding(vertical = 30.dp)
                 .fillMaxSize()
                 .background(Color.White)
         ) {
@@ -198,6 +212,19 @@ fun HomeView(
 
         }
     }
+// todo: Based on Notification
+//    LaunchedEffect(key1 = Unit) {
+//        coroutineScope.launch {
+//            if (sheetState.isVisible)
+//                sheetState.hide()
+//            else {
+//                sheetState.animateTo(ModalBottomSheetValue.Expanded)
+//            }
+//        }
+//    }
+//    AddedCostSheet(sheetState = sheetState) {
+//
+//    }
 }
 
 @Composable

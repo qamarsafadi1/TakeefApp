@@ -194,7 +194,7 @@ private fun PaySheetContent(
 }
 
 @Composable
-private fun WalletItemView(vm: HomeViewModel,order: Order?) {
+fun WalletItemView(vm: HomeViewModel, order: Order?) {
     Row(
         modifier = Modifier
             .paddingTop(17)

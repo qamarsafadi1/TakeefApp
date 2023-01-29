@@ -13,5 +13,7 @@ data class OrderResponse(
     @SerializedName("response_message")
     val responseMessage: String = "",
     @SerializedName("status")
-    val status: Boolean = false
+    val status: Boolean = false,
+    @SerializedName("trans")
+    val transaction: Transaction? = null
 )

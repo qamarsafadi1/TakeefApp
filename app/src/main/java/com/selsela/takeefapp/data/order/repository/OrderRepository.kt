@@ -155,10 +155,35 @@ class OrderRepository @Inject constructor(
                 body["payment_type_id"] = paymentId
                 val response = api.changeAdditionalCostStatus(body)
                 if (response.isSuccessful) {
-                    Extensions.handleSuccess(
-                        response.body(),
-                        response.body()?.responseMessage ?: response.message()
-                    )
+                    if (paymentId == -1 || paymentId == WALLET || paymentId == COD) {
+                        Extensions.handleSuccess(
+                            response.body(),
+                            response.body()?.responseMessage ?: response.message()
+                        )
+                    } else {
+                        if (confirmPayment(
+                                transactionId = response.body()?.transaction?.transactionId
+                                    ?: "",
+                                amount = response.body()?.transaction?.amount ?: 0.0,
+                                paymentTypeId = response.body()?.transaction?.paymentType ?: 0,
+
+                                )
+                        ) {
+                            Extensions.handleSuccess(
+                                response.body(),
+                                response.body()?.responseMessage ?: response.message()
+                            )
+                        } else {
+                            Extensions.handleExceptions(
+                                ErrorBase(
+                                    null,
+                                    null,
+                                    "Something went wrong",
+                                    status = false
+                                )
+                            )
+                        }
+                    }
                 } else {
                     val gson = Gson()
                     val errorBase =

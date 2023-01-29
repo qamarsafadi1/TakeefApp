@@ -413,6 +413,7 @@ fun BottomSheetLayout(
         }
 
         ListedBottomSheet(
+            addressViewModel,
             sheetState = citySheetState, ciites = LocalData.ciites,
             onSelectedItem = addressViewModel::setSelectedArea
         ) {
@@ -427,6 +428,7 @@ fun BottomSheetLayout(
             }.withDelay(100)
         }
         ListedBottomSheet(
+            addressViewModel,
             sheetState = areaSheetState,
             ciites = addressViewModel.getCitiesOfAreas(),
             onSelectedItem = addressViewModel::setSelectedCity
@@ -443,6 +445,7 @@ fun BottomSheetLayout(
         }
 
         ListedBottomSheet(
+            addressViewModel,
             sheetState = districtSheetState,
             ciites = addressViewModel.getDistrictOfCities(),
             onSelectedItem = addressViewModel::setSelectedDistrict

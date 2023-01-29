@@ -1,5 +1,8 @@
 package com.selsela.takeefapp.ui.home
 
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -27,6 +30,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
@@ -47,16 +51,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.android.gms.maps.model.CameraPosition
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.config.model.Service
+import com.selsela.takeefapp.data.notification.NotificationReceiver
+import com.selsela.takeefapp.data.order.model.order.Order
+import com.selsela.takeefapp.data.order.model.order.Price
 import com.selsela.takeefapp.data.order.model.order.SelectedServicesOrder
 import com.selsela.takeefapp.ui.common.AppLogoImage
 import com.selsela.takeefapp.ui.common.ElasticButton
+import com.selsela.takeefapp.ui.common.State
 import com.selsela.takeefapp.ui.home.item.DetailsView
 import com.selsela.takeefapp.ui.home.item.ServiceItem
 import com.selsela.takeefapp.ui.order.AddedCostSheet
+import com.selsela.takeefapp.ui.order.OrderUiState
+import com.selsela.takeefapp.ui.order.OrderViewModel
 import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
 import com.selsela.takeefapp.ui.theme.NoRippleTheme
@@ -67,23 +78,28 @@ import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text16Medium
 import com.selsela.takeefapp.ui.theme.text18
+import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions
+import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.Extensions.Companion.convertToDecimalPatter
 import com.selsela.takeefapp.utils.Extensions.Companion.log
+import com.selsela.takeefapp.utils.Extensions.Companion.showSuccess
 import com.selsela.takeefapp.utils.GetLocationDetail
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun HomeView(
     viewModel: HomeViewModel,
+    orderViewModel: OrderViewModel = hiltViewModel(),
     goToSpecialOrder: () -> Unit,
     goToMyAccount: () -> Unit,
     goToLogin: () -> Unit,
 ) {
-    Color.White.ChangeStatusBarColor()
+    Color.Transparent.ChangeStatusBarColor()
     Color.White.ChangeNavigationBarColor()
 
     val context = LocalContext.current
@@ -209,23 +225,50 @@ fun HomeView(
                     SelectedServicesView(viewModel.selectedOrderService.value)
                 }
             }
-
-
         }
     }
-// todo: Based on Notification
-//    LaunchedEffect(key1 = Unit) {
-//        coroutineScope.launch {
-//            if (sheetState.isVisible)
-//                sheetState.hide()
-//            else {
-//                sheetState.animateTo(ModalBottomSheetValue.Expanded)
-//            }
-//        }
-//    }
-//    AddedCostSheet(sheetState = sheetState) {
-//
-//    }
+    val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
+    val viewState: OrderUiState by orderViewModel.uiState.collectAsStateLifecycleAware(
+        OrderUiState()
+    )
+
+    var order by remember {
+        mutableStateOf(Order())
+    }
+    AddedCostSheet(
+        sheetState = sheetState,
+        order,
+        viewState,
+        onReject = orderViewModel::rejectAdditionalCost,
+        onPay = orderViewModel::acceptAdditionalCost
+    )
+    brodcastRevicer(coroutineScope, sheetState, context, viewState) {
+        order = it
+    }
+
+    when (viewState.state) {
+        State.SUCCESS -> {
+            if (viewState.responseMessage.isNullOrEmpty().not()) {
+                LocalContext.current.showSuccess(
+                    viewState.responseMessage ?: ""
+                )
+                LaunchedEffect(key1 = Unit) {
+                    coroutineScope.launch {
+                        if (sheetState.isVisible)
+                            sheetState.hide()
+                    }
+                }
+                viewState.responseMessage = ""
+            }
+        }
+
+        else -> {}
+    }
 
     Extensions.getMyLocation(context = context) {
         viewModel.selectedAddress.value =
@@ -234,6 +277,37 @@ fun HomeView(
         "getMyLocation:${viewModel.selectedAddress.value}".log()
     }
 
+}
+
+@Composable
+@OptIn(ExperimentalMaterialApi::class)
+private fun brodcastRevicer(
+    coroutineScope: CoroutineScope,
+    sheetState: ModalBottomSheetState,
+    context: Context,
+    viewState: OrderUiState,
+    onReceived: (Order) -> Unit
+) {
+    val receiver: NotificationReceiver = object : NotificationReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val cost = intent.getStringExtra("additional_cost")
+            val order = Order(
+                price = Price(additionalCost = cost?.toDouble()!!),
+                id = intent.getStringExtra("orderId")?.toInt() ?: -1
+            )
+            onReceived(order)
+            coroutineScope.launch {
+                if (sheetState.isVisible)
+                    sheetState.hide()
+                else {
+                    sheetState.animateTo(ModalBottomSheetValue.Expanded)
+                }
+            }
+        }
+    }
+    LocalBroadcastManager.getInstance(context).registerReceiver(
+        receiver, IntentFilter(Constants.ORDER_ADDITIONAL_COST)
+    )
 }
 
 @Composable
@@ -345,10 +419,12 @@ fun AnimContent(
     val contentTransition = updateTransition(itemExpanded, label = "Expand")
     Card(
         modifier = Modifier
-            .padding(bottom =
-            if (service.id != LocalData.services?.last()?.id)
-                9.dp
-            else 79.dp)
+            .padding(
+                bottom =
+                if (service.id != LocalData.services?.last()?.id)
+                    9.dp
+                else 79.dp
+            )
             .fillMaxWidth(),
         backgroundColor = service.cellBg(),
         shape = RoundedCornerShape(20.dp),

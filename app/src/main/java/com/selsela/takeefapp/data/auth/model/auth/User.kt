@@ -25,7 +25,7 @@ data class User(
     @SerializedName("mobile")
     val mobile: String = "",
     @SerializedName("name")
-    val name: String = "",
+    val name: String = "عميل",
     @SerializedName("status")
     val status: String = "",
     @SerializedName("balance")

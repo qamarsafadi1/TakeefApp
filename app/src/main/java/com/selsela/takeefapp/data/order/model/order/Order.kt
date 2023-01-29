@@ -12,7 +12,7 @@ data class Order(
     @SerializedName("grand_total")
     val grandTotal: Double = 0.0,
     @SerializedName("id")
-    val id: Int = 0,
+    var id: Int = 0,
     @SerializedName("address")
     val address: Address = Address(),
     @SerializedName("logs")

@@ -1,9 +1,11 @@
 package com.selsela.takeefapp.ui.address
 
 import android.content.Context
-import android.widget.Toast
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.common.api.ApiException
@@ -16,9 +18,10 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.selsela.takeefapp.data.address.GooglePlacesRepository
-import com.selsela.takeefapp.data.address.GooglePrediction
+import com.selsela.takeefapp.data.auth.model.address.District
 import com.selsela.takeefapp.data.auth.model.address.FavouriteAddresse
 import com.selsela.takeefapp.data.auth.repository.AuthRepository
+import com.selsela.takeefapp.data.config.model.city.Area
 import com.selsela.takeefapp.data.config.model.city.Children
 import com.selsela.takeefapp.data.config.model.city.City
 import com.selsela.takeefapp.ui.common.State
@@ -264,4 +267,18 @@ class AddressViewModel @Inject constructor(
         }
     }
 
+    fun <T> searchCities(query: String, list: List<T>?): List<T>? {
+        val cities = if (query == "")
+            list
+        else {
+            list?.filter {
+                when (it) {
+                    is Area -> it.name.contains(query)
+                    is City -> it.name.contains(query)
+                    else -> (it as Children).name.contains(query)
+                }
+            }
+        }
+        return cities
+    }
 }

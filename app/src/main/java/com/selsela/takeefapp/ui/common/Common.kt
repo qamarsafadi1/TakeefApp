@@ -82,9 +82,7 @@ import com.selsela.takeefapp.data.config.model.city.Area
 import com.selsela.takeefapp.data.config.model.city.Children
 import com.selsela.takeefapp.data.config.model.city.City
 import com.selsela.takeefapp.data.order.model.order.OrderService
-import com.selsela.takeefapp.ui.address.AddressViewModel
 import com.selsela.takeefapp.ui.auth.AuthViewModel
-import com.selsela.takeefapp.ui.splash.ConfigViewModel
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.Red
@@ -113,6 +111,9 @@ import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.LocalUtils.setLocale
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import java.util.Locale
+import androidx.compose.runtime.*
+import com.selsela.takeefapp.data.auth.model.address.District
+import com.selsela.takeefapp.ui.address.AddressViewModel
 
 @Composable
 fun AppLogoImage(
@@ -1135,6 +1136,7 @@ fun Spinner(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun <T> ListedBottomSheet(
+    addressViewModel: AddressViewModel,
     sheetState: ModalBottomSheetState,
     title: String? = stringResource(id = R.string.area_name),
     ciites: List<T>?,
@@ -1142,7 +1144,6 @@ fun <T> ListedBottomSheet(
     onClickItem: () -> Unit
 ) {
     Box() {
-        ciites?.size?.log("ciites")
         ModalBottomSheetLayout(
             sheetState = sheetState,
             sheetShape = RoundedCornerShape(topEnd = 42.dp, topStart = 42.dp),
@@ -1167,10 +1168,18 @@ fun <T> ListedBottomSheet(
                     var query by remember {
                         mutableStateOf("")
                     }
+
+//                    var citisList by remember {
+//                        mutableStateOf(ciites)
+//                    }
+                 //   citisList?.size?.log("citisListcitisList")
                     EditTextLeadingIcon(
                         modifier = Modifier.paddingTop(24),
                         onValueChange = {
                             query = it
+                          val list =   addressViewModel.searchCities(query,ciites)
+             //               citisList = list
+                            list?.log("addressViewModel")
                         }, text = query,
                         hint = stringResource(R.string.search),
                         leading = {
@@ -1181,26 +1190,34 @@ fun <T> ListedBottomSheet(
                             )
                         })
 
+
+                    // TODO: Search in bottom sheet
                     LazyColumn(
                         modifier = Modifier
                             .paddingTop(42)
                             .fillMaxWidth()
                     ) {
-                        items(ciites ?: listOf()) {
+                        items( ciites ?: listOf()) {
                             AreaListItem<T>(
                                 it
                             ) {
                                 when (it) {
                                     is Area -> {
                                         onSelectedItem(it.name, it.id)
+                                        query = ""
+                                        addressViewModel.searchCities(query,ciites)
                                     }
 
                                     is City -> {
                                         onSelectedItem(it.name, it.id)
+                                        query = ""
+                                        addressViewModel.searchCities(query,ciites)
                                     }
 
                                     is Children -> {
                                         onSelectedItem(it.name, it.id)
+                                        query = ""
+                                        addressViewModel.searchCities(query,ciites)
                                     }
                                 }
                                 onClickItem()

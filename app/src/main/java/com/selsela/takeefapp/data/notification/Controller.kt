@@ -66,6 +66,13 @@ class Controller : FirebaseMessagingService() {
                     ORDER_STATUS_CHANGED, ORDER_ADDITIONAL_COST -> {
                         val orderId = json.getString("order_id")
                         orderId.log("orderId")
+                        if (json.getString("action") == ORDER_ADDITIONAL_COST) {
+                            val localIntent = Intent(ORDER_ADDITIONAL_COST)
+                            localIntent.putExtra("additional_cost",json.getString("additional_cost"))
+                            localIntent.putExtra("orderId",orderId)
+                            val manager = LocalBroadcastManager.getInstance(this)
+                            manager.sendBroadcast(localIntent)
+                        }
                         sendNotification(
                             remoteMessage.notification?.title ?: "",
                             remoteMessage.notification?.body ?: "",

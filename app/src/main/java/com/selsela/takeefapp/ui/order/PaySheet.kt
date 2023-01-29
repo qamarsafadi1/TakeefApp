@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -34,39 +35,50 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.config.model.payments.Payment
+import com.selsela.takeefapp.data.order.model.order.Order
+import com.selsela.takeefapp.ui.common.AsyncImage
 import com.selsela.takeefapp.ui.common.ElasticButton
+import com.selsela.takeefapp.ui.common.State
+import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
+import com.selsela.takeefapp.ui.theme.Red
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor2
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text12
+import com.selsela.takeefapp.ui.theme.text12White
+import com.selsela.takeefapp.ui.theme.text13
 import com.selsela.takeefapp.ui.theme.text14
+import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text20
 import com.selsela.takeefapp.ui.theme.text20Meduim
+import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun PaySheet(sheetState: ModalBottomSheetState, onConfirm: () -> Unit) {
+fun PaySheet(
+    sheetState: ModalBottomSheetState,
+    viewState: OrderUiState,
+    onPay: (Int, Int,Int) -> Unit
+) {
     Box() {
-        val coroutineScope = rememberCoroutineScope()
-
-        var check by remember {
-            if (LocalData.appLocal == "ar")
-                mutableStateOf(0)
-            else mutableStateOf(1)
-        }
-
         ModalBottomSheetLayout(
             sheetState = sheetState,
             sheetShape = RoundedCornerShape(topEnd = 42.dp, topStart = 42.dp),
             sheetBackgroundColor = TextColor,
             sheetContent = {
-                PaySheetContent(onConfirm)
+                PaySheetContent(
+                    order = viewState.order,
+                    viewState = viewState,
+                    onPay = onPay
+                )
             }) {
 
         }
@@ -75,7 +87,11 @@ fun PaySheet(sheetState: ModalBottomSheetState, onConfirm: () -> Unit) {
 }
 
 @Composable
-private fun PaySheetContent(onConfirm: () -> Unit) {
+private fun PaySheetContent(
+    vm: HomeViewModel = hiltViewModel(),
+    viewState: OrderUiState,
+    order: Order?, onPay: (Int, Int,Int) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -132,7 +148,7 @@ private fun PaySheetContent(onConfirm: () -> Unit) {
                     color = SecondaryColor
                 )
                 Text(
-                    text = "310",
+                    text = "${order?.price?.additionalCost}",
                     style = text20Meduim,
                     color = Color.White,
                 )
@@ -144,32 +160,152 @@ private fun PaySheetContent(onConfirm: () -> Unit) {
 
         }
 
-      Row(modifier = Modifier.fillMaxWidth()) {
-          Text(
-              text = stringResource(R.string.payment_method),
-              style = text14,
-              color = SecondaryColor,
-              modifier = Modifier.paddingTop(24.5)
-          )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(R.string.payment_method),
+                style = text14,
+                color = SecondaryColor,
+                modifier = Modifier.paddingTop(24.5)
+            )
 
-      }
-        PaymentViewDark()
+        }
+
+        var selectedPayment = -1
+        if (LocalData.userWallet?.balance != 0.0)
+            WalletItemView(vm,order)
+        if (vm.isWalletEnough(order?.price?.additionalCost ?: 0.0).not()) {
+            PaymentViewDark() {
+                selectedPayment = it
+            }
+        }
 
         ElasticButton(
-            onClick = { onConfirm() }, title = stringResource(R.string.pay_noew),
+            onClick = { onPay(selectedPayment,order?.id ?: -1, vm.useWallet, ) },
+            title = stringResource(R.string.pay_noew),
             modifier = Modifier
                 .padding(top = 21.dp)
                 .fillMaxWidth()
-                .requiredHeight(48.dp)
+                .requiredHeight(48.dp),
+            isLoading = viewState.state == State.LOADING
         )
 
 
     }
 }
 
+@Composable
+private fun WalletItemView(vm: HomeViewModel,order: Order?) {
+    Row(
+        modifier = Modifier
+            .paddingTop(17)
+            .fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            androidx.compose.material3.Text(
+                text = stringResource(R.string.wallet_balance),
+                style = text14,
+                color = Color.White
+            )
+            if (vm.isWalletEnough(order?.price?.additionalCost ?: 0.0).not()) {
+                Row(
+                    Modifier.paddingTop(11),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.alert),
+                        contentDescription = ""
+                    )
+                    androidx.compose.material3.Text(
+                        text = stringResource(R.string.your_wallet_enough),
+                        style = text12White,
+                        color = Red,
+                        modifier = Modifier.padding(start = 4.3.dp)
+                    )
+                }
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End
+        ) {
+            androidx.compose.material3.Text(
+                text = "${LocalData.userWallet?.balance}",
+                style = text14Meduim,
+                color = Color.White
+            )
+            Spacer(modifier = Modifier.width(5.dp))
+            androidx.compose.material3.Text(
+                text = stringResource(id = R.string.currency_1, Extensions.getCurrency()),
+                style = text13,
+                color = SecondaryColor
+            )
+        }
+    }
+
+    if (vm.isWalletEnough(order?.price?.additionalCost ?: 0.0).not()) {
+        Row(
+            modifier = Modifier
+                .paddingTop(23)
+                .fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                androidx.compose.material3.Text(
+                    text = stringResource(R.string.remian_to_pay),
+                    style = text14,
+                    color = Color.White
+                )
+                // todo: need to add visibilty here
+                Row(
+                    Modifier.paddingTop(6),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    androidx.compose.material3.Text(
+                        text = stringResource(R.string.please_select_payment_1),
+                        style = text12,
+                        color = Color.White
+                    )
+                }
+
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                androidx.compose.material3.Text(
+                    text = "${
+                        (order?.price?.additionalCost ?: 0.0) - (LocalData.userWallet?.balance ?: 0.0)
+                    }",
+                    style = text14Meduim,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+                androidx.compose.material3.Text(
+                    text = stringResource(id = R.string.currency_1),
+                    style = text13,
+                    color = SecondaryColor
+                )
+            }
+        }
+    }
+}
+
 
 @Composable
-private fun PaymentItemDark(isSelected: Boolean, onClick: () -> Unit) {
+private fun PaymentItemDark(payment: Payment, isSelected: Boolean, onClick: () -> Unit) {
 
     Row(
         modifier = Modifier
@@ -178,10 +314,10 @@ private fun PaymentItemDark(isSelected: Boolean, onClick: () -> Unit) {
             .requiredHeight(53.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.visa), contentDescription = ""
+        AsyncImage(
+            imageUrl = payment.iconUrl,
+            modifier = Modifier.size(33.dp)
         )
-
         Spacer(modifier = Modifier.width(17.7.dp))
         Row(
             modifier = Modifier
@@ -208,7 +344,7 @@ private fun PaymentItemDark(isSelected: Boolean, onClick: () -> Unit) {
         ) {
 
             Text(
-                text = "فيزا كارد", style = text14,
+                text = payment.name, style = text14,
                 color = Color.White
             )
             Image(
@@ -223,7 +359,9 @@ private fun PaymentItemDark(isSelected: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-fun PaymentViewDark() {
+fun PaymentViewDark(
+    onSelectPayment: (Int) -> Unit
+) {
     Column(
         modifier = Modifier
             .paddingTop(18)
@@ -232,9 +370,13 @@ fun PaymentViewDark() {
         var selectedPayment by remember {
             mutableStateOf(0)
         }
-        repeat(3) {
-            PaymentItemDark(selectedPayment == it) {
-                selectedPayment = it
+        repeat(LocalData.paymentsType?.size ?: 0) {
+            PaymentItemDark(
+                LocalData.paymentsType!![it],
+                selectedPayment == LocalData.paymentsType!![it].id
+            ) {
+                selectedPayment = LocalData.paymentsType!![it].id
+                onSelectPayment(selectedPayment)
             }
         }
 

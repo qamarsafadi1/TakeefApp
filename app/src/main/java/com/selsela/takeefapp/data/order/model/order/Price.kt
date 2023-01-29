@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Price(
     @SerializedName("additional_cost")
-    val additionalCost: Int = 0,
+    val additionalCost: Double = 0.0,
     @SerializedName("app_percent")
     val appPercent: Int = 0,
     @SerializedName("app_value")

@@ -17,6 +17,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.selsela.takeefapp.MainActivity
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.utils.Constants.ORDER_ADDITIONAL_COST
 import com.selsela.takeefapp.utils.Constants.ORDER_STATUS_CHANGED
 import com.selsela.takeefapp.utils.Constants.VERIFY_CODE
 import com.selsela.takeefapp.utils.Extensions.Companion.log
@@ -62,7 +63,7 @@ class Controller : FirebaseMessagingService() {
                         )
                     }
 
-                    ORDER_STATUS_CHANGED -> {
+                    ORDER_STATUS_CHANGED, ORDER_ADDITIONAL_COST -> {
                         val orderId = json.getString("order_id")
                         orderId.log("orderId")
                         sendNotification(

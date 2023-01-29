@@ -232,6 +232,78 @@ class OrderViewModel @Inject constructor(
 
 
     }
+    fun rejectAdditionalCost(orderId: Int) {
+        viewModelScope.launch {
+            state = state.copy(
+                state = State.LOADING
+            )
+            repository.rejectAdditionalCost(orderId)
+                .collect { result ->
+                    val orderStateUi = when (result.status) {
+                        Status.SUCCESS -> {
+                            isLoaded = true
+                            OrderUiState(
+                                order = result.data?.order,
+                                state = State.SUCCESS,
+                                responseMessage = result.data?.responseMessage ?: result.message
+                            )
+                        }
+
+                        Status.LOADING ->
+                            OrderUiState(
+                                state = State.LOADING
+                            )
+
+                        Status.ERROR -> OrderUiState(
+                            onFailure = triggered(
+                                ErrorsData(
+                                    result.errors,
+                                    result.message,
+                                )
+                            ),
+                        )
+                    }
+                    state = orderStateUi
+                }
+        }
+
+    }
+    fun acceptAdditionalCost(paymentId: Int,orderId: Int,useWallet: Int) {
+        viewModelScope.launch {
+            state = state.copy(
+                state = State.LOADING
+            )
+            repository.acceptAdditionalCost(orderId,paymentId,useWallet)
+                .collect { result ->
+                    val orderStateUi = when (result.status) {
+                        Status.SUCCESS -> {
+                            isLoaded = true
+                            OrderUiState(
+                                order = result.data?.order,
+                                state = State.SUCCESS,
+                                responseMessage = result.data?.responseMessage ?: result.message
+                            )
+                        }
+
+                        Status.LOADING ->
+                            OrderUiState(
+                                state = State.LOADING
+                            )
+
+                        Status.ERROR -> OrderUiState(
+                            onFailure = triggered(
+                                ErrorsData(
+                                    result.errors,
+                                    result.message,
+                                )
+                            ),
+                        )
+                    }
+                    state = orderStateUi
+                }
+        }
+
+    }
 
     override fun onCleared() {
         page = 1

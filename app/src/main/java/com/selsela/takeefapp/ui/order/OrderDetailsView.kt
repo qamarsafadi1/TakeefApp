@@ -105,18 +105,22 @@ fun OrderDetailsView(
                     onCancel = viewModel::cancelOrder,
                     it,
                     rateSheetState,
-                    paySheetState
+                    paySheetState,
+                    viewState,
+                    onReject = viewModel::rejectAdditionalCost
                 )
             }
             if (viewState.responseMessage.isNullOrEmpty().not()) {
                 LocalContext.current.showSuccess(
                     viewState.responseMessage ?: ""
                 )
-                LaunchedEffect(key1 = Unit){
+                LaunchedEffect(key1 = Unit) {
                     coroutineScope.launch {
                         if (rateSheetState.isVisible)
                             rateSheetState.hide()
-                        else rateSheetState.animateTo(ModalBottomSheetValue.Expanded)
+
+                        if (paySheetState.isVisible)
+                            paySheetState.hide()
                     }
                 }
                 viewState.responseMessage = ""
@@ -153,8 +157,11 @@ fun OrderDetailsView(
         viewModel.getOrderDetails(orderId)
     }
 
-    PaySheet(sheetState = paySheetState) {
-    }
+    PaySheet(
+        sheetState = paySheetState,
+        viewState,
+        onPay = viewModel::acceptAdditionalCost
+    )
     RateSheet(
         rateSheetState,
         viewState,
@@ -169,7 +176,9 @@ private fun OrderDetailsContent(
     onCancel: (Int) -> Unit,
     order: Order,
     rateSheetState: ModalBottomSheetState,
-    paySheetState: ModalBottomSheetState
+    paySheetState: ModalBottomSheetState,
+    viewState: OrderUiState,
+    onReject: (Int) -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
     val coroutineScope = rememberCoroutineScope()
@@ -230,11 +239,13 @@ private fun OrderDetailsContent(
                         )
                     }
                     AdditionalCostView(
-                        isVisible = order.needAdditionalCost == 1,
+                        isVisible = order.needAdditionalCost == 1 && order.additional_cost_status == "waiting",
                         coroutineScope,
-                        rateSheetState,
-                        paySheetState
-                    )
+                        paySheetState,
+                        viewState,
+                    ) {
+                        onReject(order.id)
+                    }
                     if (order.case.canRate == 1 && order.isRated == 0) {
                         RateButton(
                             onClick = {

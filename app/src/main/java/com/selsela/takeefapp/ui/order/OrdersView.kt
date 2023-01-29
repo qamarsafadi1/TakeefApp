@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.gson.annotations.Until
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.order.model.order.Order
 import com.selsela.takeefapp.ui.common.State
@@ -52,6 +53,7 @@ import kotlinx.coroutines.launch
 fun OrdersView(
     caseID: Int,
     viewModel: OrderViewModel = hiltViewModel(),
+    onBack: () -> Unit,
     goToDetails: (Int) -> Unit,
     goToOrderRoute: () -> Unit
 ) {
@@ -78,6 +80,7 @@ fun OrdersView(
         viewModel,
         lazyColumnListState = lazyColumnListState,
         orders,
+        onBack,
         goToDetails, goToOrderRoute
     ) {
         viewState.order = Order(id = it)
@@ -130,6 +133,7 @@ private fun OrderListContent(
     viewModel: OrderViewModel,
     lazyColumnListState: LazyListState,
     orders: List<Order>,
+    onBack: () -> Unit,
     goToDetails: (Int) -> Unit,
     goToOrderRoute: () -> Unit,
     onRateClick: (Int) -> Unit
@@ -141,6 +145,7 @@ private fun OrderListContent(
     ) {
       Column(Modifier.fillMaxSize()) {
           Header(caseID) {
+              onBack()
           }
           Box(modifier = Modifier.fillMaxSize()
               .padding(horizontal = 19.dp)

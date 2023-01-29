@@ -187,6 +187,14 @@ class HomeViewModel @Inject constructor(
         } else 0
         return isEnough
     }
+    fun isWalletEnough(total: Double): Boolean {
+        val isEnough = (LocalData.userWallet?.balance ?: 0.0) > total
+        useWallet = if (isEnough) 1
+        else if (LocalData.userWallet?.balance != 0.0) {
+            1
+        } else 0
+        return isEnough
+    }
 
     fun getCount(serviceId: Int): Int {
         return when (serviceId) {

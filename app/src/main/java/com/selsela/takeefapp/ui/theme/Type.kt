@@ -190,6 +190,13 @@ val text13 = TextStyle(
     fontWeight = FontWeight.SemiBold,
     fontSize = 13.sp,
 )
+val text13Strike = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 13.sp,
+    textDecoration = TextDecoration.LineThrough,
+
+    )
 val text13Meduim = TextStyle(
     fontFamily = fonts,
     fontWeight = FontWeight.Medium,
@@ -241,6 +248,14 @@ val text12Bold = TextStyle(
         trim = LineHeightStyle.Trim.Both
     )
 )
+
+val text16MediumStrike = TextStyle(
+    fontFamily = fonts,
+    fontWeight = FontWeight.Medium,
+    fontSize = 16.sp,
+    textDecoration = TextDecoration.LineThrough,
+
+    )
 
 val text16Medium = TextStyle(
     fontFamily = fonts,

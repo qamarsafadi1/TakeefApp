@@ -182,6 +182,9 @@ fun NavigationHost(
 
             OrdersView(
                 caseID.toInt(),
+                onBack = {
+                    navController.navigateUp()
+                },
                 goToDetails = { id ->
                     navActions.navigateToOrderDetails(id)
                 }

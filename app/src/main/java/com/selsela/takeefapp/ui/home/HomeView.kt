@@ -71,6 +71,7 @@ import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.Extensions.Companion.convertToDecimalPatter
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.GetLocationDetail
+import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.launch
 
@@ -344,7 +345,10 @@ fun AnimContent(
     val contentTransition = updateTransition(itemExpanded, label = "Expand")
     Card(
         modifier = Modifier
-            .padding(bottom = 9.dp)
+            .padding(bottom =
+            if (service.id != LocalData.services?.last()?.id)
+                9.dp
+            else 79.dp)
             .fillMaxWidth(),
         backgroundColor = service.cellBg(),
         shape = RoundedCornerShape(20.dp),

@@ -37,6 +37,8 @@ data class Order(
     val isRated: Int = 0,
     @SerializedName("need_additional_cost")
     val needAdditionalCost: Int = 0,
+    @SerializedName("additional_cost_status")
+    val additional_cost_status: String = "",
     @SerializedName("price")
     val price: Price = Price(),
     @SerializedName("payment")

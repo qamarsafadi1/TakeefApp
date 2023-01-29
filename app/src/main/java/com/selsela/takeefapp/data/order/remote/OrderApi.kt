@@ -35,10 +35,17 @@ interface OrderApi {
         @FieldMap
         body: Map<String, Any>
     ): Response<OrderResponse>
-    @POST("user/order/rate_order\n")
+    @POST("user/order/rate_order")
     @JvmSuppressWildcards
     @FormUrlEncoded
     suspend fun rateOrder(
+        @FieldMap
+        body: Map<String, Any>
+    ): Response<OrderResponse>
+    @POST("user/order/change_additional_cost_status")
+    @JvmSuppressWildcards
+    @FormUrlEncoded
+    suspend fun changeAdditionalCostStatus(
         @FieldMap
         body: Map<String, Any>
     ): Response<OrderResponse>

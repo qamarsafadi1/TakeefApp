@@ -34,6 +34,8 @@ import com.selsela.takeefapp.data.order.model.order.Price
 import com.selsela.takeefapp.data.order.model.order.WorkPeriod
 import com.selsela.takeefapp.ui.common.AsyncImage
 import com.selsela.takeefapp.ui.common.ElasticButton
+import com.selsela.takeefapp.ui.common.State
+import com.selsela.takeefapp.ui.order.OrderUiState
 import com.selsela.takeefapp.ui.theme.ColorAccent
 import com.selsela.takeefapp.ui.theme.DividerColorBlue
 import com.selsela.takeefapp.ui.theme.LightBlue
@@ -45,13 +47,14 @@ import com.selsela.takeefapp.ui.theme.text11NoLines
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text12Meduim
 import com.selsela.takeefapp.ui.theme.text13
+import com.selsela.takeefapp.ui.theme.text13Strike
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text16Medium
+import com.selsela.takeefapp.ui.theme.text16MediumStrike
 import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Constants.WALLET
 import com.selsela.takeefapp.utils.Extensions.Companion.getCurrency
-import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -62,18 +65,17 @@ import kotlinx.coroutines.launch
 fun AdditionalCostView(
     isVisible: Boolean,
     coroutineScope: CoroutineScope,
-    rateSheetState: ModalBottomSheetState,
-    paySheetState: ModalBottomSheetState
+    paySheetState: ModalBottomSheetState,
+    viewState: OrderUiState,
+    onReject: () -> Unit
 ) {
     if (isVisible) {
         MaintenanceCostWarning()
-        AcceptRejectButtons {
+        AcceptRejectButtons(viewState) {
             coroutineScope.launch {
                 when (it) {
                     Constants.REJECT -> {
-                        if (rateSheetState.isVisible)
-                            rateSheetState.hide()
-                        else rateSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                        onReject()
                     }
 
                     Constants.ACCEPT -> {
@@ -90,7 +92,9 @@ fun AdditionalCostView(
 
 
 @Composable
-private fun AcceptRejectButtons(onClick: (Int) -> Unit) {
+private fun AcceptRejectButtons(
+    viewState: OrderUiState,
+    onClick: (Int) -> Unit) {
     Row(
         Modifier
             .padding(top = 11.dp)
@@ -104,7 +108,8 @@ private fun AcceptRejectButtons(onClick: (Int) -> Unit) {
             colorBg = Red,
             modifier = Modifier
                 .weight(1f)
-                .requiredHeight(36.dp)
+                .requiredHeight(36.dp),
+            isLoading = viewState.state == State.LOADING
         )
         Spacer(modifier = Modifier.width(18.dp))
         ElasticButton(
@@ -116,7 +121,7 @@ private fun AcceptRejectButtons(onClick: (Int) -> Unit) {
             modifier = Modifier
                 .weight(1f)
                 .requiredHeight(36.dp),
-            iconGravity = Constants.RIGHT
+            iconGravity = Constants.RIGHT,
         )
     }
 }
@@ -276,27 +281,27 @@ fun ServiceItem(orderService: OrderService) {
             ) {
                 androidx.compose.material3.Text(
                     text = "${orderService.totalServicePrice}",
-                    style = text16Medium,
+                    style = if (orderService.isCalculatedInTotal == 1) text16Medium else text16MediumStrike,
                     color = TextColor
                 )
                 Spacer(modifier = Modifier.width(3.dp))
                 androidx.compose.material3.Text(
                     text = stringResource(id = R.string.currency_1, getCurrency()),
-                    style = text13,
+                    style = if (orderService.isCalculatedInTotal == 1) text13 else text13Strike,
                     color = SecondaryColor
                 )
 
             }
         }
         repeat(orderService.acType.size) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 15.dp)
-                .padding(horizontal = 15.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 15.dp)
+                    .padding(horizontal = 15.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Row {
                     Text(
                         text = orderService.acType[it].acType.name,

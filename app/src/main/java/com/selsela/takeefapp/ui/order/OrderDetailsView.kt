@@ -119,6 +119,7 @@ fun OrderDetailsView(
                         else rateSheetState.animateTo(ModalBottomSheetValue.Expanded)
                     }
                 }
+                viewState.responseMessage = ""
             }
         }
 

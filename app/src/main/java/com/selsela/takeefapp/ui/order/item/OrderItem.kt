@@ -52,6 +52,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 fun OrderItem(
     order: Order,
     onClick: (Int) -> Unit,
+    onRateClick: (Int) -> Unit,
     onRouteClick: () -> Unit
 ) {
     Card(
@@ -202,7 +203,7 @@ fun OrderItem(
                         FINISHED -> {
                             if (order.case.canRate == 1 && order.isRated == 0) {
                                 ElasticButton(
-                                    onClick = { /*TODO*/ },
+                                    onClick = {onRateClick(order.id)},
                                     title = stringResource(id = R.string.rate),
                                     icon = R.drawable.star,
                                     iconGravity = Constants.RIGHT,

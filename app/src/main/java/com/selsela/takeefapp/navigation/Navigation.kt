@@ -19,14 +19,6 @@ object Navigation {
 
             Destinations.SEARCH_ADDRESS_SCREEN_WITH_ARGUMENT -> this.context.getString(R.string.chosse_address)
             Destinations.REVIEW_ORDER -> this.context.getString(R.string.review_order)
-            Destinations.ORDERS_SCREEN_ARGS -> {
-                val caseID = currentRoute.arguments?.getString("case") ?: ""
-                when (caseID.toInt()) {
-                    NEW_ORDER -> this.context.getString(R.string.new_orders)
-                    UPCOMING_ORDERS -> this.context.getString(R.string.ongoing_order)
-                    else -> this.context.getString(R.string.archive)
-                }
-            }
 
             Destinations.ORDER_ROUTE_SCREEN -> this.context.getString(R.string.order_route)
             Destinations.ORDER_DETAILS, Destinations.ORDER_DETAILS_ARGS -> this.context.getString(R.string.order_details)

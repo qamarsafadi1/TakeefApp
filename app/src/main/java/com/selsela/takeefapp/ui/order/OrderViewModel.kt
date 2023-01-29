@@ -36,8 +36,8 @@ enum class OrderState {
 
 data class OrderUiState(
     val state: State = State.IDLE,
-    val responseMessage: String? = "",
-    val order: Order? = null,
+    var responseMessage: String? = "",
+    var order: Order? = null,
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),
 )
 
@@ -231,7 +231,6 @@ class OrderViewModel @Inject constructor(
         }
 
 
-
     }
 
     override fun onCleared() {
@@ -241,6 +240,13 @@ class OrderViewModel @Inject constructor(
         super.onCleared()
     }
 
+
+    fun onRefresh(caseID: Int) {
+        page = 1
+        listState = OrderState.IDLE
+        canPaginate = false
+        getNewOrders(caseID)
+    }
 
     fun onSuccess() {
         state = state.copy()

@@ -67,6 +67,27 @@ class OrderRepository @Inject constructor(
             }
             data
         }
+    suspend fun cancelOrder(orderId: Int): Flow<Resource<OrderResponse>> =
+        withContext(Dispatchers.IO) {
+            val data: Flow<Resource<OrderResponse>> = try {
+                val response = api.cancelOrder(orderId)
+                if (response.isSuccessful) {
+                    Extensions.handleSuccess(
+                        response.body(),
+                        response.body()?.responseMessage ?: response.message()
+                    )
+                } else {
+                    val gson = Gson()
+                    val errorBase =
+                        gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    Extensions.handleExceptions(errorBase)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Extensions.handleExceptions(e)
+            }
+            data
+        }
 
     suspend fun placeOrder(
         services: String,

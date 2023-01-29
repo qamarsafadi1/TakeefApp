@@ -3,18 +3,21 @@ package com.selsela.takeefapp.data.notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Intent
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.selsela.takeefapp.MainActivity
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.utils.Constants.ORDER_STATUS_CHANGED
 import com.selsela.takeefapp.utils.Constants.VERIFY_CODE
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
@@ -58,6 +61,18 @@ class Controller : FirebaseMessagingService() {
                             "none"
                         )
                     }
+
+                    ORDER_STATUS_CHANGED -> {
+                        val orderId = json.getString("order_id")
+                        orderId.log("orderId")
+                        sendNotification(
+                            remoteMessage.notification?.title ?: "",
+                            remoteMessage.notification?.body ?: "",
+                            MainActivity::class.java.simpleName,
+                            orderId
+                        )
+                    }
+
                     else -> {
                         sendNotification(
                             remoteMessage.notification?.title ?: "",
@@ -86,28 +101,34 @@ class Controller : FirebaseMessagingService() {
         title: String,
         body: String,
         className: String,
-        reservationId: String? = null,
-        advisorId: String? = null,
-        action: String? = null
-
+        orderID: String? = null,
     ) {
         var contentIntent: PendingIntent? = null
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        val intent = if (orderID.isNullOrEmpty().not()) {
+            Intent(
+                Intent.ACTION_VIEW,
+                "https://airconditioner.com/id=${orderID}".toUri(),
+                applicationContext,
+                MainActivity::class.java
+            )
+        } else Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         contentIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getActivity(
-                this,
-                0 /* request code */,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
+            TaskStackBuilder.create(applicationContext).run {
+                addNextIntentWithParentStack(intent)
+                getPendingIntent(
+                    0,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            }
         } else {
-            PendingIntent.getActivity(
-                this,
-                0 /* request code */,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
+            TaskStackBuilder.create(applicationContext).run {
+                addNextIntentWithParentStack(intent)
+                getPendingIntent(
+                    0,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }
         }
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -151,7 +172,8 @@ class Controller : FirebaseMessagingService() {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel = NotificationChannel(channelId, className, NotificationManager.IMPORTANCE_HIGH)
+                val channel =
+                    NotificationChannel(channelId, className, NotificationManager.IMPORTANCE_HIGH)
                 channel.description = body
                 notificationManager.createNotificationChannel(channel)
                 notificationBuilder.setChannelId(channelId)

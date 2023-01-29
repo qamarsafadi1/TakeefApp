@@ -142,6 +142,40 @@ class OrderViewModel @Inject constructor(
                 }
         }
     }
+    fun cancelOrder(id: Int) {
+        viewModelScope.launch {
+            state = state.copy(
+                state = State.LOADING
+            )
+            repository.cancelOrder(id)
+                .collect { result ->
+                    val orderStateUi = when (result.status) {
+                        Status.SUCCESS -> {
+                            isLoaded = true
+                            OrderUiState(
+                                order = result.data?.order,
+                                state = State.SUCCESS
+                            )
+                        }
+
+                        Status.LOADING ->
+                            OrderUiState(
+                                state = State.LOADING
+                            )
+
+                        Status.ERROR -> OrderUiState(
+                            onFailure = triggered(
+                                ErrorsData(
+                                    result.errors,
+                                    result.message,
+                                )
+                            ),
+                        )
+                    }
+                    state = orderStateUi
+                }
+        }
+    }
 
     override fun onCleared() {
         page = 1

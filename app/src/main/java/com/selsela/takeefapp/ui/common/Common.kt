@@ -241,6 +241,69 @@ fun ElasticButton(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
+fun RateButton(
+    onClick: () -> Unit,
+    title: String,
+    icon: Int,
+    buttonBg: Color = Purple40,
+    iconGravity: Int = if (LocalData.appLocal == "ar") LEFT else RIGHT,
+    modifier: Modifier = Modifier
+        .width(167.dp)
+        .requiredHeight(48.dp),
+    isLoading: Boolean = false
+) {
+    // ElasticView(onClick = { onClick() }) {
+    Button(
+        onClick = {
+            onClick()
+        },
+        modifier = modifier,
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp
+        ),
+        shape = RoundedCornerShape(24.dp),
+        colors = ButtonDefaults.buttonColors(backgroundColor = buttonBg)
+    ) {
+
+        AnimatedVisibility(
+            visible = isLoading,
+            enter = scaleIn(),
+            exit = scaleOut()
+        ) {
+            LottieAnimationView(
+                raw = R.raw.whiteloading,
+                modifier = Modifier.size(25.dp)
+            )
+        }
+        AnimatedVisibility(
+            visible = isLoading.not(),
+            enter = scaleIn(),
+            exit = scaleOut()
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = icon), contentDescription = "",
+                )
+                Spacer(modifier = Modifier.width(6.4.dp))
+                Text(
+                    text = title, style = buttonText,
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .padding(start = if (iconGravity == RIGHT) 5.dp else 0.dp, top = 1.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
+    // }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
 fun ElasticButton(
     onClick: () -> Unit,
     title: String,

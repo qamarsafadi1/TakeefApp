@@ -107,10 +107,7 @@ fun OrderItem(
                             .fillMaxWidth()
                             .weight(1.5f),
                         items = LocalData.cases?.filter { it.id != 6 },
-                        currentStep = order.logs.filter {
-                            it.case.id == RECEIVED ||   it.case.id == ON_WAY ||
-                                    it.case.id == Constants.UPCOMING_ORDERS || it.case.id == FINISHED
-                        }.distinctBy { it.case.id }.lastIndex                    )
+                        currentStep = order.logs.distinctBy { it.case.id }.lastIndex                    )
                 }
             }
 
@@ -203,16 +200,19 @@ fun OrderItem(
                         }
 
                         FINISHED -> {
-                            ElasticButton(
-                                onClick = { /*TODO*/ }, title = stringResource(id = R.string.rate),
-                                icon = R.drawable.star,
-                                iconGravity = Constants.RIGHT,
-                                modifier = Modifier
-                                    .paddingTop(13)
-                                    .requiredHeight(36.dp)
-                                    .width(137.dp),
-                                buttonBg = TextColor
-                            )
+                            if (order.case.canRate == 1 && order.isRated == 0) {
+                                ElasticButton(
+                                    onClick = { /*TODO*/ },
+                                    title = stringResource(id = R.string.rate),
+                                    icon = R.drawable.star,
+                                    iconGravity = Constants.RIGHT,
+                                    modifier = Modifier
+                                        .paddingTop(13)
+                                        .requiredHeight(36.dp)
+                                        .width(137.dp),
+                                    buttonBg = TextColor
+                                )
+                            }
                         }
                     }
                 }

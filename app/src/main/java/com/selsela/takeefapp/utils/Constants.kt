@@ -36,4 +36,5 @@ object Constants {
     // Notification actions
 
     const val VERIFY_CODE = "sms_message"
+    const val ORDER_STATUS_CHANGED = "order_status_changed"
 }

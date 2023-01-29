@@ -4,9 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.selsela.takeefapp.ui.aboutapp.AboutAppView
 import com.selsela.takeefapp.ui.account.MyAccountView
 import com.selsela.takeefapp.ui.address.AddressView
@@ -31,6 +34,7 @@ import com.selsela.takeefapp.ui.splash.SplashView
 import com.selsela.takeefapp.ui.support.SupportScreen
 import com.selsela.takeefapp.ui.terms.TermsView
 import com.selsela.takeefapp.ui.wallet.WalletScreen
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
 
 @Composable
@@ -41,6 +45,8 @@ fun NavigationHost(
         NavigationActions(navController)
     },
 ) {
+    val uri = "https://airconditioner.com"
+
 
     // TODO: refactor this code with Kotlin reflection ::
     NavHost(navController = navController, startDestination = startDestination) {
@@ -116,7 +122,7 @@ fun NavigationHost(
             }
             val addressViewModel = hiltViewModel<AddressViewModel>(addressEntry)
             val query = it.arguments?.getString("query") ?: ""
-            SearchAddressView(query,parentViewModel,addressViewModel)
+            SearchAddressView(query, parentViewModel, addressViewModel)
         }
         composable(Destinations.REVIEW_ORDER) {
             val parentEntry = remember(it) {
@@ -186,8 +192,13 @@ fun NavigationHost(
         composable(Destinations.ORDER_ROUTE_SCREEN) {
             OrderRouteView()
         }
-        composable(Destinations.ORDER_DETAILS_ARGS) {
+        composable(
+            Destinations.ORDER_DETAILS_ARGS,
+            arguments = listOf(navArgument("id") { type = NavType.StringType }),
+            deepLinks = listOf(navDeepLink { uriPattern = "$uri/id={id}" })
+        ) {
             val id = it.arguments?.getString("id") ?: ""
+            id.log("ORDERID")
             OrderDetailsView(id.toInt()) {
                 navController.navigateUp()
             }

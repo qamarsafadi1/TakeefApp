@@ -3,10 +3,7 @@ package com.selsela.takeefapp.data.order.repository
 import com.google.gson.Gson
 import com.selsela.takeefapp.data.order.model.order.Order
 import com.selsela.takeefapp.data.order.model.order.OrderResponse
-import com.selsela.takeefapp.data.order.model.special.SpecialOrderResponse
-import com.selsela.takeefapp.data.order.model.special.SpecificOrder
 import com.selsela.takeefapp.data.order.remote.OrderApi
-import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Constants.COD
 import com.selsela.takeefapp.utils.Constants.WALLET
 import com.selsela.takeefapp.utils.Extensions
@@ -15,10 +12,6 @@ import com.selsela.takeefapp.utils.retrofit.model.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import java.io.File
-import java.time.temporal.TemporalAmount
 import javax.inject.Inject
 
 class OrderRepository @Inject constructor(
@@ -67,10 +60,42 @@ class OrderRepository @Inject constructor(
             }
             data
         }
+
     suspend fun cancelOrder(orderId: Int): Flow<Resource<OrderResponse>> =
         withContext(Dispatchers.IO) {
             val data: Flow<Resource<OrderResponse>> = try {
                 val response = api.cancelOrder(orderId)
+                if (response.isSuccessful) {
+                    Extensions.handleSuccess(
+                        response.body(),
+                        response.body()?.responseMessage ?: response.message()
+                    )
+                } else {
+                    val gson = Gson()
+                    val errorBase =
+                        gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    Extensions.handleExceptions(errorBase)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Extensions.handleExceptions(e)
+            }
+            data
+        }
+
+    suspend fun rateOrder(
+        orderId: Int,
+        rateList: MutableList<Any>,
+        note: String?
+    ): Flow<Resource<OrderResponse>> =
+        withContext(Dispatchers.IO) {
+            val data: Flow<Resource<OrderResponse>> = try {
+                val body = HashMap<String, Any>()
+                body["order_id"] = orderId
+                body["rate_properities"] = rateList
+                if (note.isNullOrEmpty().not())
+                    body["notes"] = note!!
+                val response = api.rateOrder(body)
                 if (response.isSuccessful) {
                     Extensions.handleSuccess(
                         response.body(),

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,6 +20,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -41,9 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.selsela.takeefapp.R
-import com.selsela.takeefapp.data.order.model.order.AcTypes
 import com.selsela.takeefapp.data.order.model.order.Order
-import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.RateButton
 import com.selsela.takeefapp.ui.common.State
 import com.selsela.takeefapp.ui.common.StepperView
@@ -68,16 +66,14 @@ import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text16Bold
 import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Constants
-import com.selsela.takeefapp.utils.Constants.FINISHED
-import com.selsela.takeefapp.utils.Constants.NEW_ORDER
-import com.selsela.takeefapp.utils.Constants.ON_WAY
-import com.selsela.takeefapp.utils.Constants.RECEIVED
-import com.selsela.takeefapp.utils.Constants.UPCOMING_ORDERS
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
+import com.selsela.takeefapp.utils.Extensions.Companion.showSuccess
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import de.palm.composestateevents.EventEffect
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OrderDetailsView(
     orderId: Int,
@@ -85,8 +81,20 @@ fun OrderDetailsView(
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val viewState: OrderUiState by viewModel.uiState.collectAsStateLifecycleAware(
         OrderUiState()
+    )
+    val paySheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
+
+    val rateSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
     )
 
     when (viewState.state) {
@@ -95,13 +103,28 @@ fun OrderDetailsView(
                 OrderDetailsContent(
                     onBack,
                     onCancel = viewModel::cancelOrder,
-                    it
+                    it,
+                    rateSheetState,
+                    paySheetState
                 )
+            }
+            if (viewState.responseMessage.isNullOrEmpty().not()) {
+                LocalContext.current.showSuccess(
+                    viewState.responseMessage ?: ""
+                )
+                LaunchedEffect(key1 = Unit){
+                    coroutineScope.launch {
+                        if (rateSheetState.isVisible)
+                            rateSheetState.hide()
+                        else rateSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                    }
+                }
             }
         }
 
         State.LOADING -> {
-            LoadingView()
+            if (rateSheetState.isVisible.not())
+                LoadingView()
         }
 
         else -> {}
@@ -128,6 +151,14 @@ fun OrderDetailsView(
         )
         viewModel.getOrderDetails(orderId)
     }
+
+    PaySheet(sheetState = paySheetState) {
+    }
+    RateSheet(
+        rateSheetState,
+        viewState,
+        onConfirm = viewModel::rateOrder
+    )
 }
 
 @Composable
@@ -135,20 +166,13 @@ fun OrderDetailsView(
 private fun OrderDetailsContent(
     onBack: () -> Unit,
     onCancel: (Int) -> Unit,
-    order: Order
+    order: Order,
+    rateSheetState: ModalBottomSheetState,
+    paySheetState: ModalBottomSheetState
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
     val coroutineScope = rememberCoroutineScope()
-    val paySheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = true
-    )
-    val rateSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = true
-    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -212,14 +236,20 @@ private fun OrderDetailsContent(
                     )
                     if (order.case.canRate == 1 && order.isRated == 0) {
                         RateButton(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                coroutineScope.launch {
+                                    if (rateSheetState.isVisible)
+                                        rateSheetState.hide()
+                                    else rateSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                }
+                            },
                             title = stringResource(id = R.string.rate),
                             icon = R.drawable.star,
                             iconGravity = Constants.RIGHT,
                             modifier = Modifier
                                 .paddingTop(13)
                                 .requiredHeight(36.dp)
-                                .fillMaxWidth(0.6f),
+                                .fillMaxWidth(0.8f),
                             buttonBg = TextColor
                         )
                     }
@@ -268,11 +298,6 @@ private fun OrderDetailsContent(
 
     }
 
-    PaySheet(sheetState = paySheetState) {
-    }
-    RateSheet(rateSheetState) {
-
-    }
 }
 
 @Composable

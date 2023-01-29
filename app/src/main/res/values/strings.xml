@@ -201,5 +201,6 @@
     <string name="tax">الضريبة المضافة</string>
     <string name="default_notification_channel_id">1</string>
     <string name="cancel_order_lbl">"هل انت متأكد من رغبتك في الغاء الطلب ؟ "</string>
+    <string name="please_enter_note">الرجاء كتابة ملاحظة</string>
 
 </resources>

@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.compose.runtime.*
 import com.selsela.takeefapp.ui.common.State
-import com.selsela.takeefapp.ui.order.special.SpecialOrderUiState
+import com.selsela.takeefapp.ui.order.rate.Rate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,6 +36,7 @@ enum class OrderState {
 
 data class OrderUiState(
     val state: State = State.IDLE,
+    val responseMessage: String? = "",
     val order: Order? = null,
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),
 )
@@ -69,10 +70,10 @@ class OrderViewModel @Inject constructor(
             _uiState.update { newState }
         }
 
-    fun getNewOrders(caseID:Int) = viewModelScope.launch {
+    fun getNewOrders(caseID: Int) = viewModelScope.launch {
         if (page == 1 || (page != 1 && canPaginate) && listState == OrderState.IDLE) {
             listState = if (page == 1) OrderState.LOADING else OrderState.PAGINATING
-            repository.getOrders(page,caseID).collect { result ->
+            repository.getOrders(page, caseID).collect { result ->
                 when (result.status) {
                     Status.SUCCESS -> {
                         isLoaded = true
@@ -142,6 +143,7 @@ class OrderViewModel @Inject constructor(
                 }
         }
     }
+
     fun cancelOrder(id: Int) {
         viewModelScope.launch {
             state = state.copy(
@@ -175,6 +177,61 @@ class OrderViewModel @Inject constructor(
                     state = orderStateUi
                 }
         }
+    }
+
+    fun rateOrder(orderId: Int, rateList: List<List<Rate>>, note: String?) {
+        val ratedList = mutableListOf<Any>()
+        rateList.map {
+            it.map {
+                it.id to it.rate
+            }
+        }.forEach {
+            it.forEach {
+                ratedList.add(
+                    listOf(it.first, it.second)
+                )
+            }
+        }
+        if (note.isNullOrEmpty().not()) {
+            viewModelScope.launch {
+                state = state.copy(
+                    state = State.LOADING
+                )
+                repository.rateOrder(
+                    orderId, ratedList, note
+                )
+                    .collect { result ->
+                        val orderStateUi = when (result.status) {
+                            Status.SUCCESS -> {
+                                isLoaded = true
+                                OrderUiState(
+                                    order = result.data?.order,
+                                    state = State.SUCCESS,
+                                    responseMessage = result.data?.responseMessage ?: result.message
+                                )
+                            }
+
+                            Status.LOADING ->
+                                OrderUiState(
+                                    state = State.LOADING
+                                )
+
+                            Status.ERROR -> OrderUiState(
+                                onFailure = triggered(
+                                    ErrorsData(
+                                        result.errors,
+                                        result.message,
+                                    )
+                                ),
+                            )
+                        }
+                        state = orderStateUi
+                    }
+            }
+        }
+
+
+
     }
 
     override fun onCleared() {

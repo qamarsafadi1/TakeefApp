@@ -7,6 +7,7 @@ import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.data.config.model.AcType
 import com.selsela.takeefapp.data.config.model.Case
 import com.selsela.takeefapp.data.config.model.Configurations
+import com.selsela.takeefapp.data.config.model.RateProperitiesSupervisor
 import com.selsela.takeefapp.data.config.model.Service
 import com.selsela.takeefapp.data.config.model.WorkPeriod
 import com.selsela.takeefapp.data.config.model.city.Area
@@ -95,6 +96,12 @@ open class LocalData {
             set(value) {
                 field = value
                 Hawk.put("workPeriods", value)
+            }
+
+        var rateItems: List<RateProperitiesSupervisor>? = Hawk.get("rateItems")
+            set(value) {
+                field = value
+                Hawk.put("rateItems", value)
             }
         var userWallet: WalletResponse? = Hawk.get("wallet")
             set(value) {

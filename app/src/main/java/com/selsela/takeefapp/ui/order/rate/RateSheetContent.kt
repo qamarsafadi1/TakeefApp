@@ -20,27 +20,40 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.config.model.RateProperitiesSupervisor
+import com.selsela.takeefapp.data.order.model.order.Order
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.InputEditText
 import com.selsela.takeefapp.ui.common.LottieAnimationView
+import com.selsela.takeefapp.ui.common.State
 import com.selsela.takeefapp.ui.common.components.RatingBar
+import com.selsela.takeefapp.ui.order.OrderUiState
+import com.selsela.takeefapp.ui.order.OrderViewModel
 import com.selsela.takeefapp.ui.theme.SecondaryColor2
 import com.selsela.takeefapp.ui.theme.UnselectedColor
 import com.selsela.takeefapp.ui.theme.YellowColor
 import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text12
+import com.selsela.takeefapp.ui.theme.text12White
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text260Book
+import com.selsela.takeefapp.utils.Extensions.Companion.log
+import com.selsela.takeefapp.utils.Extensions.Companion.showError
+import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 
 @Composable
-fun RateSheetContent(onConfirm: () -> Unit) {
+fun RateSheetContent(
+    viewState: OrderUiState,
+    onConfirm: (Int, List<List<Rate>>, String?) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -70,10 +83,31 @@ fun RateSheetContent(onConfirm: () -> Unit) {
             color = Color.White,
             modifier = Modifier.paddingTop(29)
         )
-        QualityRating()
-        PriceRating()
-        SupervisorRating()
-        NoteView()
+        val rateArray = mutableListOf<List<Rate>>()
+
+        Column {
+            repeat(LocalData.rateItems?.size ?: 0) {
+                QualityRating(LocalData.rateItems?.get(it) ?: RateProperitiesSupervisor()) {
+                    //[[rate_properity_id,rate]]
+                    val foundedItem = rateArray.find { rateItem ->
+                        it.id == rateItem.find { rate -> rate.id == it.id }?.id
+                    }
+                    foundedItem?.log("findRate")
+                    if (foundedItem == null) {
+                        val rateItem = listOf(Rate(it.id, it.rate))
+                        rateArray.add(rateItem)
+                    } else {
+                        rateArray.remove(foundedItem)
+                        val rateItem = listOf(Rate(it.id, it.rate))
+                        rateArray.add(rateItem)
+                    }
+                }
+            }
+        }
+        var note = ""
+        NoteView() {
+            note = it
+        }
         Column(
             Modifier
                 .paddingTop(27)
@@ -92,18 +126,28 @@ fun RateSheetContent(onConfirm: () -> Unit) {
             )
         }
 
+        val context = LocalContext.current
         ElasticButton(
-            onClick = { /*TODO*/ }, title = stringResource(R.string.send_rate),
+            onClick = {
+                if (note.isEmpty().not()) {
+                    onConfirm(viewState.order?.id!!, rateArray.toList(), note)
+                } else {
+                    context.showError(context.getString(R.string.please_enter_note))
+                }
+            }, title = stringResource(R.string.send_rate),
             modifier = Modifier
                 .padding(vertical = 30.dp)
                 .fillMaxWidth()
-                .requiredHeight(48.dp)
+                .requiredHeight(48.dp),
+            isLoading = viewState.state == State.LOADING
         )
     }
 }
 
 @Composable
-private fun NoteView() {
+private fun NoteView(
+    onValueChange: (String) -> Unit
+) {
     var note by remember { mutableStateOf("") }
     InputEditText(
         text = note,
@@ -111,13 +155,17 @@ private fun NoteView() {
         modifier = Modifier.padding(top = 34.dp),
         onValueChange = {
             note = it
+            onValueChange(note)
         },
-        textStyle = text12
+        textStyle = text12White,
     )
 }
 
 @Composable
-private fun QualityRating() {
+private fun QualityRating(
+    rateItem: RateProperitiesSupervisor,
+    qualityRate: (RateProperitiesSupervisor) -> Unit
+) {
     Row(
         modifier = Modifier
             .paddingTop(46.3)
@@ -127,11 +175,11 @@ private fun QualityRating() {
 
     ) {
         Text(
-            text = stringResource(R.string.service_quality),
+            text = rateItem.name,
             style = text14,
             color = SecondaryColor2
         )
-        var rating by remember { mutableStateOf(3.7f) }
+        var rating by remember { mutableStateOf(rateItem.rate) }
         RatingBar(
             rating = rating,
             space = 2.dp,
@@ -144,6 +192,9 @@ private fun QualityRating() {
             itemSize = 25.dp
         ) {
             rating = it
+            rateItem.rate = rating
+            rateItem.rate.log(" rateItem.rate")
+            qualityRate(rateItem)
         }
     }
 }

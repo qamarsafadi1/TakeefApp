@@ -14,7 +14,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.selsela.takeefapp"
+        applicationId "com.selsela.airconditioner"
         minSdk 24
         targetSdk 33
         versionCode 1

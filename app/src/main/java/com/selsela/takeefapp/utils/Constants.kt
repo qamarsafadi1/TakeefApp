@@ -32,4 +32,8 @@ object Constants {
     const val FINISHED = 5
     const val WALLET = 5
     const val COD = 4
+
+    // Notification actions
+
+    const val VERIFY_CODE = "sms_message"
 }

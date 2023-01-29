@@ -199,5 +199,6 @@
     <string name="no_order_special_lbl">" لا يوجد طلبات خاصة حاليًا"</string>
     <string name="cancel_order">الغاء الطلب</string>
     <string name="tax">الضريبة المضافة</string>
+    <string name="default_notification_channel_id">1</string>
 
 </resources>

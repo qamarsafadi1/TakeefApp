@@ -83,13 +83,8 @@ fun HomeView(
     goToLogin: () -> Unit,
 ) {
     Color.White.ChangeStatusBarColor()
-    TextColor.ChangeNavigationBarColor()
-    val coroutineScope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = true
-    )
+    Color.White.ChangeNavigationBarColor()
+
     val context = LocalContext.current
     // hide ripple effect
     CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {

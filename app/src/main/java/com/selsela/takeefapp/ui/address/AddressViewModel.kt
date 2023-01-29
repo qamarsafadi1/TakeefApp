@@ -174,6 +174,9 @@ class AddressViewModel @Inject constructor(
         selectedDistrictName.value = address.district.name
         lat = address.latitude
         lng = address.longitude
+        areaId = address.area.id
+        cityId = address.city.id
+        districtId = address.district.id
     }
 
     fun updateSelectAddress(address: Place) {
@@ -201,6 +204,9 @@ class AddressViewModel @Inject constructor(
         selectedAreaName.log("selectedAreaName")
         lat = address.latLng.latitude
         lng = address.latLng.longitude
+        areaId = area?.id ?: -1
+        cityId = city?.id ?: -1
+        districtId = district?.id ?: -1
     }
 
     fun createAddress(): Address? {

@@ -38,4 +38,5 @@ val CardBg = Color(0xFFF8F9F9)
 val DarkGray = Color(0xFF313538)
 val Shimmer = Color(0x595E6777)
 val ShimmerGray= Color(0x59DCDDDF)
+val Blue= Color(0xFFE1EEF5)
 

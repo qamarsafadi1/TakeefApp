@@ -18,6 +18,7 @@ import com.selsela.takeefapp.data.order.model.order.SelectedServicesOrder
 import com.selsela.takeefapp.data.order.repository.OrderRepository
 import com.selsela.takeefapp.ui.order.OrderState
 import com.selsela.takeefapp.utils.Constants.CLEANING
+import com.selsela.takeefapp.utils.Constants.INSTALLATION
 import com.selsela.takeefapp.utils.Constants.MAINTENANCE
 import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.Extensions.Companion.calculateDiscount
@@ -98,6 +99,7 @@ class HomeViewModel @Inject constructor(
         LocalData.services?.log("heyList")
         return mutableStateOf(LocalData.services)
     }
+
     fun getAcTypesList(): MutableState<List<AcType>?> {
         "heyList".log()
         LocalData.acTypes?.log("heyList")
@@ -201,6 +203,7 @@ class HomeViewModel @Inject constructor(
         } else 0
         return isEnough
     }
+
     fun isWalletEnough(total: Double): Boolean {
         val isEnough = (LocalData.userWallet?.balance ?: 0.0) > total
         useWallet = if (isEnough) 1
@@ -323,12 +326,12 @@ class HomeViewModel @Inject constructor(
         val area = LocalData.ciites?.find {
             favAddress.address.contains(it.name)
         }
-       val city =  area?.cities?.find {
-           favAddress.address.contains(it.name)
-       }
-       val district =  city?.children?.find {
-           favAddress.address.contains(it.name)
-       }
+        val city = area?.cities?.find {
+            favAddress.address.contains(it.name)
+        }
+        val district = city?.children?.find {
+            favAddress.address.contains(it.name)
+        }
 
         cityId = city?.id ?: -1
         areaId = area?.id ?: -1
@@ -348,6 +351,23 @@ class HomeViewModel @Inject constructor(
             favAddress.address,
             LatLng(favAddress.latLng.latitude, favAddress.latLng.longitude)
         )
+    }
+
+    fun getCost(service: Service): String {
+        val cost = if (service.multipleCount == 0) service.price
+        else {
+            when (service.id) {
+                CLEANING -> service.price.times(selectedOrderService.value.cleanCount?.value ?: 1)
+                INSTALLATION -> service.price.times(
+                    selectedOrderService.value.installCount?.value ?: 1
+                )
+
+                else -> service.price
+            }
+
+        }
+        cost.log("cost")
+        return cost.toString()
     }
 }
 

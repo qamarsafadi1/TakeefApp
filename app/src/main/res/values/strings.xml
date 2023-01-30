@@ -202,8 +202,11 @@
     <string name="default_notification_channel_id">1</string>
     <string name="cancel_order_lbl">Are you sure to cancel order?</string>
     <string name="please_enter_note">Please enter note</string>
-    <string name="resend">اعادة ارسال</string>
-    <string name="search_for_address">"بحث عن عنوان "</string>
-    <string name="please_download_app">الرجاء تحميل التطبيق</string>
+    <string name="resend">Resend</string>
+    <string name="search_for_address">Search for address</string>
+    <string name="please_download_app">Please download app</string>
+    <string name="service_cost_dot">Service Cost :</string>
+    <string name="conditinar">Conditioner</string>
+    <string name="plaese_selecte_visit_time">Please select visit time</string>
 
 </resources>

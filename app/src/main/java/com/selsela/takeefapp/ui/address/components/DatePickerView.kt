@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -41,6 +42,7 @@ import com.selsela.takeefapp.ui.theme.TextFieldBg
 import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text20Book
+import com.selsela.takeefapp.utils.Extensions.Companion.showError
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
@@ -51,6 +53,7 @@ fun DatePickerView(
     onBack: () -> Unit,
     goToReviewOrder: () -> Unit
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -108,7 +111,9 @@ fun DatePickerView(
         ) {
             IconedButton(
                 onClick = {
-                    goToReviewOrder()
+                    if (viewModel.selectedPeriodId.value.id != 0)
+                        goToReviewOrder()
+                    else context.showError(context.getString(R.string.plaese_selecte_visit_time))
                 },
                 icon = R.drawable.forward_arrow,
                 modifier = Modifier
@@ -142,8 +147,7 @@ fun PmAmView(selectedItem: Int = -1, onCheck: (WorkPeriod) -> Unit) {
                         onCheck(LocalData.workPeriods?.get(it)!!)
                     }
                     .border(width = 1.dp, color = BorderColor, RoundedCornerShape(11.dp))
-                    .padding(horizontal = 15.dp)
-                 ,
+                    .padding(horizontal = 15.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {

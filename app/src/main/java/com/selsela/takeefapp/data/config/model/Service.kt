@@ -13,6 +13,8 @@ data class Service(
     val id: Int = 0,
     @SerializedName("image_utl")
     val imageUtl: String = "",
+    @SerializedName("multiple_count")
+    val multipleCount: Int = 0,
     val name: String = "",
     val price: Double = 0.0
 ) {

@@ -184,7 +184,9 @@ fun BottomSheetLayout(
                     DatePickerView(
                         viewModel = parentViewModel,
                         onBack = {
-
+                           coroutineScope.launch {
+                               modalSheetState.hide()
+                           }
                         }
                     ) {
                         goToReviewOrder()

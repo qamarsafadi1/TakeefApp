@@ -40,6 +40,7 @@ import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text16Medium
 import com.selsela.takeefapp.ui.theme.text22Book
 import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Extensions.Companion.bindHtml
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import de.palm.composestateevents.EventEffect
@@ -162,7 +163,7 @@ private fun AboutAppContent(viewState: GeneralUiState) {
                     )
 
                     Text(
-                        text = viewState.aboutApp?.text ?: "",
+                        text = bindHtml(viewState.aboutApp?.text ?: ""),
                         style = text12,
                         color = TextColor
                     )

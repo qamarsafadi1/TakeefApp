@@ -25,6 +25,7 @@ import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleA
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import  androidx.compose.runtime.*
 import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Extensions.Companion.bindHtml
 import de.palm.composestateevents.EventEffect
 
 @Composable
@@ -77,7 +78,7 @@ private fun TermContent(viewState: GeneralUiState) {
 
         viewState.term?.text?.let {
             Text(
-                text = it,
+                text = bindHtml(it),
                 style = text12,
                 color = TextColor,
                 modifier = Modifier.paddingTop(24)

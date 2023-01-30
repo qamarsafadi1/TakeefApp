@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -39,7 +38,6 @@ import com.selsela.takeefapp.ui.splash.SplashView
 import com.selsela.takeefapp.ui.support.SupportScreen
 import com.selsela.takeefapp.ui.terms.TermsView
 import com.selsela.takeefapp.ui.wallet.WalletScreen
-import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.showError
 import com.selsela.takeefapp.utils.LocalData
 
@@ -53,31 +51,25 @@ fun NavigationHost(
 ) {
     val uri = "https://airconditioner.com"
 
-
-    // TODO: refactor this code with Kotlin reflection ::
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Destinations.SPLASH_SCREEN) {
-            SplashView() {
+            SplashView {
                 if (LocalData.firstLaunch)
                     navActions.navigateToIntro()
                 else navActions.navigateToHome()
             }
         }
         composable(Destinations.INTRO_SCREEN) {
-            IntroView() {
-                navActions.navigateToHome()
-            }
+            IntroView(goToHome = navActions::navigateToHome)
         }
         composable(Destinations.HOME_SCREEN) {
             val viewModel = hiltViewModel<HomeViewModel>()
-
             HomeView(
                 viewModel,
-                goToSpecialOrder = {
-                    navActions.navigateToSpecialOrder()
-                }, goToMyAccount = {
-                    navActions.navigateToMyAccount()
-                }) {
+                goToSpecialOrder = navActions::navigateToSpecialOrder,
+                goToMyAccount = navActions::navigateToMyAccount,
+                goToNotification = navActions::navigateToNotification
+            ) {
                 if (LocalData.accessToken.isNullOrEmpty()) {
                     navActions.navigateToLogin()
                 } else navActions.navigateToAddress()
@@ -85,38 +77,29 @@ fun NavigationHost(
         }
         composable(Destinations.LOGIN_SCREEN) {
             LoginView(
-                goToTerms = {
-                    navActions.navigateToTermsScreen()
-                },
-                goToSupport = {
-                    navActions.navigateToSupport()
-                },
-                goToHome = {
-                    navActions.navigateToHome()
-                }
-            ) {
-                navActions.navigateToVerify()
-            }
+                goToTerms = navActions::navigateToTermsScreen,
+                goToSupport = navActions::navigateToSupport,
+                goToHome = navActions::navigateToHome,
+                goToVerify = navActions::navigateToVerify
+            )
         }
         composable(Destinations.VERIFY_SCREEN) {
-            VerifyView() {
-                navActions.navigateToHome()
-            }
+            VerifyView(goToAddress = navActions::navigateToHome)
         }
         composable(Destinations.ADDRESS_SCREEN) {
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(Destinations.HOME_SCREEN)
             }
-
-            val parentViewModel = hiltViewModel<HomeViewModel>(parentEntry)
-            AddressView(parentViewModel,
-                onBack = { navController.navigateUp() },
+            val sharedViewModel = hiltViewModel<HomeViewModel>(parentEntry)
+            AddressView(
+                sharedViewModel,
+                onBack = navController::navigateUp,
                 goToSearchView = { query ->
                     val queryResult = query.ifEmpty { "none" }
                     navActions.navigateToSearchAddress(queryResult)
-                }) {
-                navActions.navigateToReviewOrder()
-            }
+                },
+                goToReviewOrder = navActions::navigateToReviewOrder
+            )
         }
         composable(Destinations.SEARCH_ADDRESS_SCREEN_WITH_ARGUMENT) {
             val parentEntry = remember(it) {
@@ -128,85 +111,64 @@ fun NavigationHost(
             }
             val addressViewModel = hiltViewModel<AddressViewModel>(addressEntry)
             val query = it.arguments?.getString("query") ?: ""
-            SearchAddressView(query, parentViewModel, addressViewModel) {
-                navController.navigateUp()
-            }
+            SearchAddressView(
+                query, parentViewModel, addressViewModel,
+                onSelect = navController::navigateUp
+            )
         }
         composable(Destinations.REVIEW_ORDER) {
             val parentEntry = remember(it) {
-                navController.getBackStackEntry(Destinations.HOME_SCREEN ?: "")
+                navController.getBackStackEntry(Destinations.HOME_SCREEN)
             }
             val parentViewModel = hiltViewModel<HomeViewModel>(parentEntry)
-            ReviewOrderView(parentViewModel) {
-                navActions.navigateToSuccess()
-            }
+            ReviewOrderView(
+                parentViewModel,
+                goTo = navActions::navigateToSuccess
+            )
         }
         composable(Destinations.SUCCESS) {
             SuccessView(
-                goOrders = {
-                    navActions.navigateToOrdersWithoutBackStack()
-                }
-            ) {
-                navActions.navigateToHome()
-            }
+                goOrders = navActions::navigateToOrdersWithoutBackStack,
+                goHome = navActions::navigateToHome
+            )
         }
         composable(Destinations.SPECIAL_ORDER) {
-            PlaceSpecialOrderView() {
-                navActions.navigateToHome()
-            }
+            PlaceSpecialOrderView(
+                onClose = navActions::navigateToHome
+            )
         }
         composable(Destinations.MY_ACCOUNT) {
             val parentEntry = remember(it) {
-                navController.getBackStackEntry(Destinations.HOME_SCREEN ?: "")
+                navController.getBackStackEntry(Destinations.HOME_SCREEN)
             }
             val parentViewModel = hiltViewModel<HomeViewModel>(parentEntry)
 
             MyAccountView(
                 homeViewModel = parentViewModel,
                 onBack = navController::navigateUp,
-                goToLogin = {
-                    navActions.navigateToLogin()
-                },
-                goToSpecialOrders = {
-                    navActions.navigateToSpecialOrders()
-                },
-                goToNotification = {
-                    navActions.navigateToNotification()
-                },
+                goToLogin = navActions::navigateToLogin,
+                goToSpecialOrders = navActions::navigateToSpecialOrders,
+                goToNotification = navActions::navigateToNotification,
                 goToAboutApp = navActions::navigateToAboutApp,
-                goToTerms = {
-                    navActions.navigateToTermsScreen()
-                },
-                goToSupport = {
-                    navActions.navigateToSupport()
-                },
-                goToProfile = {
-                    navActions.navigateToProfile()
-                },
-                goToWallet = {
-                    navActions.navigateToWallet()
-                }
+                goToTerms = navActions::navigateToTermsScreen,
+                goToSupport = navActions::navigateToSupport,
+                goToProfile = navActions::navigateToProfile,
+                goToWallet = navActions::navigateToWallet,
+                goToOrder = navActions::navigateToOrders
             )
-            {
-                navActions.navigateToOrders(it)
-            }
         }
         composable(Destinations.ORDERS_SCREEN_ARGS) {
             val caseID = it.arguments?.getString("case") ?: ""
-       val context = LocalContext.current
+            val context = LocalContext.current
             OrdersView(
                 caseID.toInt(),
-                onBack = {
-                    navController.navigateUp()
-                },
-                goToDetails = { id ->
-                    navActions.navigateToOrderDetails(id)
-                }
-            ) { latLng,supervisorLatLbg ->
+                onBack = navController::navigateUp,
+                goToDetails = navActions::navigateToOrderDetails
+            ) { latLng, supervisorLatLbg ->
                 try {
-                    val uri =
+                    val mapUri =
                         Uri.parse("http://maps.google.com/maps?saddr=${latLng.latitude},${latLng.longitude} &daddr=${supervisorLatLbg.latitude},${supervisorLatLbg.longitude} &dirflg=d")
-                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    val intent = Intent(Intent.ACTION_VIEW, mapUri)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     context.startActivity(intent)
                 } catch (e: Exception) {
@@ -223,15 +185,11 @@ fun NavigationHost(
             deepLinks = listOf(navDeepLink { uriPattern = "$uri/id={id}" })
         ) {
             val id = it.arguments?.getString("id") ?: ""
-            id.log("ORDERID")
-            OrderDetailsView(id.toInt()) {
-                navController.navigateUp()
-            }
+            OrderDetailsView(id.toInt(),
+            onBack = navController::navigateUp)
         }
         composable(Destinations.SPECIAL_ORDERS) {
-            SpecialOrders() {
-                navActions.navigateToSpecialOrderDetails(it)
-            }
+            SpecialOrders(goToDetails = navActions::navigateToSpecialOrderDetails)
         }
         composable(Destinations.SPECIAL_ORDERS_ARGS) {
             val id = it.arguments?.getString("id") ?: ""
@@ -250,9 +208,9 @@ fun NavigationHost(
             SupportScreen()
         }
         composable(Destinations.PROFILE_SCREEN) {
-            ProfileScreen() {
-                navController.navigateUp()
-            }
+            ProfileScreen(
+                onBack = navController::navigateUp
+            )
         }
         composable(Destinations.WALLET_SCREEN) {
             WalletScreen()

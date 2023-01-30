@@ -13,10 +13,12 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.Location
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.text.Html
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.Gravity
@@ -573,12 +575,14 @@ class Extensions {
                 elements.toList().toMutableStateList()
             }
         }
+
         fun String.calculateDiscount(totalPrice: Double, discount: Float?): String {
             var taxString = " "
             val cost = totalPrice.times(discount!!)
             taxString = "${cost.div(100)}"
             return taxString
         }
+
         @Composable
         fun Lifecycle.observeAsState(): State<Lifecycle.Event> {
             val state = remember { mutableStateOf(Lifecycle.Event.ON_ANY) }
@@ -592,6 +596,16 @@ class Extensions {
                 }
             }
             return state
+        }
+
+        fun bindHtml(html: String): String {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
+                    .toString()
+            } else {
+                Html.fromHtml(html)
+                    .toString()
+            }
         }
 
     }

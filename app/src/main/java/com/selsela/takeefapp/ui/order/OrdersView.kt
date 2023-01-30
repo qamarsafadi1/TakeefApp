@@ -1,5 +1,8 @@
 package com.selsela.takeefapp.ui.order
 
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
@@ -33,9 +37,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.annotations.Until
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.notification.NotificationReceiver
 import com.selsela.takeefapp.data.order.model.order.Order
+import com.selsela.takeefapp.data.order.model.order.Price
 import com.selsela.takeefapp.ui.common.State
 import com.selsela.takeefapp.ui.common.components.EmptyView
 import com.selsela.takeefapp.ui.common.components.LoadingView
@@ -46,6 +54,7 @@ import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.Extensions.Companion.showSuccess
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -55,8 +64,9 @@ fun OrdersView(
     viewModel: OrderViewModel = hiltViewModel(),
     onBack: () -> Unit,
     goToDetails: (Int) -> Unit,
-    goToOrderRoute: () -> Unit
+    goToOrderRoute: (LatLng,LatLng) -> Unit
 ) {
+    val context = LocalContext.current
     val lazyColumnListState = rememberLazyListState()
     val rateSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -94,6 +104,9 @@ fun OrdersView(
     LaunchedEffect(Unit) {
         if (!viewModel.isLoaded)
             viewModel.getNewOrders(caseID)
+    }
+    BrodcastRevicer(context = context){
+        viewModel.getNewOrders(caseID)
     }
     LaunchedEffect(key1 = shouldStartPaginate.value) {
         if (shouldStartPaginate.value && viewModel.listState == OrderState.IDLE)
@@ -135,7 +148,7 @@ private fun OrderListContent(
     orders: List<Order>,
     onBack: () -> Unit,
     goToDetails: (Int) -> Unit,
-    goToOrderRoute: () -> Unit,
+    goToOrderRoute: (LatLng,LatLng) -> Unit,
     onRateClick: (Int) -> Unit
 ) {
     Box(
@@ -175,22 +188,24 @@ private fun OrderList(
     lazyColumnListState: LazyListState,
     orders: List<Order>,
     goToDetails: (Int) -> Unit,
-    goToOrderRoute: () -> Unit,
+    goToOrderRoute: (LatLng,LatLng) -> Unit,
     onRateClick: (Int) -> Unit
 ) {
     if (orders.isEmpty().not()) {
         LazyColumn(
             state = lazyColumnListState,
             modifier = Modifier
+                .padding(bottom = 42.dp)
                 .fillMaxHeight()
+
         ) {
             items(orders) {
                 OrderItem(
                     it,
                     onClick = { goToDetails(it) },
                     onRateClick
-                ) {
-                    goToOrderRoute()
+                ) { myLatLng, supervisorLatLbg ->
+                    goToOrderRoute(myLatLng,supervisorLatLbg)
                 }
             }
         }
@@ -242,4 +257,20 @@ private fun Header(
             style = text14Meduim
         )
     }
+}
+
+
+@Composable
+private fun BrodcastRevicer(
+    context: Context,
+    onReceived: () -> Unit
+) {
+    val receiver: NotificationReceiver = object : NotificationReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            onReceived()
+        }
+    }
+    LocalBroadcastManager.getInstance(context).registerReceiver(
+        receiver, IntentFilter(Constants.ORDER_STATUS_CHANGED)
+    )
 }

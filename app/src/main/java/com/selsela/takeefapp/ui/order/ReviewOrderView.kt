@@ -194,8 +194,8 @@ private fun ReviewOrderContent(viewState: OrderUiState, vm: HomeViewModel, place
                 }
 
             }
-
-            TaxItem(vm.calculateTax())
+            if (vm.calculateTax() != "0.0")
+                TaxItem(vm.calculateTax())
 
             Box(
                 modifier = Modifier
@@ -356,7 +356,7 @@ private fun WalletItemView(vm: HomeViewModel) {
                 )
                 Spacer(modifier = Modifier.width(5.dp))
                 Text(
-                    text = stringResource(id = R.string.currency_1),
+                    text = stringResource(id = R.string.currency_1, getCurrency()),
                     style = text13,
                     color = SecondaryColor
                 )
@@ -473,7 +473,7 @@ private fun ServiceItem(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                modifier= Modifier.weight(2f),
+                modifier = Modifier.weight(2f),
                 text = stringResource(
                     id = R.string.maintinance_serivce,
                     LocalData.services?.find {
@@ -484,8 +484,9 @@ private fun ServiceItem(
                 color = SecondaryColor
             )
             Row(
-                modifier= Modifier.weight(1f),
-                horizontalArrangement = Arrangement.End) {
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.End
+            ) {
                 Text(
                     text = "${vm.getCount(selectedService.first().serviceId)}", style = text14,
                     color = TextColor,
@@ -516,14 +517,16 @@ private fun ServiceItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
-            selectedService.size.log("selectedService")
             Text(
                 text = "${
-                    selectedService.sumOf {
-                        if (it.serviceId != MAINTENANCE)
-                            it.servicePrice.times(it.count)
-                        else it.servicePrice
-                    }
+                    if (isNotMaintinance) {
+                        selectedService.sumOf {
+                            if (it.serviceId != MAINTENANCE)
+                                it.servicePrice.times(it.count)
+                            else 0.0
+                        }
+                    } else selectedService.find { it.serviceId == MAINTENANCE }?.servicePrice ?: 0.0
+
                 }",
                 style = if (isNotMaintinance && selectedService.first().serviceId == MAINTENANCE) text14Strike else text14,
                 color = TextColor,

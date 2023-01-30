@@ -1,6 +1,9 @@
 package com.selsela.takeefapp
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -32,8 +35,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.view.WindowCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.rememberNavController
+import com.selsela.takeefapp.data.notification.NotificationReceiver
 import com.selsela.takeefapp.navigation.Destinations
 import com.selsela.takeefapp.navigation.Navigation.bindToolbarTitle
 import com.selsela.takeefapp.navigation.Navigation.showingBackButton
@@ -43,6 +48,7 @@ import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TakeefAppTheme
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text14Meduim
+import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,6 +80,7 @@ class MainActivity : AppCompatActivity() {
                                     else LayoutDirection.Ltr
                         ) {
                             val navController = rememberNavController()
+                            val  context = LocalContext.current
                             val currentRoute =
                                 navController.currentBackStackEntryFlow.collectAsState(
                                     initial = navController.currentBackStackEntry
@@ -160,6 +167,7 @@ class MainActivity : AppCompatActivity() {
                                         )
                                     }
                                 }
+
                             }
                         }
                     }
@@ -193,3 +201,4 @@ class MainActivity : AppCompatActivity() {
 val LocalMutableContext = staticCompositionLocalOf<MutableState<Boolean>> {
     error("LocalMutableContext not provided")
 }
+

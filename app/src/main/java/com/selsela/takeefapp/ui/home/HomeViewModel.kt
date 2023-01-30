@@ -189,6 +189,7 @@ class HomeViewModel @Inject constructor(
             selectedOrderService.value.totalServicesPrice?.value ?: 0.0,
             LocalData.configurations?.taxPercent?.toFloat() ?: 0f
         )
+        tax.log("vm.calculateTax()")
         return tax
     }
 

@@ -43,7 +43,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,6 +59,7 @@ import com.selsela.takeefapp.data.notification.NotificationReceiver
 import com.selsela.takeefapp.data.order.model.order.Order
 import com.selsela.takeefapp.data.order.model.order.Price
 import com.selsela.takeefapp.data.order.model.order.SelectedServicesOrder
+import com.selsela.takeefapp.ui.auth.AuthViewModel
 import com.selsela.takeefapp.ui.common.AppLogoImage
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.State
@@ -82,6 +82,7 @@ import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.Extensions.Companion.convertToDecimalPatter
+import com.selsela.takeefapp.utils.Extensions.Companion.getCurrency
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.showSuccess
 import com.selsela.takeefapp.utils.GetLocationDetail
@@ -95,6 +96,7 @@ import kotlinx.coroutines.launch
 fun HomeView(
     viewModel: HomeViewModel,
     orderViewModel: OrderViewModel = hiltViewModel(),
+    walletViewModel: AuthViewModel = hiltViewModel(),
     goToSpecialOrder: () -> Unit,
     goToMyAccount: () -> Unit,
     goToLogin: () -> Unit,
@@ -210,7 +212,7 @@ fun HomeView(
                                     color = Color.White
                                 )
                                 Text(
-                                    text = stringResource(id = R.string.currency),
+                                    text = stringResource(id = R.string.currency, getCurrency()),
                                     style = text11,
                                     color = SecondaryColor2,
                                     modifier = Modifier.padding(start = 4.3.dp)
@@ -251,7 +253,7 @@ fun HomeView(
         onReject = orderViewModel::rejectAdditionalCost,
         onPay = orderViewModel::acceptAdditionalCost
     )
-    brodcastRevicer(coroutineScope, sheetState, context, viewState) {
+    brodcastRevicer(coroutineScope, sheetState, context) {
         order = it
     }
 
@@ -281,6 +283,10 @@ fun HomeView(
         "getMyLocation:${viewModel.selectedAddress.value}".log()
     }
 
+    WalletBrodcastRevicer(context = context){
+        walletViewModel.wallet()
+    }
+
 }
 
 @Composable
@@ -289,7 +295,6 @@ private fun brodcastRevicer(
     coroutineScope: CoroutineScope,
     sheetState: ModalBottomSheetState,
     context: Context,
-    viewState: OrderUiState,
     onReceived: (Order) -> Unit
 ) {
     val receiver: NotificationReceiver = object : NotificationReceiver() {
@@ -313,6 +318,23 @@ private fun brodcastRevicer(
         receiver, IntentFilter(Constants.ORDER_ADDITIONAL_COST)
     )
 }
+
+
+@Composable
+private fun WalletBrodcastRevicer(
+    context: Context,
+    onReceived: () -> Unit
+) {
+    val receiver: NotificationReceiver = object : NotificationReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            onReceived()
+        }
+    }
+    LocalBroadcastManager.getInstance(context).registerReceiver(
+        receiver, IntentFilter(Constants.WALLET_CHANGED)
+    )
+}
+
 
 @Composable
 private fun Header(goToMyAccount: () -> Unit) {

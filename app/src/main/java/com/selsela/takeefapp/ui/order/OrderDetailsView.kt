@@ -1,5 +1,8 @@
 package com.selsela.takeefapp.ui.order
 
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -40,7 +43,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.notification.NotificationReceiver
 import com.selsela.takeefapp.data.order.model.order.Order
 import com.selsela.takeefapp.ui.common.RateButton
 import com.selsela.takeefapp.ui.common.State
@@ -167,6 +172,10 @@ fun OrderDetailsView(
         viewState,
         onConfirm = viewModel::rateOrder
     )
+
+    BrodcastRevicer(context = context){
+        viewModel.getOrderDetails(orderId)
+    }
 }
 
 @Composable
@@ -414,4 +423,17 @@ private fun Header(
     }
 }
 
-
+@Composable
+private fun BrodcastRevicer(
+    context: Context,
+    onReceived: () -> Unit
+) {
+    val receiver: NotificationReceiver = object : NotificationReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            onReceived()
+        }
+    }
+    LocalBroadcastManager.getInstance(context).registerReceiver(
+        receiver, IntentFilter(Constants.ORDER_STATUS_CHANGED)
+    )
+}

@@ -58,6 +58,8 @@ fun GoogleMapView(
                 cameraPositionState.position =
                     CameraPosition.fromLatLngZoom(viewModel.currentLocation.value, 15f)
                 markerState.position = it
+                addressViewModel.lat = viewModel.currentLocation.value.latitude
+                addressViewModel.lng = viewModel.currentLocation.value.longitude
             }
         }
     }

@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.model.LatLng
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.order.model.order.Order
 import com.selsela.takeefapp.data.order.model.order.WorkPeriod
@@ -53,7 +54,7 @@ fun OrderItem(
     order: Order,
     onClick: (Int) -> Unit,
     onRateClick: (Int) -> Unit,
-    onRouteClick: () -> Unit
+    onRouteClick: (LatLng,LatLng) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -188,7 +189,11 @@ fun OrderItem(
                     when (order.case.id) {
                         ON_WAY -> {
                             ElasticButton(
-                                onClick = { onRouteClick() },
+                                onClick = { onRouteClick(
+                                    LatLng(order.address.latitude,order.address.longitude),
+                                    LatLng(order.supervisor?.latitude ?: 0.0,
+                                        order.supervisor?.longitude ?: 0.0)
+                                ) },
                                 title = stringResource(id = R.string.follow_route),
                                 icon = R.drawable.map,
                                 iconGravity = Constants.RIGHT,

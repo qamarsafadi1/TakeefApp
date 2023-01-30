@@ -42,6 +42,7 @@ import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text20
 import com.selsela.takeefapp.ui.theme.text20Meduim
+import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
@@ -141,7 +142,7 @@ private fun AddedCostSheetContent(
                     color = Color.White,
                 )
                 Text(
-                    text = stringResource(R.string.currency), style = text12,
+                    text = stringResource(id = R.string.currency_1, Extensions.getCurrency()), style = text12,
                     color = SecondaryColor,
                 )
             }

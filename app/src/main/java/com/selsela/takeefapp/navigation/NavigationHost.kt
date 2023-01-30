@@ -1,7 +1,11 @@
 package com.selsela.takeefapp.navigation
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -10,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.aboutapp.AboutAppView
 import com.selsela.takeefapp.ui.account.MyAccountView
 import com.selsela.takeefapp.ui.address.AddressView
@@ -35,6 +40,7 @@ import com.selsela.takeefapp.ui.support.SupportScreen
 import com.selsela.takeefapp.ui.terms.TermsView
 import com.selsela.takeefapp.ui.wallet.WalletScreen
 import com.selsela.takeefapp.utils.Extensions.Companion.log
+import com.selsela.takeefapp.utils.Extensions.Companion.showError
 import com.selsela.takeefapp.utils.LocalData
 
 @Composable
@@ -74,8 +80,7 @@ fun NavigationHost(
                 }) {
                 if (LocalData.accessToken.isNullOrEmpty()) {
                     navActions.navigateToLogin()
-                }
-                else navActions.navigateToAddress()
+                } else navActions.navigateToAddress()
             }
         }
         composable(Destinations.LOGIN_SCREEN) {
@@ -123,7 +128,7 @@ fun NavigationHost(
             }
             val addressViewModel = hiltViewModel<AddressViewModel>(addressEntry)
             val query = it.arguments?.getString("query") ?: ""
-            SearchAddressView(query, parentViewModel, addressViewModel){
+            SearchAddressView(query, parentViewModel, addressViewModel) {
                 navController.navigateUp()
             }
         }
@@ -188,7 +193,7 @@ fun NavigationHost(
         }
         composable(Destinations.ORDERS_SCREEN_ARGS) {
             val caseID = it.arguments?.getString("case") ?: ""
-
+       val context = LocalContext.current
             OrdersView(
                 caseID.toInt(),
                 onBack = {
@@ -197,8 +202,16 @@ fun NavigationHost(
                 goToDetails = { id ->
                     navActions.navigateToOrderDetails(id)
                 }
-            ) {
-                navActions.navigateToOrderRoute()
+            ) { latLng,supervisorLatLbg ->
+                try {
+                    val uri =
+                        Uri.parse("http://maps.google.com/maps?saddr=${latLng.latitude},${latLng.longitude} &daddr=${supervisorLatLbg.latitude},${supervisorLatLbg.longitude} &dirflg=d")
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    context.showError(context.getString(R.string.please_download_app))
+                }
             }
         }
         composable(Destinations.ORDER_ROUTE_SCREEN) {

@@ -30,6 +30,7 @@ import com.selsela.takeefapp.ui.theme.TextColorHintAlpha60
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text12Meduim
 import com.selsela.takeefapp.ui.theme.text16Medium
+import com.selsela.takeefapp.utils.Extensions.Companion.getCurrency
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 
 
@@ -97,7 +98,7 @@ fun DetailsView(
                     style = text16Medium
                 )
                 Text(
-                    text = stringResource(id = R.string.currency_1),
+                    text = stringResource(id = R.string.currency_1, getCurrency()),
                     style = text12Meduim,
                     modifier = Modifier.padding(start = 5.dp)
                 )

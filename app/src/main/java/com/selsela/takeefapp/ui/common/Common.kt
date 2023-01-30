@@ -119,6 +119,7 @@ import com.selsela.takeefapp.ui.address.AddressViewModel
 import com.selsela.takeefapp.ui.splash.ConfigViewModel
 import com.selsela.takeefapp.ui.theme.text11Meduim
 import com.selsela.takeefapp.ui.theme.text12Meduim
+import kotlinx.coroutines.launch
 
 @Composable
 fun AppLogoImage(
@@ -835,55 +836,18 @@ fun EditTextLeadingIcon(
 
 @Composable
 fun SearchBar(
-    text: String,
-    onSearch: (String) -> Unit,
-    onValueChange: (String) -> Unit
 ) {
-    TextField(
-        value =
-        text, onValueChange =
-        {
-            onValueChange(it)
-        },
-        singleLine = true,
-        colors = TextFieldDefaults.textFieldColors(
-            TextColor,
-            backgroundColor = Color.Transparent,
-            cursorColor = SecondaryColor,
-            disabledLabelColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
-        enabled = false,
-        textStyle = text12,
-        placeholder = {
-            Text(
-                text = stringResource(R.string.search_on_address),
-                style = text12,
-                color = SecondaryColor
-            )
-        },
-        leadingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.search),
-                contentDescription = "",
-                tint = SecondaryColor
-            )
-        },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Search
-        ),
-        keyboardActions = KeyboardActions(onSearch = {
-            if (text.isEmpty())
-                onSearch("")
-            else onSearch(text)
-        }),
-        modifier = Modifier.clickable {
-            onSearch("")
-        }
-
-    )
+    Row(
+        modifier = Modifier.padding(horizontal = 12.dp)
+    ) {
+        Image(painter = painterResource(id = R.drawable.search), contentDescription = "")
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = stringResource(R.string.search_on_address),
+            style = text12,
+            color = SecondaryColor
+        )
+    }
 }
 
 @Composable
@@ -909,8 +873,7 @@ fun SearchAddressBar(
         textStyle = text12,
         placeholder = {
             Text(
-                text = "بحث عن عنوان ",
-                style = text12,
+                stringResource(R.string.search_for_address), style = text12,
                 color = SecondaryColor
             )
         },
@@ -1029,8 +992,10 @@ private fun OtpView(
 }
 
 @Composable
-fun Countdown(seconds: Long, modifier: Modifier,
-resend: () -> Unit) {
+fun Countdown(
+    seconds: Long, modifier: Modifier,
+    resend: () -> Unit
+) {
     val millisInFuture: Long = seconds*1000
 
     var timeData by remember {
@@ -1076,11 +1041,13 @@ resend: () -> Unit) {
         modifier = modifier
     )
 
-    if (isFinish){
+    if (isFinish) {
         ElasticView(onClick = { resend() }) {
-            Text(text = stringResource(id = R.string.resend),
+            Text(
+                text = stringResource(id = R.string.resend),
                 style = text11Meduim,
-                color = Color.White,)
+                color = Color.White,
+            )
         }
     }
 }
@@ -1254,7 +1221,7 @@ fun <T> ListedBottomSheet(
 @Composable
 fun LanguageSheet(
     sheetState: ModalBottomSheetState,
-    onConfirm: () -> Unit
+    onConfirm: () -> Unit,
 ) {
     Box() {
         val context = LocalContext.current
@@ -1288,15 +1255,17 @@ fun LanguageSheet(
                     LanguageItem(check) {
                         check = it
                         LocalData.appLocal = if (check == 0) "ar" else "end"
+                       // viewModel.getConfig()
                     }
+                    val coroutineScope = rememberCoroutineScope()
 
                     Spacer(modifier = Modifier.height(35.dp))
                     ElasticButton(
                         onClick = {
                             if (check == 0) {
-                                context.getActivity()?.setLocale("ar")
+                                context.setLocale("ar")
                             } else {
-                                context.getActivity()?.setLocale("en")
+                                context.setLocale("en")
                             }
                             onConfirm()
                         },

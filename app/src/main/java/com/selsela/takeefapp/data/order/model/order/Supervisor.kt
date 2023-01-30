@@ -27,5 +27,9 @@ data class Supervisor(
     @SerializedName("name")
     val name: String = "",
     @SerializedName("status")
-    val status: String = ""
+    val status: String = "",
+    @SerializedName("latitude")
+    val latitude: Double? = 31.509229,
+    @SerializedName("longitude")
+    val longitude: Double? =  34.456082,
 )

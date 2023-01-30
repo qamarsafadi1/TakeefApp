@@ -20,6 +20,7 @@ import com.selsela.takeefapp.R
 import com.selsela.takeefapp.utils.Constants.ORDER_ADDITIONAL_COST
 import com.selsela.takeefapp.utils.Constants.ORDER_STATUS_CHANGED
 import com.selsela.takeefapp.utils.Constants.VERIFY_CODE
+import com.selsela.takeefapp.utils.Constants.WALLET_CHANGED
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
 import org.json.JSONException
@@ -68,8 +69,15 @@ class Controller : FirebaseMessagingService() {
                         orderId.log("orderId")
                         if (json.getString("action") == ORDER_ADDITIONAL_COST) {
                             val localIntent = Intent(ORDER_ADDITIONAL_COST)
-                            localIntent.putExtra("additional_cost",json.getString("additional_cost"))
-                            localIntent.putExtra("orderId",orderId)
+                            localIntent.putExtra(
+                                "additional_cost",
+                                json.getString("additional_cost")
+                            )
+                            localIntent.putExtra("orderId", orderId)
+                            val manager = LocalBroadcastManager.getInstance(this)
+                            manager.sendBroadcast(localIntent)
+                        } else {
+                            val localIntent = Intent(ORDER_STATUS_CHANGED)
                             val manager = LocalBroadcastManager.getInstance(this)
                             manager.sendBroadcast(localIntent)
                         }
@@ -78,6 +86,17 @@ class Controller : FirebaseMessagingService() {
                             remoteMessage.notification?.body ?: "",
                             MainActivity::class.java.simpleName,
                             orderId
+                        )
+                    }
+
+                    WALLET_CHANGED -> {
+                        val localIntent = Intent(WALLET_CHANGED)
+                        val manager = LocalBroadcastManager.getInstance(this)
+                        manager.sendBroadcast(localIntent)
+                        sendNotification(
+                            remoteMessage.notification?.title ?: "",
+                            remoteMessage.notification?.body ?: "",
+                            MainActivity::class.java.simpleName,
                         )
                     }
 

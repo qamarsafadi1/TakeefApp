@@ -47,9 +47,6 @@ class ConfigViewModel @Inject constructor(
             _uiState.update { newState }
         }
 
-    init {
-        getConfig()
-    }
     fun getConfig() {
         viewModelScope.launch { repository.getConfigurations()
             if (LocalData.accessToken.isNullOrEmpty().not())

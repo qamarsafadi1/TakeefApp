@@ -38,8 +38,8 @@ import com.selsela.takeefapp.ui.account.components.Header
 import com.selsela.takeefapp.ui.account.components.OrderCards
 import com.selsela.takeefapp.ui.account.components.SettingsCards
 import com.selsela.takeefapp.ui.account.components.WalletCard
-import com.selsela.takeefapp.ui.auth.AuthViewModel
 import com.selsela.takeefapp.ui.auth.AuthUiState
+import com.selsela.takeefapp.ui.auth.AuthViewModel
 import com.selsela.takeefapp.ui.common.LanguageSheet
 import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
@@ -53,6 +53,7 @@ import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.Extensions.Companion.showAlertDialog
+import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import de.palm.composestateevents.EventEffect
@@ -148,7 +149,7 @@ private fun AccountViewContent(
     goToAboutApp: () -> Unit,
     coroutineScope: CoroutineScope,
     languageSheet: ModalBottomSheetState,
-    configViewModel: ConfigViewModel = hiltViewModel(),
+    configViewModel: ConfigViewModel = hiltViewModel()
 ) {
 
     Box(
@@ -156,12 +157,6 @@ private fun AccountViewContent(
             .fillMaxSize()
             .background(Color.White)
     ) {
-        LaunchedEffect(key1 = Unit) {
-            coroutineScope.launch {
-                if (languageSheet.isVisible)
-                    languageSheet.hide()
-            }
-        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -189,7 +184,11 @@ private fun AccountViewContent(
             Header(
                 user,
                 viewModel.userLoggedIn.value,
-                onBack = { onBack() }
+                onBack = {
+                    {
+                        onBack()
+                    }.withDelay(1000)
+                }
             ) {
                 if (it == Constants.LOG_OUT) {
                     context.showAlertDialog(
@@ -353,9 +352,7 @@ private fun AccountViewContent(
         }
 
         LanguageSheet(languageSheet) {
-
             configViewModel.getConfig()
-            //   context.navigate(context,MainActivity::class.java)
         }
     }
 }

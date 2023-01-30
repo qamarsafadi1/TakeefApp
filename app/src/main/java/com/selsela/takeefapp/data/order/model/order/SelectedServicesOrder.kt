@@ -28,9 +28,7 @@ data class SelectedServicesOrder(
                     }
                 }
             } else {
-                services.sumOf {
-                    it.servicePrice
-                }
+                services.find {it.serviceId == MAINTENANCE}?.servicePrice ?: 0.0
             }
         totalServicesPrice?.value = total
     }

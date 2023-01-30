@@ -153,7 +153,7 @@ private fun PaySheetContent(
                     color = Color.White,
                 )
                 Text(
-                    text = stringResource(R.string.currency), style = text12,
+                    text =stringResource(id = R.string.currency_1, Extensions.getCurrency()), style = text12,
                     color = SecondaryColor,
                 )
             }
@@ -294,7 +294,7 @@ fun WalletItemView(vm: HomeViewModel, order: Order?) {
                 )
                 Spacer(modifier = Modifier.width(5.dp))
                 androidx.compose.material3.Text(
-                    text = stringResource(id = R.string.currency_1),
+                    text = stringResource(id = R.string.currency_1, Extensions.getCurrency()),
                     style = text13,
                     color = SecondaryColor
                 )

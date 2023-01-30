@@ -203,4 +203,6 @@
     <string name="cancel_order_lbl">"هل انت متأكد من رغبتك في الغاء الطلب ؟ "</string>
     <string name="please_enter_note">الرجاء كتابة ملاحظة</string>
     <string name="resend">اعادة ارسال</string>
+    <string name="search_for_address">"بحث عن عنوان "</string>
+    <string name="please_download_app">الرجاء تحميل التطبيق</string>
 </resources>

@@ -990,7 +990,9 @@ private fun OtpView(
     val char = when {
         index == text.length -> ""
         index > text.length -> ""
-        else -> text.reversed()[index].toString()
+        else -> if (LocalData.appLocal == "ar")
+            text.reversed()[index].toString()
+        else text[index].toString()
     }
     Box(
         modifier = Modifier
@@ -1272,7 +1274,7 @@ fun LanguageSheet(
 
                     LanguageItem(check) {
                         check = it
-                        LocalData.appLocal =  if (check == 0) "ar" else "end"
+                        LocalData.appLocal = if (check == 0) "ar" else "end"
                     }
 
                     Spacer(modifier = Modifier.height(35.dp))
@@ -1576,7 +1578,10 @@ fun AsyncImage(
         modifier = modifier,
         model = imageUrl,
         error = {
-            painterResource(R.drawable.placeholder)
+            Image(
+                painter = painterResource(R.drawable.placeholder), contentDescription = "",
+                modifier
+            )
         },
         loading = {
             LottieAnimationSizeView(

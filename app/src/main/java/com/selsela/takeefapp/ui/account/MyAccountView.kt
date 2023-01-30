@@ -21,7 +21,9 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,8 +33,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.selsela.takeefapp.LocalMutableContext
-import com.selsela.takeefapp.MainActivity
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.account.components.Header
 import com.selsela.takeefapp.ui.account.components.OrderCards
@@ -52,9 +52,6 @@ import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
-import com.selsela.takeefapp.utils.Extensions.Companion.getActivity
-import com.selsela.takeefapp.utils.Extensions.Companion.log
-import com.selsela.takeefapp.utils.Extensions.Companion.navigate
 import com.selsela.takeefapp.utils.Extensions.Companion.showAlertDialog
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
@@ -186,7 +183,11 @@ private fun AccountViewContent(
                 .padding(horizontal = 16.dp)
         ) {
             // SCREEN HEADER
+            var user by remember {
+                viewModel.user
+            }
             Header(
+                user,
                 viewModel.userLoggedIn.value,
                 onBack = { onBack() }
             ) {
@@ -198,6 +199,7 @@ private fun AccountViewContent(
                         context.getString(R.string.no),
                     ) {
                         LocalData.clearData()
+                        user = null
                         viewModel.userLoggedIn.value = false
                     }
                 } else {
@@ -347,7 +349,7 @@ private fun AccountViewContent(
 
         LanguageSheet(languageSheet) {
             configViewModel.getConfig()
-         //   context.navigate(context,MainActivity::class.java)
+            //   context.navigate(context,MainActivity::class.java)
         }
     }
 }

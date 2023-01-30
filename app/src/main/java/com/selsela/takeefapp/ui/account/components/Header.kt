@@ -25,22 +25,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.auth.model.auth.User
 import com.selsela.takeefapp.ui.common.AsyncImage
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text16Bold
 import com.selsela.takeefapp.utils.Constants.LOG_IN
 import com.selsela.takeefapp.utils.Constants.LOG_OUT
+import com.selsela.takeefapp.utils.Constants.PLACEHOLDER
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
 
 
 @Composable
 fun Header(
+    user: User?,
     isLoggedIn: Boolean,
     onBack: () -> Unit,
     onClick: (Int) -> Unit
 ) {
-    val user = LocalData.user
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -56,7 +59,7 @@ fun Header(
             )
         }
         LogoutButton(isLoggedIn = isLoggedIn) {
-         onClick(it)
+            onClick(it)
         }
     }
     Row(
@@ -66,9 +69,9 @@ fun Header(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CircularImage()
+        CircularImage(user)
         Text(
-            text = if (user?.name.isNullOrEmpty()
+            text = if (user?.name.isNullOrEmpty().not() && LocalData.accessToken.isNullOrEmpty()
                     .not()
             ) user?.name!! else stringResource(id = R.string.welcome_lbl),
             style = text16Bold,
@@ -79,7 +82,8 @@ fun Header(
 }
 
 @Composable
-private fun CircularImage() {
+private fun CircularImage(user: User?) {
+    "hetImage".log()
     Box(contentAlignment = Alignment.Center) {
         Box(
             modifier =
@@ -89,7 +93,7 @@ private fun CircularImage() {
                 .size(72.dp)
         )
         AsyncImage(
-            imageUrl = LocalData.user?.avatar ?: "",
+            imageUrl = user?.avatar ?: PLACEHOLDER,
             modifier = Modifier
                 .clip(CircleShape)
                 .size(64.dp)
@@ -99,8 +103,9 @@ private fun CircularImage() {
 
 @Composable
 private fun LogoutButton(
-    isLoggedIn:Boolean,
-    onClick: (Int) -> Unit) {
+    isLoggedIn: Boolean,
+    onClick: (Int) -> Unit
+) {
     ElasticView(onClick = {
         if (LocalData.accessToken.isNullOrEmpty())
             onClick(LOG_IN)

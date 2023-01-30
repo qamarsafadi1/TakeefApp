@@ -38,4 +38,6 @@ object Constants {
     const val VERIFY_CODE = "sms_message"
     const val ORDER_STATUS_CHANGED = "order_status_changed"
     const val ORDER_ADDITIONAL_COST = "order_need_additional_cost"
+
+    const val PLACEHOLDER = "http://airconditionars.selselatech.com/uploads/blank.png"
 }

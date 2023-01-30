@@ -148,7 +148,13 @@ fun NavigationHost(
             }
         }
         composable(Destinations.MY_ACCOUNT) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(Destinations.HOME_SCREEN ?: "")
+            }
+            val parentViewModel = hiltViewModel<HomeViewModel>(parentEntry)
+
             MyAccountView(
+                homeViewModel = parentViewModel,
                 onBack = navController::navigateUp,
                 goToLogin = {
                     navActions.navigateToLogin()

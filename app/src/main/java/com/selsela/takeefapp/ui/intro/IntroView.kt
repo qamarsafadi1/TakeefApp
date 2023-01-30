@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -48,6 +49,7 @@ import com.selsela.takeefapp.LocalMutableContext
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.NextPageButton
 import com.selsela.takeefapp.ui.intro.intro.model.Intro
+import com.selsela.takeefapp.ui.splash.ConfigViewModel
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.TakeefAppTheme
@@ -65,7 +67,7 @@ import java.util.Locale
 
 val doneSelection = mutableListOf<Int>()
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun IntroView(
     modifier: Modifier = Modifier,
@@ -121,7 +123,7 @@ fun IntroView(
                             )
                         )
                 ) {
-                    IntroItem(introList[page], page)
+                    IntroItem(introList[page])
                 }
             }
         }
@@ -137,8 +139,6 @@ fun IntroView(
             SkipButton(isSkipVisible, goToHome)
             Indicators(selectedPage)
             ElasticView(onClick = {
-                "heeyClick".log()
-                selectedPage.log("selectedPage")
                 if (selectedPage == 2) {
                     LocalData.firstLaunch = false
                     goToHome()
@@ -154,9 +154,7 @@ fun IntroView(
                 } else {
                     StartNowButton()
                 }
-
             }
-
         }
         backgroundColor.ChangeStatusBarColorWhiteNav()
     }
@@ -201,20 +199,10 @@ private fun SkipButton(isSkipVisible: Boolean, goToHome: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
-@Composable
-private fun HorizontalPagerListener(
-    pagerState: PagerState,
-    backgroundColor: Color,
-    selectedPage: Int
-): Pair<Color, Int> {
-    var backgroundColor1 = backgroundColor
-    var selectedPage1 = selectedPage
-    return Pair(backgroundColor1, selectedPage1)
-}
 
 @Composable
-fun IntroItem(intro: Intro, index: Int) {
+fun IntroItem(intro: Intro,
+              viewModel: ConfigViewModel = hiltViewModel()) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -240,6 +228,7 @@ fun IntroItem(intro: Intro, index: Int) {
                         .align(Alignment.TopEnd)
                         .clickable {
                             context.setLocale("en")
+                            viewModel.getConfig()
                         }
                 )
 

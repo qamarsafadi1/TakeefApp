@@ -41,6 +41,7 @@ import com.selsela.takeefapp.ui.account.components.WalletCard
 import com.selsela.takeefapp.ui.auth.AuthViewModel
 import com.selsela.takeefapp.ui.auth.AuthUiState
 import com.selsela.takeefapp.ui.common.LanguageSheet
+import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.splash.ConfigViewModel
@@ -65,6 +66,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MyAccountView(
     viewModel: AuthViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel,
     onBack: () -> Unit,
     goToLogin: () -> Unit,
     goToSpecialOrders: () -> Unit,
@@ -90,6 +92,7 @@ fun MyAccountView(
     AccountViewContent(
         uiState = viewState,
         viewModel,
+        homeViewModel,
         onBack,
         context,
         goToLogin,
@@ -134,6 +137,7 @@ fun MyAccountView(
 private fun AccountViewContent(
     uiState: AuthUiState,
     viewModel: AuthViewModel,
+    viewModelHome: HomeViewModel,
     onBack: () -> Unit,
     context: Context,
     goToLogin: () -> Unit,
@@ -146,13 +150,21 @@ private fun AccountViewContent(
     goToTerms: () -> Unit,
     goToAboutApp: () -> Unit,
     coroutineScope: CoroutineScope,
-    languageSheet: ModalBottomSheetState
+    languageSheet: ModalBottomSheetState,
+    configViewModel: ConfigViewModel = hiltViewModel(),
 ) {
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
+        LaunchedEffect(key1 = Unit) {
+            coroutineScope.launch {
+                if (languageSheet.isVisible)
+                    languageSheet.hide()
+            }
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -334,11 +346,8 @@ private fun AccountViewContent(
         }
 
         LanguageSheet(languageSheet) {
-            coroutineScope.launch {
-                if (languageSheet.isVisible)
-                    languageSheet.hide()
-                else languageSheet.animateTo(ModalBottomSheetValue.Expanded)
-            }
+            configViewModel.getConfig()
+         //   context.navigate(context,MainActivity::class.java)
         }
     }
 }

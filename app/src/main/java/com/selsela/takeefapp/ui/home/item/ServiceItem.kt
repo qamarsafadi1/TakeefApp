@@ -69,7 +69,7 @@ fun ServiceItem(
                 color = TextColor
             )
             Text(
-                text = stringResource(R.string.maintinance_all),
+                text = service.description,
                 style = text12,
                 color = TextColor.copy(0.44f)
             )

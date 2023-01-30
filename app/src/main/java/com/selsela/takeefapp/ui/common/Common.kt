@@ -112,8 +112,10 @@ import com.selsela.takeefapp.utils.LocalUtils.setLocale
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import java.util.Locale
 import androidx.compose.runtime.*
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.selsela.takeefapp.data.auth.model.address.District
 import com.selsela.takeefapp.ui.address.AddressViewModel
+import com.selsela.takeefapp.ui.splash.ConfigViewModel
 
 @Composable
 fun AppLogoImage(
@@ -1234,6 +1236,7 @@ fun <T> ListedBottomSheet(
 @Composable
 fun LanguageSheet(
     sheetState: ModalBottomSheetState,
+    configViewModel: ConfigViewModel = hiltViewModel(),
     onConfirm: () -> Unit
 ) {
     Box() {
@@ -1269,6 +1272,7 @@ fun LanguageSheet(
 
                     LanguageItem(check) {
                         check = it
+                        LocalData.appLocal =  if (check == 0) "ar" else "end"
                     }
 
                     Spacer(modifier = Modifier.height(35.dp))
@@ -1279,9 +1283,6 @@ fun LanguageSheet(
                             } else {
                                 context.getActivity()?.setLocale("en")
                             }
-                            {
-                                mutableContext.value = false
-                            }.withDelay(9000)
                             onConfirm()
                         },
                         title = stringResource(R.string.confirm_lbl),

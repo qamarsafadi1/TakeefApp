@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.ui.home
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.selsela.takeefapp.data.auth.model.address.FavouriteAddresse
 import com.selsela.takeefapp.data.auth.repository.AuthRepository
 import com.selsela.takeefapp.data.config.model.AcType
+import com.selsela.takeefapp.data.config.model.Service
 import com.selsela.takeefapp.data.config.model.WorkPeriod
 import com.selsela.takeefapp.data.order.model.order.Order
 import com.selsela.takeefapp.data.order.model.order.SelectedService
@@ -56,7 +58,6 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     val acTypes = LocalData.acTypes
-    val services = LocalData.services
     var count = mutableStateOf(0)
     var address: Address? = null
     var selectedOrderService = mutableStateOf(SelectedServicesOrder())
@@ -64,6 +65,7 @@ class HomeViewModel @Inject constructor(
     var selectedAddress = mutableStateOf("")
     var selectedPeriodId = mutableStateOf(WorkPeriod())
     var selectedPaymentId = mutableStateOf(-1)
+    var reloadScreen = mutableStateOf(false)
     var currentLocation = mutableStateOf(LatLng(0.0, 0.0))
     var tax = ""
     var useWallet = 0
@@ -89,6 +91,12 @@ class HomeViewModel @Inject constructor(
         selectedOrderService.value.getMaintenanceCount()
         selectedOrderService.value.getCleaningCount()
         selectedOrderService.value.getInstallationCount()
+    }
+
+    fun getServicesList(): MutableState<List<Service>?> {
+        "heyList".log()
+        LocalData.services?.log("heyList")
+        return mutableStateOf(LocalData.services)
     }
 
     fun addAcTypeCount(

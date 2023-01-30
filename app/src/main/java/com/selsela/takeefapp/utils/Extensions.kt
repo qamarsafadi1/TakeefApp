@@ -28,9 +28,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -40,6 +42,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import com.google.android.gms.location.LocationServices
@@ -164,7 +167,7 @@ class Extensions {
             fromActivity: Context, toActivity: Class<T>, isLogin: Boolean? = true
         ) {
             val navIntent = Intent(fromActivity, toActivity)
-            navIntent.putExtra("isLogin", isLogin)
+            navIntent.putExtra("isInApp", true)
             this.startActivity(navIntent)
             this.getActivity()?.finish()
         }
@@ -575,6 +578,20 @@ class Extensions {
             val cost = totalPrice.times(discount!!)
             taxString = "${cost.div(100)}"
             return taxString
+        }
+        @Composable
+        fun Lifecycle.observeAsState(): State<Lifecycle.Event> {
+            val state = remember { mutableStateOf(Lifecycle.Event.ON_ANY) }
+            DisposableEffect(this) {
+                val observer = LifecycleEventObserver { _, event ->
+                    state.value = event
+                }
+                this@observeAsState.addObserver(observer)
+                onDispose {
+                    this@observeAsState.removeObserver(observer)
+                }
+            }
+            return state
         }
 
     }

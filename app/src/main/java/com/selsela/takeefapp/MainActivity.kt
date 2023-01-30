@@ -155,12 +155,11 @@ class MainActivity : AppCompatActivity() {
                                             .fillMaxSize(),
                                         color = Color.White
                                     ) {
-                                        NavigationHost(navController)
-
+                                        NavigationHost(
+                                            navController
+                                        )
                                     }
                                 }
-
-
                             }
                         }
                     }

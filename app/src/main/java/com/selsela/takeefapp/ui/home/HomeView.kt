@@ -103,6 +103,7 @@ fun HomeView(
     Color.White.ChangeNavigationBarColor()
 
     val context = LocalContext.current
+    viewModel.reloadScreen.value.log("heyhome")
     // hide ripple effect
     CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
         Box(
@@ -126,9 +127,8 @@ fun HomeView(
             ) {
                 Header(goToMyAccount)
                 TitleView()
-                val servicesList = remember { viewModel.services!!.map { it }.toMutableStateList() }
                 LazyColumn(modifier = Modifier.padding(top = 24.dp)) {
-                    items(servicesList,
+                    items(viewModel.getServicesList().value ?: listOf(),
                         key = { it.id }) {
                         AnimContent(
                             it,

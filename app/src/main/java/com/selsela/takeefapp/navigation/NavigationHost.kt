@@ -123,7 +123,9 @@ fun NavigationHost(
             }
             val addressViewModel = hiltViewModel<AddressViewModel>(addressEntry)
             val query = it.arguments?.getString("query") ?: ""
-            SearchAddressView(query, parentViewModel, addressViewModel)
+            SearchAddressView(query, parentViewModel, addressViewModel){
+                navController.navigateUp()
+            }
         }
         composable(Destinations.REVIEW_ORDER) {
             val parentEntry = remember(it) {

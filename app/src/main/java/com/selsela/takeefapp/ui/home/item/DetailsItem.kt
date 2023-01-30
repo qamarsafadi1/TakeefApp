@@ -59,7 +59,7 @@ fun DetailsView(
             color = TextColorHint
         )
         val acsType = remember {
-            viewModel.acTypes!!.map { acyType ->
+            viewModel.getAcTypesList().value!!.map { acyType ->
                 if (isSelected == true) {
                     if (viewModel.selectedOrderService.value.services.isEmpty().not()) {
                         acyType.count = viewModel.selectedOrderService.value.services.find {
@@ -77,7 +77,7 @@ fun DetailsView(
         }
 
         Column(modifier = Modifier.padding(top = 12.dp)) {
-            repeat(acsType.size) {
+            repeat(acsType.size ?: 0) {
                 acsType[it].count.log("acsType[it]")
                 ConditionTypeView(acsType[it]) { count, acyType ->
                     count.log("countcount")

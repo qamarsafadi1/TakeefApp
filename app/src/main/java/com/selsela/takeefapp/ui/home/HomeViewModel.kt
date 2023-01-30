@@ -98,6 +98,11 @@ class HomeViewModel @Inject constructor(
         LocalData.services?.log("heyList")
         return mutableStateOf(LocalData.services)
     }
+    fun getAcTypesList(): MutableState<List<AcType>?> {
+        "heyList".log()
+        LocalData.acTypes?.log("heyList")
+        return mutableStateOf(LocalData.acTypes)
+    }
 
     fun addAcTypeCount(
         service: com.selsela.takeefapp.data.config.model.Service,

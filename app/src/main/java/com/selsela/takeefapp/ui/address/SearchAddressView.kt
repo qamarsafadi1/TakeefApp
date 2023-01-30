@@ -59,7 +59,8 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 fun SearchAddressView(
     query: String?,
     sharedVm: HomeViewModel,
-    vm: AddressViewModel = hiltViewModel()
+    vm: AddressViewModel = hiltViewModel(),
+    onSelect: () -> Unit
 ) {
     val context = LocalContext.current
     val viewState: AddressUiState by vm.uiState.collectAsStateLifecycleAware(
@@ -69,7 +70,10 @@ fun SearchAddressView(
     when (viewState.state) {
         State.SUCCESS -> {
             viewState.addresses?.let {
-                SearchAddressContent(query, it, sharedVm = sharedVm, vm)
+                SearchAddressContent(
+                    query, it, sharedVm = sharedVm, vm,
+                    onSelect
+                )
             }
         }
 
@@ -106,7 +110,8 @@ private fun SearchAddressContent(
     query: String?,
     favouriteAddresses: List<FavouriteAddresse>,
     sharedVm: HomeViewModel,
-    vm: AddressViewModel
+    vm: AddressViewModel,
+    onSelect: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -145,13 +150,17 @@ private fun SearchAddressContent(
                             address = it as FavouriteAddresse,
                             selectAddress = sharedVm::selectAddressFromFav,
                             updateSheetSelected = vm::updateSelectAddress
-                        )
+                        ) {
+                            onSelect()
+                        }
                     } else {
                         AddressItem(
                             it as Place,
                             selectAddress = sharedVm::selectAddressFromFav,
                             updateSheetSelected = vm::updateSelectAddress
-                        )
+                        ) {
+                            onSelect()
+                        }
                     }
                 }
             }
@@ -164,7 +173,8 @@ private fun SearchAddressContent(
 private fun FavItem(
     address: FavouriteAddresse,
     selectAddress: (FavouriteAddresse) -> Unit,
-    updateSheetSelected: (FavouriteAddresse) -> Unit
+    updateSheetSelected: (FavouriteAddresse) -> Unit,
+    onSelect: () -> Unit
 ) {
     Column(
         Modifier
@@ -172,6 +182,7 @@ private fun FavItem(
             .clickable {
                 updateSheetSelected(address)
                 selectAddress(address)
+                onSelect()
             }) {
         Row(
             modifier = Modifier
@@ -206,7 +217,9 @@ private fun FavItem(
                         .clip(CircleShape)
                         .background(FavBg)
                         .size(30.dp),
-                    onClick = {}
+                    onClick = {
+                        address.isFav = 1
+                    }
                 ) {
                     Image(
                         painter = painterResource(
@@ -235,7 +248,8 @@ private fun FavItem(
 private fun AddressItem(
     place: Place,
     selectAddress: (Place, Int) -> Unit,
-    updateSheetSelected: (Place) -> Unit
+    updateSheetSelected: (Place) -> Unit,
+    onSelect: () -> Unit
 ) {
     var isFav by remember {
         mutableStateOf(false)
@@ -246,6 +260,7 @@ private fun AddressItem(
             .clickable {
                 selectAddress(place, if (isFav) 1 else 0)
                 updateSheetSelected(place)
+                onSelect()
             }) {
         Row(
             modifier = Modifier.fillMaxWidth(),

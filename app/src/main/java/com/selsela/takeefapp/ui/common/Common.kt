@@ -1254,13 +1254,10 @@ fun <T> ListedBottomSheet(
 @Composable
 fun LanguageSheet(
     sheetState: ModalBottomSheetState,
-    configViewModel: ConfigViewModel = hiltViewModel(),
     onConfirm: () -> Unit
 ) {
     Box() {
         val context = LocalContext.current
-        val configuration = LocalConfiguration.current
-        val mutableContext = LocalMutableContext.current
 
         var check by remember {
             if (LocalData.appLocal == "ar")
@@ -1275,7 +1272,7 @@ fun LanguageSheet(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.4f)
+                        .fillMaxHeight(0.45f)
                         .padding(
                             horizontal = 24.dp,
                             vertical = 46.dp
@@ -1327,16 +1324,17 @@ private fun LanguageItem(selectedItem: Int, onCheck: (Int) -> Unit) {
                     .fillMaxWidth()
                     .requiredHeight(48.dp)
                     .background(TextFieldBg, RoundedCornerShape(11.dp))
+                    .clip(RoundedCornerShape(11.dp))
+                    .clickable(
+                    ) {
+                        onCheck(it)
+                    }
                     .border(
                         width = 1.dp,
                         color = BorderColor,
                         RoundedCornerShape(11.dp)
                     )
-                    .padding(horizontal = 15.dp)
-                    .clickable(
-                    ) {
-                        onCheck(it)
-                    },
+                    .padding(horizontal = 15.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {

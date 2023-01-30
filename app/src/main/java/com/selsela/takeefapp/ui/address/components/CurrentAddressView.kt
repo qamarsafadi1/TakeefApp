@@ -100,7 +100,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
                         )
                     }
                     var isFav by remember {
-                        mutableStateOf(false)
+                        mutableStateOf(viewModel.address?.isFav == 1)
                     }
                     IconButton(onClick = { isFav = !isFav
                         onFav(isFav)}) {

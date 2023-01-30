@@ -353,6 +353,7 @@ private fun AccountViewContent(
         }
 
         LanguageSheet(languageSheet) {
+
             configViewModel.getConfig()
             //   context.navigate(context,MainActivity::class.java)
         }

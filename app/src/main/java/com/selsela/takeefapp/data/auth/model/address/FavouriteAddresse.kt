@@ -13,7 +13,7 @@ data class FavouriteAddresse(
     @SerializedName("id")
     val id: Int = 0,
     @SerializedName("is_fav")
-    val isFav: Int = 0,
+    var isFav: Int = 0,
     @SerializedName("latitude")
     val latitude: Double = 0.0,
     @SerializedName("longitude")

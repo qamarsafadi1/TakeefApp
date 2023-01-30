@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -136,13 +137,13 @@ fun PmAmView(selectedItem: Int = -1, onCheck: (WorkPeriod) -> Unit) {
                     .fillMaxWidth()
                     .requiredHeight(48.dp)
                     .background(TextFieldBg, RoundedCornerShape(11.dp))
+                    .clip(RoundedCornerShape(11.dp))
+                    .clickable {
+                        onCheck(LocalData.workPeriods?.get(it)!!)
+                    }
                     .border(width = 1.dp, color = BorderColor, RoundedCornerShape(11.dp))
                     .padding(horizontal = 15.dp)
-                    .clickable(
-
-                    ) {
-                        onCheck(LocalData.workPeriods?.get(it)!!)
-                    },
+                 ,
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {

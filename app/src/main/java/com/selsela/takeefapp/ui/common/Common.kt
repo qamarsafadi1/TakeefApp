@@ -1172,14 +1172,12 @@ fun <T> ListedBottomSheet(
 //                    var citisList by remember {
 //                        mutableStateOf(ciites)
 //                    }
-                 //   citisList?.size?.log("citisListcitisList")
+                    //   citisList?.size?.log("citisListcitisList")
                     EditTextLeadingIcon(
                         modifier = Modifier.paddingTop(24),
                         onValueChange = {
                             query = it
-                          val list =   addressViewModel.searchCities(query,ciites)
-             //               citisList = list
-                            list?.log("addressViewModel")
+                            //               citisList = list
                         }, text = query,
                         hint = stringResource(R.string.search),
                         leading = {
@@ -1190,14 +1188,15 @@ fun <T> ListedBottomSheet(
                             )
                         })
 
-
-                    // TODO: Search in bottom sheet
                     LazyColumn(
                         modifier = Modifier
                             .paddingTop(42)
                             .fillMaxWidth()
                     ) {
-                        items( ciites ?: listOf()) {
+                        items(
+                            addressViewModel.searchCities(query, ciites).value
+                                ?: listOf()
+                        ) {
                             AreaListItem<T>(
                                 it
                             ) {
@@ -1205,19 +1204,19 @@ fun <T> ListedBottomSheet(
                                     is Area -> {
                                         onSelectedItem(it.name, it.id)
                                         query = ""
-                                        addressViewModel.searchCities(query,ciites)
+                                        addressViewModel.searchCities(query, ciites)
                                     }
 
                                     is City -> {
                                         onSelectedItem(it.name, it.id)
                                         query = ""
-                                        addressViewModel.searchCities(query,ciites)
+                                        addressViewModel.searchCities(query, ciites)
                                     }
 
                                     is Children -> {
                                         onSelectedItem(it.name, it.id)
                                         query = ""
-                                        addressViewModel.searchCities(query,ciites)
+                                        addressViewModel.searchCities(query, ciites)
                                     }
                                 }
                                 onClickItem()

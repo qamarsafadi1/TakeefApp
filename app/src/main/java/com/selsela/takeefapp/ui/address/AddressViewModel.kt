@@ -267,7 +267,7 @@ class AddressViewModel @Inject constructor(
         }
     }
 
-    fun <T> searchCities(query: String, list: List<T>?): List<T>? {
+    fun <T> searchCities(query: String, list: List<T>?): MutableState<List<T>?> {
         val cities = if (query == "")
             list
         else {
@@ -279,6 +279,6 @@ class AddressViewModel @Inject constructor(
                 }
             }
         }
-        return cities
+        return mutableStateOf(cities)
     }
 }

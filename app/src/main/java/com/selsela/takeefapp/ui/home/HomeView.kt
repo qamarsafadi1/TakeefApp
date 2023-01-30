@@ -149,7 +149,11 @@ fun HomeView(
                     horizontalArrangement = Arrangement.End
                 ) {
                     ElasticButton(
-                        onClick = { goToSpecialOrder() },
+                        onClick = {
+                            if (LocalData.accessToken.isNullOrEmpty().not())
+                                goToSpecialOrder()
+                            else goToLogin()
+                        },
                         title = stringResource(R.string.special_order_add),
                     )
                 }

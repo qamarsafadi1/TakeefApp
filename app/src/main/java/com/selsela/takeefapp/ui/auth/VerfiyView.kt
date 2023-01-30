@@ -61,7 +61,8 @@ fun VerifyView(
     VerifyCodeContent(
         uiState = viewState,
         onConfirm = viewModel::verifyCode,
-        viewModel = viewModel
+        viewModel = viewModel,
+        resend = viewModel::resendCode
     )
 
     /**
@@ -92,6 +93,7 @@ fun VerifyView(
 private fun VerifyCodeContent(
     uiState: AuthUiState,
     onConfirm: () -> Unit,
+    resend: () -> Unit,
     viewModel: AuthViewModel
 ) {
     Box(
@@ -161,12 +163,15 @@ private fun VerifyCodeContent(
                             text = stringResource(R.string.you_will_recive_code_in),
                             style = text12,
                             color = Color.White,
-                            modifier = Modifier.paddingTop(36)
+                            modifier = Modifier.paddingTop(20)
                         )
                         Countdown(
                             30,
                             modifier = Modifier.paddingTop(8)
-                        )
+                        ){
+                            resend()
+                        }
+
                     }
 
                 }

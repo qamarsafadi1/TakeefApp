@@ -86,6 +86,33 @@ class AuthRepository @Inject constructor(
         }
         data
     }
+    suspend fun resendCode(
+    ): Flow<Resource<User>> = withContext(Dispatchers.IO) {
+        val data: Flow<Resource<User>> = try {
+            val body = HashMap<String, Any>()
+            body["mobile"] = LocalData.user?.mobile ?: ""
+            body["country_id"] = "1"
+            val response = api.resendCode(body)
+            if (response.isSuccessful) {
+                LocalData.accessToken = response.body()?.user?.accessToken ?: ""
+                LocalData.user = response.body()?.user
+                handleSuccess(
+                    response.body()?.user,
+                    response.body()?.responseMessage ?: response.message()
+                )
+            } else {
+                val gson = Gson()
+                val errorBase =
+                    gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.log("errorBase")
+                handleExceptions(errorBase)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            handleExceptions(e)
+        }
+        data
+    }
 
     suspend fun me(): Flow<Resource<User>> = withContext(Dispatchers.IO) {
         val data: Flow<Resource<User>> = try {

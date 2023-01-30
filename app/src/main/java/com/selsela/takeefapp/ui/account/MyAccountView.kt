@@ -247,7 +247,12 @@ private fun AccountViewContent(
                     modifier = Modifier
                         .paddingTop(25.9)
                         .clickable {
-                            goToSupport()
+                            if (LocalData.accessToken
+                                    .isNullOrEmpty()
+                                    .not()
+                            )
+                                goToSupport()
+                            else goToLogin()
                         }
                 ) {
                     Image(

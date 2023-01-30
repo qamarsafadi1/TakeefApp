@@ -36,6 +36,13 @@ interface AuthApi {
         @FieldMap
         body: Map<String, Any>
     ): Response<AuthResponse>
+   @POST("user/resend_verify_code")
+    @JvmSuppressWildcards
+    @FormUrlEncoded
+    suspend fun resendCode(
+        @FieldMap
+        body: Map<String, Any>
+    ): Response<AuthResponse>
 
     @GET("user/me")
     suspend fun me(): Response<AuthResponse>

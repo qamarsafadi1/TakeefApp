@@ -287,6 +287,40 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+    fun resendCode() {
+        viewModelScope.launch {
+            state = state.copy(
+                isLoading = true
+            )
+            repository.resendCode()
+                .collect { result ->
+                    val authUiState = when (result.status) {
+                        Status.SUCCESS -> {
+                            AuthUiState(
+                                responseMessage = result.message ?: "",
+                                onSuccess = triggered(result.data?.status ?: ""),
+                            )
+                        }
+
+                        Status.LOADING ->
+                            AuthUiState(
+                                isLoading = true
+                            )
+
+                        Status.ERROR -> AuthUiState(
+                            onFailure = triggered(
+                                ErrorsData(
+                                    result.errors,
+                                    result.message,
+                                )
+                            ),
+                            responseMessage = result.message ?: "",
+                        )
+                    }
+                    state = authUiState
+                }
+        }
+    }
 
     fun me() {
         viewModelScope.launch {

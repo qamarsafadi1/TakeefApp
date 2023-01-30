@@ -113,9 +113,12 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import java.util.Locale
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.data.auth.model.address.District
 import com.selsela.takeefapp.ui.address.AddressViewModel
 import com.selsela.takeefapp.ui.splash.ConfigViewModel
+import com.selsela.takeefapp.ui.theme.text11Meduim
+import com.selsela.takeefapp.ui.theme.text12Meduim
 
 @Composable
 fun AppLogoImage(
@@ -1026,11 +1029,16 @@ private fun OtpView(
 }
 
 @Composable
-fun Countdown(seconds: Long, modifier: Modifier) {
+fun Countdown(seconds: Long, modifier: Modifier,
+resend: () -> Unit) {
     val millisInFuture: Long = seconds*1000
 
     var timeData by remember {
         mutableStateOf(millisInFuture)
+    }
+    var isFinish by remember {
+
+        mutableStateOf(false)
     }
 
     val countDownTimer =
@@ -1041,7 +1049,7 @@ fun Countdown(seconds: Long, modifier: Modifier) {
             }
 
             override fun onFinish() {
-
+                isFinish = true
             }
         }
 
@@ -1067,6 +1075,14 @@ fun Countdown(seconds: Long, modifier: Modifier) {
         color = Color.White,
         modifier = modifier
     )
+
+    if (isFinish){
+        ElasticView(onClick = { resend() }) {
+            Text(text = stringResource(id = R.string.resend),
+                style = text11Meduim,
+                color = Color.White,)
+        }
+    }
 }
 
 @Composable

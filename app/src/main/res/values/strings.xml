@@ -180,7 +180,7 @@
     <string name="warning_password_weak">Password is weak need to contains numbers and characters</string>
     <string name="warning_password_not_match">Password not match<br> </br></string>
     <string name="warning_phone_pattern">Please enter Numbers only</string>
-    <string name="warning_phone_length_pattern">Phone number need to contain 8 characters</string>
+    <string name="warning_phone_length_pattern">Phone number need to contain 9 characters</string>
     <string name="warning_phone_length_pattern_2">Mobile number must consist لـ %2$s يتكون من : %1$s أرقام</string>
     <string name="_msg_failed">Something went wrong, please try again</string>
     <string name="not_start_with_zero">Phone number can\'t start with zero</string>

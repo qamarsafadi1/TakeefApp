@@ -115,6 +115,7 @@ private fun LoginContent(
                 .fillMaxWidth()
                 .fillMaxHeight(0.77f)
         ) {
+            // Card form
             Card(
                 shape = RoundedCornerShape(33.dp),
                 backgroundColor = TextColor,
@@ -198,6 +199,8 @@ private fun LoginContent(
                     }
                 }
             }
+
+            // Animation Item
             LottieAnimationView(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
@@ -207,6 +210,7 @@ private fun LoginContent(
             )
         }
 
+        // Footer
         Row(
             modifier = Modifier
                 .wrapContentSize()

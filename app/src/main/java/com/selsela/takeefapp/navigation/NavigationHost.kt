@@ -144,12 +144,11 @@ fun NavigationHost(
             val parentViewModel = hiltViewModel<HomeViewModel>(parentEntry)
 
             MyAccountView(
-                homeViewModel = parentViewModel,
                 onBack = navController::navigateUp,
                 goToLogin = navActions::navigateToLogin,
                 goToSpecialOrders = navActions::navigateToSpecialOrders,
-                goToNotification = navActions::navigateToNotification,
                 goToAboutApp = navActions::navigateToAboutApp,
+                goToNotification = navActions::navigateToNotification,
                 goToTerms = navActions::navigateToTermsScreen,
                 goToSupport = navActions::navigateToSupport,
                 goToProfile = navActions::navigateToProfile,

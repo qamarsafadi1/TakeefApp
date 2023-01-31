@@ -1155,11 +1155,6 @@ fun <T> ListedBottomSheet(
                     var query by remember {
                         mutableStateOf("")
                     }
-
-//                    var citisList by remember {
-//                        mutableStateOf(ciites)
-//                    }
-                    //   citisList?.size?.log("citisListcitisList")
                     EditTextLeadingIcon(
                         modifier = Modifier.paddingTop(24),
                         onValueChange = {

@@ -436,4 +436,7 @@ private fun BrodcastRevicer(
     LocalBroadcastManager.getInstance(context).registerReceiver(
         receiver, IntentFilter(Constants.ORDER_STATUS_CHANGED)
     )
+    LocalBroadcastManager.getInstance(context).registerReceiver(
+        receiver, IntentFilter(Constants.ORDER_ADDITIONAL_COST)
+    )
 }

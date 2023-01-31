@@ -48,6 +48,10 @@ import com.qamar.elasticview.ElasticView
 import com.selsela.takeefapp.LocalMutableContext
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.common.NextPageButton
+import com.selsela.takeefapp.ui.intro.componenets.Indicators
+import com.selsela.takeefapp.ui.intro.componenets.IntroItem
+import com.selsela.takeefapp.ui.intro.componenets.SkipButton
+import com.selsela.takeefapp.ui.intro.componenets.StartNowButton
 import com.selsela.takeefapp.ui.intro.intro.model.Intro
 import com.selsela.takeefapp.ui.splash.ConfigViewModel
 import com.selsela.takeefapp.ui.theme.LightBlue
@@ -157,160 +161,6 @@ fun IntroView(
             }
         }
         backgroundColor.ChangeStatusBarColorWhiteNav()
-    }
-}
-
-
-@Composable
-private fun StartNowButton() {
-    Row(
-        modifier = Modifier
-            .requiredWidth(181.dp)
-            .requiredHeight(56.dp)
-            .background(TextColor, shape = RoundedCornerShape(28.dp)),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-
-        Text(
-            text = stringResource(R.string.start_now), style = buttonText,
-            modifier = Modifier.padding(end = 23.dp)
-        )
-        Image(
-            painter = painterResource(id = R.drawable.forward_arrow),
-            contentDescription = "arrow",
-        )
-    }
-}
-
-@Composable
-private fun SkipButton(isSkipVisible: Boolean, goToHome: () -> Unit) {
-    if (isSkipVisible) {
-        ElasticView(
-            onClick = {
-                LocalData.firstLaunch = false
-                goToHome()
-            }) {
-            Text(
-                stringResource(R.string.Skip),
-                style = text14
-            )
-        }
-    }
-}
-
-
-@Composable
-fun IntroItem(intro: Intro,
-              viewModel: ConfigViewModel = hiltViewModel()) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        val context = LocalContext.current
-        val configuration = LocalConfiguration.current
-        val mutableContext = LocalMutableContext.current
-        Column(
-
-            modifier = Modifier.fillMaxSize(1f),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(bottom = 60.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.en),
-                    contentDescription = "en",
-                    modifier = Modifier
-                        .padding(top = 54.dp, start = 24.dp, end = 24.dp)
-                        .align(Alignment.TopEnd)
-                        .clickable {
-                            context.setLocale("en")
-                            viewModel.getConfig()
-                        }
-                )
-
-                if (intro.Image == R.drawable.intro2) {
-                    Image(
-                        painter = painterResource(id = intro.Image),
-                        contentDescription = "",
-                        modifier = Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.FillBounds
-                    )
-                } else {
-                    if (intro.Image == R.drawable.intro1) {
-                        Image(
-                            painter = painterResource(id = intro.Image),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 97.dp, start = 24.dp, end = 24.dp),
-                            contentScale = ContentScale.FillBounds
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(id = intro.Image),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 97.dp),
-                            contentScale = ContentScale.FillBounds
-                        )
-                    }
-                }
-            }
-
-            Text(text = intro.title, style = textTitleStyle)
-            Text(
-                text = intro.text, style = textBodyStyle,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 20.dp, end = 43.dp, start = 43.dp)
-            )
-
-        }
-    }
-
-
-}
-
-
-@Composable
-fun Indicators(selectedIndex: Int) {
-    Row(
-        Modifier
-            .wrapContentSize(Alignment.BottomStart)
-            .animateContentSize(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        for (i in 0 until 3) {
-            Image(
-                painter =
-                if (i == selectedIndex) {
-                    doneSelection.add(i)
-                    doneSelection.log("doneSelection")
-                    painterResource(id = R.drawable.nowselected)
-                } else {
-                    if (doneSelection.contains(i).not())
-                        painterResource(id = R.drawable.unselected)
-                    else painterResource(id = R.drawable.selected)
-                },
-                contentDescription = "indicator",
-                modifier = if (i == 1)
-                    Modifier.padding(horizontal = 7.dp)
-                else Modifier.padding(horizontal = 0.dp)
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TakeefAppTheme {
-        IntroView() {}
     }
 }
 

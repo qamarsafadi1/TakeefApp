@@ -110,6 +110,9 @@ private fun VerifyCodeContent(
                 modifier = Modifier.padding(top = 151.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                // Card form
+
                 Card(
                     shape = RoundedCornerShape(33.dp),
                     backgroundColor = TextFieldBg,
@@ -119,7 +122,6 @@ private fun VerifyCodeContent(
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
                         .defaultMinSize(minHeight = 350.dp)
-
                 ) {
                     Column(
                         modifier = Modifier
@@ -176,6 +178,7 @@ private fun VerifyCodeContent(
 
                 }
 
+
                 ElasticButton(
                     onClick = {
                         onConfirm()
@@ -198,6 +201,7 @@ private fun VerifyCodeContent(
             )
         }
 
+        // Footer
         Row(
             modifier = Modifier
                 .wrapContentSize()

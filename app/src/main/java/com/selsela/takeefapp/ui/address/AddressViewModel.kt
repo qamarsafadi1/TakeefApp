@@ -182,7 +182,7 @@ class AddressViewModel @Inject constructor(
         districtId = address.district.id
     }
 
-    fun updateSelectAddress(address: Place) {
+    fun updateSelectAddress(address: Place, isFav: Int) {
         address.address.log("heyClick")
         var areaName = ""
         var cityName = ""
@@ -207,6 +207,7 @@ class AddressViewModel @Inject constructor(
         selectedAreaName.log("selectedAreaName")
         lat = address.latLng.latitude
         lng = address.latLng.longitude
+        this.isFav = isFav
         areaId = area?.id ?: -1
         cityId = city?.id ?: -1
         districtId = district?.id ?: -1

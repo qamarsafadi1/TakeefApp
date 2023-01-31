@@ -46,7 +46,7 @@ fun NotificationItem(notification: Notification,
 onDelete : (Int) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val squareSize = 75.dp
-    var swipeableState = rememberSwipeableState(0)
+    val swipeableState = rememberSwipeableState(0)
     val sizePx = with(LocalDensity.current) { squareSize.toPx() }
     val anchors = mapOf(0f to 0, sizePx to 1) // Maps anchor points (in px) to states
     val alignment =

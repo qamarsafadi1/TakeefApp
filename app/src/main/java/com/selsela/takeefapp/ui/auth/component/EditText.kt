@@ -21,7 +21,7 @@ fun EditTextView(viewModel: AuthViewModel) {
     EditText(
         onValueChange = {
             viewModel.mobile.value = it
-            if (it.isEmpty()) {
+            if (it.isEmpty() || viewModel.isValid.value.not()) {
                 viewModel.isValid.value = true
                 viewModel.errorMessage.value = ""
             }

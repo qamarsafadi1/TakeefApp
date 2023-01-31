@@ -17,6 +17,7 @@ import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.data.auth.repository.AuthRepository
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.Red
+import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.retrofit.model.ErrorsData
@@ -76,7 +77,11 @@ class AuthViewModel @Inject constructor(
     /**
      * Validation Variables
      */
-    var mobile: MutableState<String> = mutableStateOf(LocalData.user?.mobile ?: "")
+    var mobile: MutableState<String> = mutableStateOf(
+        if (LocalData.user?.status != Constants.NOT_VERIFIED)
+            LocalData.user?.mobile ?: ""
+        else ""
+    )
     var name: MutableState<String> = mutableStateOf(LocalData.user?.name ?: "")
     var email: MutableState<String> = mutableStateOf(LocalData.user?.email ?: "")
     var code: MutableState<String> = mutableStateOf("")
@@ -287,6 +292,7 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+
     fun resendCode() {
         viewModelScope.launch {
             state = state.copy(

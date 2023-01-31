@@ -46,8 +46,8 @@ fun SplashView(
         /**
          * Get fcm token
          */
-        viewModel.getConfig()
         receiveToken()
+        viewModel.getConfig()
     }
 }
 

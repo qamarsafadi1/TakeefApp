@@ -3,11 +3,8 @@ package com.selsela.takeefapp.ui.account
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,18 +34,16 @@ import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.account.components.Header
 import com.selsela.takeefapp.ui.account.components.OrderCards
 import com.selsela.takeefapp.ui.account.components.SettingsCards
+import com.selsela.takeefapp.ui.account.components.SettingsItems
 import com.selsela.takeefapp.ui.account.components.WalletCard
 import com.selsela.takeefapp.ui.auth.AuthUiState
 import com.selsela.takeefapp.ui.auth.AuthViewModel
 import com.selsela.takeefapp.ui.common.LanguageSheet
-import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.splash.ConfigViewModel
 import com.selsela.takeefapp.ui.theme.SecondaryColor
-import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text12
-import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
@@ -58,13 +53,11 @@ import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import de.palm.composestateevents.EventEffect
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MyAccountView(
     viewModel: AuthViewModel = hiltViewModel(),
-    homeViewModel: HomeViewModel,
     onBack: () -> Unit,
     goToLogin: () -> Unit,
     goToSpecialOrders: () -> Unit,
@@ -90,7 +83,6 @@ fun MyAccountView(
     AccountViewContent(
         uiState = viewState,
         viewModel,
-        homeViewModel,
         onBack,
         context,
         goToLogin,
@@ -135,7 +127,6 @@ fun MyAccountView(
 private fun AccountViewContent(
     uiState: AuthUiState,
     viewModel: AuthViewModel,
-    viewModelHome: HomeViewModel,
     onBack: () -> Unit,
     context: Context,
     goToLogin: () -> Unit,
@@ -242,112 +233,15 @@ private fun AccountViewContent(
                     color = SecondaryColor,
                     modifier = Modifier.paddingTop(71)
                 )
-                Row(
-                    modifier = Modifier
-                        .paddingTop(25.9)
-                        .clickable {
-                            if (LocalData.accessToken
-                                    .isNullOrEmpty()
-                                    .not()
-                            )
-                                goToSupport()
-                            else goToLogin()
-                        }
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.chat_text),
-                        contentDescription = ""
-                    )
-                    Text(
-                        text = stringResource(R.string.help_and_support),
-                        style = text14,
-                        color = TextColor,
-                        modifier = Modifier.padding(start = 18.6.dp)
-                    )
-                }
 
-                Row(
-                    modifier = Modifier
-                        .paddingTop(31)
-                        .clickable {
-                            goToTerms()
-                        }
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.terms),
-                        contentDescription = ""
-                    )
-                    Text(
-                        text = stringResource(R.string.terms_confaitions),
-                        style = text14,
-                        color = TextColor,
-                        modifier = Modifier.padding(start = 18.6.dp)
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .paddingTop(31)
-                        .clickable {
-                            goToAboutApp()
-                        }
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.aboutapp),
-                        contentDescription = ""
-                    )
-                    Text(
-                        text = stringResource(id = R.string.about_app),
-                        style = text14,
-                        color = TextColor,
-                        modifier = Modifier.padding(start = 18.6.dp)
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .paddingTop(31)
-                        .fillMaxWidth()
-                        .clickable {
-                            coroutineScope.launch {
-                                if (languageSheet.isVisible)
-                                    languageSheet.hide()
-                                else languageSheet.animateTo(ModalBottomSheetValue.Expanded)
-                            }
-                        },
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.langauage),
-                            contentDescription = ""
-                        )
-                        Text(
-                            text = stringResource(R.string.langague),
-                            style = text14,
-                            color = TextColor,
-                            modifier = Modifier.padding(start = 18.6.dp)
-                        )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = if (LocalData.appLocal == "ar") "العربية" else "English",
-                            style = text12,
-                            color = SecondaryColor
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.languagearrow),
-                            contentDescription = "",
-                            modifier = Modifier.padding(start = 12.3.dp)
-                        )
-                    }
-                }
-
-
+                SettingsItems(
+                    goToSupport,
+                    goToLogin,
+                    goToTerms,
+                    goToAboutApp,
+                    coroutineScope,
+                    languageSheet
+                )
             }
         }
 

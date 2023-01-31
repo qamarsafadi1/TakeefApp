@@ -56,7 +56,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     @OptIn(
-        ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+        ExperimentalMaterial3Api::class,
     )
     @SuppressLint(
         "UnusedMaterial3ScaffoldPaddingParameter",

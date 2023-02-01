@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -33,6 +35,7 @@ import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.SelectedServicesView
 import com.selsela.takeefapp.ui.common.StepperView
 import com.selsela.takeefapp.ui.theme.LightBlue
+import com.selsela.takeefapp.ui.theme.Red
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text10
@@ -54,7 +57,7 @@ fun OrderItem(
     order: Order,
     onClick: (Int) -> Unit,
     onRateClick: (Int) -> Unit,
-    onRouteClick: (LatLng,LatLng) -> Unit
+    onRouteClick: (LatLng, LatLng) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -109,7 +112,21 @@ fun OrderItem(
                             .fillMaxWidth()
                             .weight(1.5f),
                         items = LocalData.cases?.filter { it.id != 6 },
-                        currentStep = order.logs.distinctBy { it.case.id }.lastIndex                    )
+                        currentStep = order.logs.distinctBy { it.case.id }.lastIndex
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .size(width = 80.dp, height = 32.dp)
+                            .background(Red.copy(.10f), RoundedCornerShape(16.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.canceled),
+                            style = text12,
+                            color = Red
+                        )
+                    }
                 }
             }
 
@@ -189,11 +206,15 @@ fun OrderItem(
                     when (order.case.id) {
                         ON_WAY -> {
                             ElasticButton(
-                                onClick = { onRouteClick(
-                                    LatLng(order.address.latitude,order.address.longitude),
-                                    LatLng(order.supervisor?.latitude ?: 0.0,
-                                        order.supervisor?.longitude ?: 0.0)
-                                ) },
+                                onClick = {
+                                    onRouteClick(
+                                        LatLng(order.address.latitude, order.address.longitude),
+                                        LatLng(
+                                            order.supervisor?.latitude ?: 0.0,
+                                            order.supervisor?.longitude ?: 0.0
+                                        )
+                                    )
+                                },
                                 title = stringResource(id = R.string.follow_route),
                                 icon = R.drawable.map,
                                 iconGravity = Constants.RIGHT,
@@ -208,7 +229,7 @@ fun OrderItem(
                         FINISHED -> {
                             if (order.case.canRate == 1 && order.isRated == 0) {
                                 ElasticButton(
-                                    onClick = {onRateClick(order.id)},
+                                    onClick = { onRateClick(order.id) },
                                     title = stringResource(id = R.string.rate),
                                     icon = R.drawable.star,
                                     iconGravity = Constants.RIGHT,

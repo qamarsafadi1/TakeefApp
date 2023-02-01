@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -62,10 +63,12 @@ import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.theme.Bg
 import com.selsela.takeefapp.ui.theme.DividerColor
 import com.selsela.takeefapp.ui.theme.Purple40
+import com.selsela.takeefapp.ui.theme.Red
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor2
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
+import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text16Bold
@@ -239,13 +242,33 @@ private fun OrderDetailsContent(
                         }
                         DateView(order.createdAt)
                     }
-                    Spacer(modifier = Modifier.height(22.dp))
                     if (order.case.id != 6) {
+                        Spacer(modifier = Modifier.height(22.dp))
                         StepperView(
-                            isDetails = true,
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(1.5f),
                             items = LocalData.cases?.filter { it.id != 6 },
                             currentStep = order.logs.distinctBy { it.case.id }.lastIndex
                         )
+                    } else {
+                        Row(Modifier
+                            .padding(horizontal = 20.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End) {
+                            Box(
+                                modifier = Modifier
+                                    .size(width = 80.dp, height = 32.dp)
+                                    .background(Red.copy(.10f), RoundedCornerShape(16.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.canceled),
+                                    style = text12,
+                                    color = Red
+                                )
+                            }
+                        }
+
                     }
                     AdditionalCostView(
                         isVisible = order.needAdditionalCost == 1 && order.additional_cost_status == "waiting",

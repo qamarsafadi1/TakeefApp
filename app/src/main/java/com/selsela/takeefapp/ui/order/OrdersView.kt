@@ -108,6 +108,8 @@ fun OrdersView(
     BrodcastRevicer(context = context){
         viewModel.getNewOrders(caseID)
     }
+
+    // check if need pagination
     LaunchedEffect(key1 = shouldStartPaginate.value) {
         if (shouldStartPaginate.value && viewModel.listState == OrderState.IDLE)
             viewModel.getNewOrders(caseID)
@@ -117,6 +119,7 @@ fun OrdersView(
         viewState,
         onConfirm = viewModel::rateOrder
     )
+    
     when (viewState.state) {
         State.SUCCESS -> {
             if (viewState.responseMessage.isNullOrEmpty().not()) {

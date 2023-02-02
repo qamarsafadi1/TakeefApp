@@ -58,7 +58,6 @@ class HomeViewModel @Inject constructor(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
 
-    val acTypes = LocalData.acTypes
     var count = mutableStateOf(0)
     var address: Address? = null
     var selectedOrderService = mutableStateOf(SelectedServicesOrder())
@@ -66,7 +65,6 @@ class HomeViewModel @Inject constructor(
     var selectedAddress = mutableStateOf("")
     var selectedPeriodId = mutableStateOf(WorkPeriod())
     var selectedPaymentId = mutableStateOf(-1)
-    var reloadScreen = mutableStateOf(false)
     var currentLocation = mutableStateOf(LatLng(0.0, 0.0))
     var tax = ""
     var useWallet = 0
@@ -107,7 +105,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun addAcTypeCount(
-        service: com.selsela.takeefapp.data.config.model.Service,
+        service: Service,
         count: Int,
         acyType: AcType
     ) {
@@ -120,7 +118,6 @@ class HomeViewModel @Inject constructor(
         if (count != 0) {
             val isFound =
                 acyTypes.any { it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId }
-            isFound.log("contains")
             val index = acyTypes.indexOfFirst {
                 it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId
             }
@@ -146,19 +143,25 @@ class HomeViewModel @Inject constructor(
             acyTypes.distinctBy { Pair(it.acyTypeOd, it.serviceId) }
                 .log("   viewModel.acyTypes")
         } else {
-            val newItem = SelectedService(
-                service.id,
-                service.price,
-                count = count,
-                acyTypeOd = acyType.id
-            )
-            acyTypes.removeIf {
-                it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId
-            }
-            // updateServiceToOrderItem()
-            //  selectedOrderService.value.services = acyTypes
+            removeItem(service, count, acyType)
         }
 
+    }
+
+    private fun removeItem(
+        service: Service,
+        count: Int,
+        acyType: AcType
+    ) {
+        val newItem = SelectedService(
+            service.id,
+            service.price,
+            count = count,
+            acyTypeOd = acyType.id
+        )
+        acyTypes.removeIf {
+            it.acyTypeOd == newItem.acyTypeOd && it.serviceId == newItem.serviceId
+        }
     }
 
     fun updateSelectedAddress(newAddress: String, latLng: LatLng) {
@@ -191,7 +194,6 @@ class HomeViewModel @Inject constructor(
             selectedOrderService.value.totalServicesPrice?.value ?: 0.0,
             LocalData.configurations?.taxPercent?.toFloat() ?: 0f
         )
-        tax.log("vm.calculateTax()")
         return tax
     }
 
@@ -233,7 +235,6 @@ class HomeViewModel @Inject constructor(
             state = state.copy(
                 isLoading = true
             )
-            address?.isFav?.log(" address?.isFav")
             repository.placeOrder(
                 services = getServices(),
                 orderDate = selectedOrderService.value.orderDate,
@@ -274,10 +275,6 @@ class HomeViewModel @Inject constructor(
             }
         }
 
-    }
-
-    override fun onCleared() {
-        super.onCleared()
     }
 
     /**

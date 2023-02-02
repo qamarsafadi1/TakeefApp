@@ -39,6 +39,7 @@ import com.selsela.takeefapp.ui.support.SupportScreen
 import com.selsela.takeefapp.ui.terms.TermsView
 import com.selsela.takeefapp.ui.wallet.WalletScreen
 import com.selsela.takeefapp.utils.Extensions.Companion.showError
+import com.selsela.takeefapp.utils.Extensions.Companion.whatsappContact
 import com.selsela.takeefapp.utils.LocalData
 
 @Composable
@@ -76,15 +77,23 @@ fun NavigationHost(
             }
         }
         composable(Destinations.LOGIN_SCREEN) {
+            val context = LocalContext.current
             LoginView(
                 goToTerms = navActions::navigateToTermsScreen,
-                goToSupport = navActions::navigateToSupport,
+                goToSupport = {
+                    context.whatsappContact(LocalData.configurations?.whatsapp ?: "")
+                },
                 goToHome = navActions::navigateToHome,
                 goToVerify = navActions::navigateToVerify
             )
         }
         composable(Destinations.VERIFY_SCREEN) {
-            VerifyView(goToAddress = navActions::navigateToHome)
+            val context = LocalContext.current
+            VerifyView(
+                goToAddress = navActions::navigateToHome,
+                goToWhatsapp = {
+                    context.whatsappContact(LocalData.configurations?.whatsapp ?: "")
+                })
         }
         composable(Destinations.ADDRESS_SCREEN) {
             val parentEntry = remember(it) {
@@ -184,8 +193,10 @@ fun NavigationHost(
             deepLinks = listOf(navDeepLink { uriPattern = "$uri/id={id}" })
         ) {
             val id = it.arguments?.getString("id") ?: ""
-            OrderDetailsView(id.toInt(),
-            onBack = navController::navigateUp)
+            OrderDetailsView(
+                id.toInt(),
+                onBack = navController::navigateUp
+            )
         }
         composable(Destinations.SPECIAL_ORDERS) {
             SpecialOrders(goToDetails = navActions::navigateToSpecialOrderDetails)

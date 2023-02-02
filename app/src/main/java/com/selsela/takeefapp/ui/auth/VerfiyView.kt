@@ -3,6 +3,7 @@ package com.selsela.takeefapp.ui.auth
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,6 +54,7 @@ import de.palm.composestateevents.EventEffect
 @Composable
 fun VerifyView(
     viewModel: AuthViewModel = hiltViewModel(),
+    goToWhatsapp: () -> Unit,
     goToAddress: () -> Unit
 ) {
     val viewState: AuthUiState by viewModel.uiState.collectAsStateLifecycleAware(AuthUiState())
@@ -62,6 +64,7 @@ fun VerifyView(
         uiState = viewState,
         onConfirm = viewModel::verifyCode,
         viewModel = viewModel,
+        goToWhatsapp = goToWhatsapp,
         resend = viewModel::resendCode
     )
 
@@ -94,6 +97,7 @@ private fun VerifyCodeContent(
     uiState: AuthUiState,
     onConfirm: () -> Unit,
     resend: () -> Unit,
+    goToWhatsapp: () -> Unit,
     viewModel: AuthViewModel
 ) {
     Box(
@@ -233,6 +237,7 @@ private fun VerifyCodeContent(
                     style = text12Meduim,
                     color = LightBlue,
                     modifier = Modifier.padding(start = 6.dp)
+                        .clickable { goToWhatsapp() }
                 )
             }
         }

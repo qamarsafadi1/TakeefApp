@@ -201,7 +201,9 @@ private fun OrderDetailsContent(
             .background(Bg)
             .padding(bottom = 45.dp)
     ) {
-        Column {
+        Column(
+            Modifier.fillMaxSize()
+        ) {
             Header(order, onCancel = {
                 onCancel(it)
             }) {
@@ -246,14 +248,15 @@ private fun OrderDetailsContent(
                         Spacer(modifier = Modifier.height(22.dp))
                         StepperView(
                             Modifier
-                                .fillMaxWidth()
-                                .weight(1.5f),
+                                .fillMaxWidth(),
                             items = LocalData.cases?.filter { it.id != 6 },
                             currentStep = order.logs.distinctBy { it.case.id }.lastIndex
                         )
                     } else {
-                        Row(Modifier
-                            .padding(horizontal = 20.dp).fillMaxWidth(),
+                        Row(
+                            Modifier
+                                .padding(horizontal = 20.dp)
+                                .fillMaxWidth(),
                         horizontalArrangement = Arrangement.End) {
                             Box(
                                 modifier = Modifier
@@ -278,7 +281,9 @@ private fun OrderDetailsContent(
                     ) {
                         onReject(order.id)
                     }
+
                     if (order.case.canRate == 1 && order.isRated == 0) {
+                        Spacer(modifier = Modifier.height(24.dp))
                         RateButton(
                             onClick = {
                                 coroutineScope.launch {
@@ -291,12 +296,12 @@ private fun OrderDetailsContent(
                             icon = R.drawable.star,
                             iconGravity = Constants.RIGHT,
                             modifier = Modifier
-                                .paddingTop(13)
                                 .requiredHeight(36.dp)
                                 .fillMaxWidth(0.8f),
                             buttonBg = TextColor
                         )
                     }
+
                     Divider(
                         thickness = 1.dp,
                         color = DividerColor,

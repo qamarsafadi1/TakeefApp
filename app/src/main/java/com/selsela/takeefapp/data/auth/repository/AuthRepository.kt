@@ -69,6 +69,7 @@ class AuthRepository @Inject constructor(
             if (response.isSuccessful) {
                 LocalData.accessToken = response.body()?.user?.accessToken ?: ""
                 LocalData.user = response.body()?.user
+                getWallet()
                 handleSuccess(
                     response.body()?.user,
                     response.body()?.responseMessage ?: response.message()

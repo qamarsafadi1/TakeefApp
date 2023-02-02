@@ -1,5 +1,7 @@
 package com.selsela.takeefapp.ui.splash
 
+import android.Manifest
+import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,9 +13,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,9 +34,11 @@ import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.sloganStyle
 import com.selsela.takeefapp.ui.theme.textMeduim
+import com.selsela.takeefapp.utils.Extensions.Companion.RequestPermission
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
 import kotlinx.coroutines.delay
+import androidx.compose.runtime.*
 
 @Composable
 fun SplashView(
@@ -87,9 +94,29 @@ private fun SplashContent(onFinish: () -> Unit) {
                 fontSize = 19.sp
             )
         };
+        val context = LocalContext.current
+        var permissionIsGranted by remember {
+            mutableStateOf(false)
+        }
+        context.RequestPermission(
+            permission = android.Manifest.permission.POST_NOTIFICATIONS,
+        ) {
+            permissionIsGranted = it
+            if (it){
+                onFinish()
+            }
+        }
         LaunchedEffect(Unit) {
-            delay(6000)
-            onFinish()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (permissionIsGranted) {
+                    delay(6000)
+                    onFinish()
+                }
+            } else {
+                delay(6000)
+                onFinish()
+
+            }
         }
     }
 }
@@ -122,12 +149,12 @@ fun Color.ChangeStatusBarColor(
 @Composable
 fun Color.ChangeNavigationBarColor() {
     val systemUiController = rememberSystemUiController()
-  //  SideEffect {
-       systemUiController.setNavigationBarColor(
-           color = this,
-           darkIcons = false
-       )
-   //}
+    //  SideEffect {
+    systemUiController.setNavigationBarColor(
+        color = this,
+        darkIcons = false
+    )
+    //}
 }
 
 @Composable

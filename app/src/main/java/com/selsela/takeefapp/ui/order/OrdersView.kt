@@ -115,6 +115,7 @@ fun OrdersView(
             viewModel.getNewOrders(caseID)
     }
     RateSheet(
+        viewModel = viewModel,
         rateSheetState,
         viewState,
         onConfirm = viewModel::rateOrder

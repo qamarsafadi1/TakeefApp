@@ -171,6 +171,7 @@ fun OrderDetailsView(
         onPay = viewModel::acceptAdditionalCost
     )
     RateSheet(
+        viewModel = viewModel,
         rateSheetState,
         viewState,
         onConfirm = viewModel::rateOrder

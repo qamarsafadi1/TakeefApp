@@ -94,24 +94,11 @@ private fun SplashContent(onFinish: () -> Unit) {
                 fontSize = 19.sp
             )
         };
-        val context = LocalContext.current
-        var permissionIsGranted by remember {
-            mutableStateOf(false)
-        }
-        context.RequestPermission(
-            permission = android.Manifest.permission.POST_NOTIFICATIONS,
-        ) {
-            permissionIsGranted = it
-            if (it){
-                onFinish()
-            }
-        }
+
         LaunchedEffect(Unit) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (permissionIsGranted) {
                     delay(6000)
                     onFinish()
-                }
             } else {
                 delay(6000)
                 onFinish()

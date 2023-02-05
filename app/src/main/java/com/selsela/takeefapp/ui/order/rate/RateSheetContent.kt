@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,6 +52,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 @Composable
 fun RateSheetContent(
+    viewModel: OrderViewModel,
     viewState: OrderUiState,
     onConfirm: (Int, List<List<Rate>>, String?) -> Unit
 ) {
@@ -101,7 +103,10 @@ fun RateSheetContent(
                         val rateItem = listOf(Rate(it.id, it.rate))
                         rateArray.add(rateItem)
                     }
+                    viewModel.rateArray = rateArray.toMutableStateList()
+                    rateArray.log("rateArray")
                 }
+
             }
         }
         var note = ""
@@ -130,7 +135,7 @@ fun RateSheetContent(
         ElasticButton(
             onClick = {
                 if (note.isEmpty().not()) {
-                    onConfirm(viewState.order?.id!!, rateArray.toList(), note)
+                    onConfirm(viewState.order?.id!!,  viewModel.rateArray, note)
                 } else {
                     context.showError(context.getString(R.string.please_enter_note))
                 }

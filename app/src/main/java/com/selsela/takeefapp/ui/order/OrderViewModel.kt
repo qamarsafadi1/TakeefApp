@@ -18,6 +18,7 @@ import javax.inject.Inject
 import androidx.compose.runtime.*
 import com.selsela.takeefapp.ui.common.State
 import com.selsela.takeefapp.ui.order.rate.Rate
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,6 +53,7 @@ class OrderViewModel @Inject constructor(
      */
 
     val orderList = mutableStateListOf<Order>()
+    var rateArray = mutableStateListOf<List<Rate>>()
     var isLoaded = false
     private var page by mutableStateOf(1)
     var canPaginate by mutableStateOf(false)
@@ -180,6 +182,7 @@ class OrderViewModel @Inject constructor(
     }
 
     fun rateOrder(orderId: Int, rateList: List<List<Rate>>, note: String?) {
+        rateList.log("rateArray")
         val ratedList = mutableListOf<Any>()
         rateList.map {
             it.map {
@@ -192,6 +195,7 @@ class OrderViewModel @Inject constructor(
                 )
             }
         }
+        rateList.log("ratedList")
         if (note.isNullOrEmpty().not()) {
             viewModelScope.launch {
                 state = state.copy(

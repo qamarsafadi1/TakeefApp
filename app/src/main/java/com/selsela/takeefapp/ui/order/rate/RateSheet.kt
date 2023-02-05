@@ -17,6 +17,7 @@ import com.selsela.takeefapp.ui.order.OrderViewModel
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RateSheet(
+    viewModel:OrderViewModel,
     sheetState: ModalBottomSheetState,
     viewState: OrderUiState,
     onConfirm: (Int, List<List<Rate>>, String?) -> Unit
@@ -28,6 +29,7 @@ fun RateSheet(
             sheetBackgroundColor = TextColor,
             sheetContent = {
                 RateSheetContent(
+                    viewModel = viewModel,
                     viewState,
                     onConfirm
                 )

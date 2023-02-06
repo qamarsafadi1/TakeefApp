@@ -160,16 +160,22 @@ private fun SupportContent(
                 verticalAlignment = Alignment.CenterVertically,
                 //horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(Modifier.fillMaxWidth()
-                    .requiredHeight(48.dp)
-                    .weight(1f),
-                    horizontalArrangement = Arrangement.Start) {
-                    MessageEditText(viewModel,Modifier.fillMaxSize())
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .requiredHeight(48.dp)
+                        .weight(1f),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    MessageEditText(viewModel, Modifier.fillMaxSize())
                 }
 
-                Row(Modifier.fillMaxWidth()
-                    .weight(0.2f),
-                    horizontalArrangement = Arrangement.End) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(0.2f),
+                    horizontalArrangement = Arrangement.End
+                ) {
                     Image(painter = painterResource(id = R.drawable.send), contentDescription = "",
                         modifier = Modifier
                             .width(38.dp)
@@ -179,8 +185,13 @@ private fun SupportContent(
                                         .isEmpty()
                                         .not()
                                 ) {
-                                    val reply = Reply(adminId = 0, message = viewModel.message.value)
-                                    messages.add(reply)
+                                    val reply =
+                                        Reply(adminId = 0, message = viewModel.message.value)
+                                    if (supportUiState.contactReplay != null) {
+                                        messages.clear()
+                                        supportUiState.contactReplay.replies?.add(reply)
+                                    } else messages.add(reply)
+
                                     sendMessage(viewModel.message.value)
                                     viewModel.message.value = ""
                                 }
@@ -211,6 +222,7 @@ private fun SupportContent(
 
 @Composable
 fun AdminItem(modifier: Modifier, reply: Reply) {
+    Spacer(modifier = Modifier.height(16.dp))
 
     Row(
         modifier,

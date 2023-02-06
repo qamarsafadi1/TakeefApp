@@ -43,12 +43,7 @@ import kotlinx.coroutines.launch
             modifier = Modifier
                 .paddingTop(25.9)
                 .clickable {
-                    if (LocalData.accessToken
-                            .isNullOrEmpty()
-                            .not()
-                    )
-                        goToSupport()
-                    else goToLogin()
+                    goToSupport()
                 }
         ) {
             Image(

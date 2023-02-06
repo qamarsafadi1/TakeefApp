@@ -19,9 +19,11 @@ data class ContactReplies(
     @SerializedName("name")
     val name: String? = "",
     @SerializedName("replies")
-    val replies: List<Reply>? = listOf(),
+    val replies: MutableList<Reply>? = mutableListOf(),
     @SerializedName("text")
     val text: String? = "",
     @SerializedName("updated_at")
-    val updatedAt: String? = ""
+    val updatedAt: String? = "",
+    @SerializedName("message")
+    val message: String? = ""
 )

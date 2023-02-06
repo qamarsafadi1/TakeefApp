@@ -10,7 +10,9 @@ data class Configurations(
     val appPercent: String = "",
     val appStatusAndroid: String = "",
     val appStatusIos: String = "",
+    @SerializedName("currency_ar")
     val currencyAr: String = "",
+    @SerializedName("currency_en")
     val currencyEn: String = "",
     val email: String = "",
     val facebook: String = "",

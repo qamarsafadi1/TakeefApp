@@ -349,7 +349,9 @@ class AuthRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             val data: Flow<Resource<SupportResponse>> = try {
                 val body = HashMap<String, Any>()
-                body["name"] = LocalData.user?.name ?: ""
+                if (LocalData.user?.name.isNullOrEmpty().not())
+                    body["name"] = LocalData.user?.name ?: "عميل"
+                else  body["name"] = "عميل"
                 body["mobile"] = LocalData.user?.mobile ?: ""
                 body["type"] = Constants.CONTACT
                 body["message"] = text

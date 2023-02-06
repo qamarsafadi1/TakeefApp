@@ -12,6 +12,7 @@ import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.auth.model.auth.User
 import com.selsela.takeefapp.data.auth.model.notifications.Notification
 import com.selsela.takeefapp.data.auth.model.support.ContactReplies
+import com.selsela.takeefapp.data.auth.model.support.Reply
 import com.selsela.takeefapp.data.auth.model.support.contacts.Contact
 import com.selsela.takeefapp.data.auth.model.wallet.WalletResponse
 import com.selsela.takeefapp.data.auth.repository.AuthRepository
@@ -568,6 +569,21 @@ class AuthViewModel @Inject constructor(
                     val supportUiState = when (result.status) {
                         Status.SUCCESS -> {
                             isLoaded = true
+                            val contactReplay: ContactReplies? =
+                                if (result.data.isNullOrEmpty().not()) {
+                                    result.data?.last()
+                                } else {
+                                    null
+                                }
+                            if (contactReplay != null) {
+                                contactReplay.replies?.add(
+                                    0, Reply(
+                                        message = contactReplay.message,
+                                        type = "supervisor",
+                                        adminId = LocalData.user?.id
+                                    )
+                                )
+                            }
                             SupportUiState(
                                 contacts = result.data,
                                 onSuccess = triggered(
@@ -575,10 +591,7 @@ class AuthViewModel @Inject constructor(
                                         ?: -1
                                     else -1
                                 ),
-                                contactReplay = if (result.data.isNullOrEmpty()
-                                        .not()
-                                ) result.data?.last()
-                                else null
+                                contactReplay = contactReplay
 
                             )
                         }
@@ -606,7 +619,7 @@ class AuthViewModel @Inject constructor(
     fun contactOrReplay() {
         viewModelScope.launch {
             supportState = supportState.copy(
-                isLoading = true
+                isLoading = false
             )
             val request = if (contactId == -1) repository.contactAdmin(message.value)
             else repository.replySupport(
@@ -617,14 +630,22 @@ class AuthViewModel @Inject constructor(
                 val supportUiState = when (result.status) {
                     Status.SUCCESS -> {
                         isLoaded = true
+                        val contactReplay = result.data?.contactReplies
+                        contactReplay?.replies?.add(
+                            0, Reply(
+                                message = contactReplay.message,
+                                type = "user",
+                                adminId = LocalData.user?.id
+                            )
+                        )
                         SupportUiState(
-                            contactReplay = result.data?.contactReplies,
+                            contactReplay = contactReplay,
                         )
                     }
 
                     Status.LOADING ->
                         SupportUiState(
-                            isLoading = true
+                            isLoading = false
                         )
 
                     Status.ERROR ->

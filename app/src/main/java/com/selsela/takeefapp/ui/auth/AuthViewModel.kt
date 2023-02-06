@@ -42,6 +42,7 @@ data class AuthUiState(
     val responseMessage: String = "",
     val user: User? = LocalData.user,
     val onSuccess: StateEventWithContent<String> = consumed(),
+    val onDeleteAccount: StateEventWithContent<String> = consumed(),
     val isLoading: Boolean = false,
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),
 )
@@ -413,6 +414,42 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun deleteAccount() {
+        viewModelScope.launch {
+            state = state.copy(
+                isLoading = true
+            )
+            repository.deleteAccount()
+                .collect { result ->
+                    val authUiState = when (result.status) {
+                        Status.SUCCESS -> {
+                            AuthUiState(
+                                responseMessage = result.message ?: "",
+                                onDeleteAccount = triggered(result.message ?: ""),
+                            )
+                        }
+
+                        Status.LOADING ->
+                            AuthUiState(
+                                isLoading = true
+                            )
+
+                        Status.ERROR -> AuthUiState(
+                            onFailure = triggered(
+                                ErrorsData(
+                                    result.errors,
+                                    result.message,
+                                )
+                            ),
+                            responseMessage = result.message ?: "",
+                        )
+                    }
+                    state = authUiState
+                }
+        }
+    }
+
+
     fun wallet() {
         viewModelScope.launch {
             walletState = walletState.copy(
@@ -616,6 +653,10 @@ class AuthViewModel @Inject constructor(
     fun onFailure() {
         state = state.copy(onFailure = consumed())
         walletState = walletState.copy(onFailure = consumed())
+    }
+
+    fun onDeleteAccount() {
+        state = state.copy(onDeleteAccount = consumed())
     }
 
 }

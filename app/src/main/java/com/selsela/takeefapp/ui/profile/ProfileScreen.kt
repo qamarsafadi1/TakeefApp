@@ -75,6 +75,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileScreen(
     viewModel: AuthViewModel = hiltViewModel(),
+    goToLogin: () -> Unit,
     onBack: () -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
@@ -86,10 +87,14 @@ fun ProfileScreen(
     )
     val viewState: AuthUiState by viewModel.uiState.collectAsStateLifecycleAware(AuthUiState())
     val context = LocalContext.current
+    var user by remember {
+        viewModel.user
+    }
     ProfileContent(
         viewModel = viewModel,
         uiState = viewState,
         onSave = viewModel::updateProfile,
+        onDelete = viewModel::deleteAccount,
         onBack = onBack,
         coroutineScope,
         paySheetState
@@ -103,6 +108,15 @@ fun ProfileScreen(
         onConsumed = viewModel::onSuccess
     ) { message ->
         context.showSuccess(message)
+    }
+    EventEffect(
+        event = viewState.onDeleteAccount,
+        onConsumed = viewModel::onDeleteAccount
+    ) { message ->
+        LocalData.clearData()
+        user = null
+        viewModel.userLoggedIn.value = false
+        goToLogin()
     }
 
     EventEffect(
@@ -124,6 +138,7 @@ private fun ProfileContent(
     viewModel: AuthViewModel,
     uiState: AuthUiState,
     onSave: () -> Unit,
+    onDelete: () -> Unit,
     onBack: () -> Unit,
     coroutineScope: CoroutineScope,
     paySheetState: ModalBottomSheetState
@@ -227,7 +242,8 @@ private fun ProfileContent(
                 }
             }
         }
-        DeleteAccountSheet(sheetState = paySheetState) {
+        DeleteAccountSheet(sheetState = paySheetState,uiState) {
+            onDelete()
         }
     }
 }

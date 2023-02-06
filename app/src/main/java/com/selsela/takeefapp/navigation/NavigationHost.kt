@@ -93,7 +93,8 @@ fun NavigationHost(
                 goToAddress = navActions::navigateToHome,
                 goToWhatsapp = {
                     context.whatsappContact(LocalData.configurations?.whatsapp ?: "")
-                })
+                }
+            )
         }
         composable(Destinations.ADDRESS_SCREEN) {
             val parentEntry = remember(it) {
@@ -151,6 +152,7 @@ fun NavigationHost(
                 navController.getBackStackEntry(Destinations.HOME_SCREEN)
             }
             val parentViewModel = hiltViewModel<HomeViewModel>(parentEntry)
+            val context = LocalContext.current
 
             MyAccountView(
                 onBack = navController::navigateUp,
@@ -159,7 +161,13 @@ fun NavigationHost(
                 goToAboutApp = navActions::navigateToAboutApp,
                 goToNotification = navActions::navigateToNotification,
                 goToTerms = navActions::navigateToTermsScreen,
-                goToSupport = navActions::navigateToSupport,
+                goToSupport = {
+                    if (LocalData.accessToken.isNullOrEmpty().not())
+                        navActions.navigateToSupport()
+                    else {
+                        context.whatsappContact(LocalData.configurations?.whatsapp ?: "")
+                    }
+                },
                 goToProfile = navActions::navigateToProfile,
                 goToWallet = navActions::navigateToWallet,
                 goToOrder = navActions::navigateToOrders
@@ -219,6 +227,7 @@ fun NavigationHost(
         }
         composable(Destinations.PROFILE_SCREEN) {
             ProfileScreen(
+                goToLogin = navActions::navigateToHome,
                 onBack = navController::navigateUp
             )
         }

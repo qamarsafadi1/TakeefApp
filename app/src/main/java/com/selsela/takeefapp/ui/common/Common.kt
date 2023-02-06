@@ -637,12 +637,12 @@ fun InputEditText(
         textStyle = textStyle,
         decorationBox = { innerTextField ->
             Box(
-                modifier = Modifier
-                    .fillMaxWidth(fillMax)
-                    .requiredHeight(48.dp)
-                    .background(TextFieldBg, shape = RoundedCornerShape(cornerRaduis))
-                    .border(1.dp, color = color, RoundedCornerShape(cornerRaduis))
-                    .padding(horizontal = 16.dp),
+                modifier =modifier.then(
+                    Modifier
+                        .background(TextFieldBg, shape = RoundedCornerShape(cornerRaduis))
+                        .border(1.dp, color = color, RoundedCornerShape(cornerRaduis))
+                        .padding(horizontal = 16.dp)
+                ),
                 contentAlignment = Alignment.CenterStart,
             ) {
                 if (text.isEmpty()) {

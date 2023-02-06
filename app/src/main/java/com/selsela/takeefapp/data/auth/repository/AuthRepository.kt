@@ -186,6 +186,29 @@ class AuthRepository @Inject constructor(
             data
         }
 
+
+    suspend fun deleteAccount(
+    ): Flow<Resource<Boolean>> =
+        withContext(Dispatchers.IO) {
+            val data: Flow<Resource<Boolean>> = try {
+                val response = api.deleteAccount()
+                if (response.isSuccessful) {
+                    handleSuccess(
+                        response.body()?.status,
+                        message = response.body()?.responseMessage ?: response.message() ?: ""
+                    )
+                } else {
+                    val gson = Gson()
+                    val errorBase =
+                        gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    handleExceptions(errorBase)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                handleExceptions(e)
+            }
+            data
+        }
     suspend fun updateProfile(
         avatar: File?,
         name: String,

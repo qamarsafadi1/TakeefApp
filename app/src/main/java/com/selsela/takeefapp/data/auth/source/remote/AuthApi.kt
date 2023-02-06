@@ -29,6 +29,10 @@ interface AuthApi {
         body: Map<String, Any>
     ): Response<AuthResponse>
 
+    @POST("user/delete_me")
+    suspend fun deleteAccount(
+    ): Response<GeneralResponse>
+
     @POST("user/verify_code")
     @JvmSuppressWildcards
     @FormUrlEncoded

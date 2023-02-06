@@ -132,16 +132,6 @@ private fun SupportContent(
                     .padding(start = 29.dp, end = 20.dp),
                 state = listState
             ) {
-//            item {
-//                Spacer(modifier = Modifier.height(26.dp))
-//                Text(
-//                    text = "29-11-2022.08:00AM",
-//                    style = text12,
-//                    color = SecondaryColor2,
-//                    modifier = Modifier.fillMaxWidth(),
-//                    textAlign = TextAlign.Center
-//                )
-//            }
                 items(messages) {
                     if (it.adminId != 1)
                         MeItem(
@@ -168,20 +158,36 @@ private fun SupportContent(
                     .background(TextColor, RoundedCornerShape(25.dp))
                     .padding(horizontal = 14.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                //horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                MessageEditText(viewModel = viewModel)
-                Spacer(modifier = Modifier.width(8.dp))
-                Image(painter = painterResource(id = R.drawable.send), contentDescription = "",
-                    modifier = Modifier.clickable {
-                        if (viewModel.message.value.isEmpty().not()) {
-                            val reply = Reply(adminId = 0, message = viewModel.message.value)
-                            messages.add(reply)
-                            sendMessage(viewModel.message.value)
-                            viewModel.message.value = ""
-                        }
-                    })
+                Row(Modifier.fillMaxWidth()
+                    .requiredHeight(48.dp)
+                    .weight(1f),
+                    horizontalArrangement = Arrangement.Start) {
+                    MessageEditText(viewModel,Modifier.fillMaxSize())
+                }
 
+                Row(Modifier.fillMaxWidth()
+                    .weight(0.2f),
+                    horizontalArrangement = Arrangement.End) {
+                    Image(painter = painterResource(id = R.drawable.send), contentDescription = "",
+                        modifier = Modifier
+                            .width(38.dp)
+                            .height(38.dp)
+                            .clickable {
+                                if (viewModel.message.value
+                                        .isEmpty()
+                                        .not()
+                                ) {
+                                    val reply = Reply(adminId = 0, message = viewModel.message.value)
+                                    messages.add(reply)
+                                    sendMessage(viewModel.message.value)
+                                    viewModel.message.value = ""
+                                }
+                            })
+
+
+                }
             }
         }
     } else {
@@ -289,21 +295,18 @@ fun MeItem(modifier: Modifier, reply: Reply) {
 }
 
 @Composable
-private fun MessageEditText(viewModel: AuthViewModel) {
+private fun MessageEditText(viewModel: AuthViewModel, modifier: Modifier) {
     InputEditText(
         text =
         viewModel.message.value,
-        modifier = Modifier.padding(
-            top = 0.dp,
-            start = 5.dp
-        ),
+        modifier = modifier,
         onValueChange = {
             viewModel.message.value = it
         },
         textStyle = text12White,
         hint = stringResource(id = R.string.write_message_here),
         cornerRaduis = 30.dp,
-        fillMax = 0.85f,
+        fillMax = 0.5f,
         hintColor = SecondaryColor2.copy(0.67f)
 
     )

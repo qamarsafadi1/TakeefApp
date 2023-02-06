@@ -305,7 +305,7 @@ class Extensions {
         fun getCurrency(): Any {
             return (if (LocalData.appLocal == "ar")
                 LocalData.configurations?.currencyAr
-            else LocalData.configurations?.currencyEn)!!
+            else LocalData.configurations?.currencyEn) ?: "ر.س"
         }
 
         @Composable

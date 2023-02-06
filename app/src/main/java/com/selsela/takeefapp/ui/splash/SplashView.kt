@@ -54,7 +54,7 @@ fun SplashView(
          * Get fcm token
          */
         receiveToken()
-        viewModel.getConfig()
+        //viewModel.getConfig()
     }
 }
 
@@ -153,7 +153,7 @@ fun Color.ChangeStatusBarOnlyColor() {
     )
 }
 
-private fun receiveToken() {
+ fun receiveToken() {
     FirebaseMessaging.getInstance().token
         .addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {

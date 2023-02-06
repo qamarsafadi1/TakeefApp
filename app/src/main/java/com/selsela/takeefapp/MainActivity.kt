@@ -1,16 +1,13 @@
 package com.selsela.takeefapp
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -21,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -35,20 +33,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.view.WindowCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.rememberNavController
-import com.selsela.takeefapp.data.notification.NotificationReceiver
 import com.selsela.takeefapp.navigation.Destinations
 import com.selsela.takeefapp.navigation.Navigation.bindToolbarTitle
 import com.selsela.takeefapp.navigation.Navigation.showingBackButton
 import com.selsela.takeefapp.navigation.NavigationHost
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
+import com.selsela.takeefapp.ui.splash.ConfigViewModel
+import com.selsela.takeefapp.ui.splash.receiveToken
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TakeefAppTheme
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text14Meduim
-import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.LocalData
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,7 +61,9 @@ class MainActivity : AppCompatActivity() {
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModel: ConfigViewModel by viewModels()
         setContent {
+            GetConfig(viewModel)
             TakeefAppTheme {
                 CompositionLocalProvider(
                     LocalMutableContext provides remember { mutableStateOf(true) },
@@ -173,6 +172,17 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    @Composable
+    private fun GetConfig(viewModel: ConfigViewModel) {
+        LaunchedEffect(Unit) {
+            /**
+             * Get fcm token
+             */
+            viewModel.getConfig()
+            receiveToken()
         }
     }
 

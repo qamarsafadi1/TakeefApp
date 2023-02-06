@@ -25,12 +25,6 @@ class ConfigurationsRepository @Inject constructor(
         val data: Flow<Resource<Configurations>> = try {
             val response = api.getConfigurations()
             if (response.isSuccessful) {
-                withContext(Dispatchers.Default){
-                    getTerms()
-                    getAboutApp()
-                    getCities()
-                    getPayments()
-                }
                 LocalData.configurations = response.body()?.configurations
                 LocalData.cases = response.body()?.cases
                 LocalData.acTypes = response.body()?.acTypes
@@ -47,6 +41,7 @@ class ConfigurationsRepository @Inject constructor(
                 val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
                 handleExceptions(errorBase)
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
             handleExceptions(e)
@@ -93,7 +88,7 @@ class ConfigurationsRepository @Inject constructor(
         }
         data
     }
-    private suspend fun getCities(): Flow<Resource<List<Area>>> = withContext(Dispatchers.IO) {
+     suspend fun getCities(): Flow<Resource<List<Area>>> = withContext(Dispatchers.IO) {
         val data: Flow<Resource<List<Area>>> = try {
             val response = api.getCities()
             if (response.isSuccessful) {

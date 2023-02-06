@@ -140,25 +140,27 @@ fun SettingsCards(
 
                     )
                 }
-
-                Box(
-                    modifier = Modifier
-                        .padding(top = 16.dp, end = 10.dp)
-                        .align(Alignment.TopEnd)
-                        .clip(CircleShape)
-                        .background(ColorAccent)
-                        .size(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "${uiState.user?.newNotifications}",
-                        style = text10NoLines,
-                        color = Color.White,
+                if (uiState.user?.newNotifications != 0) {
+                    Box(
                         modifier = Modifier
-                            .paddingTop(1.5)
-                            .align(Alignment.Center)
-                    )
+                            .padding(top = 16.dp, end = 10.dp)
+                            .align(Alignment.TopEnd)
+                            .clip(CircleShape)
+                            .background(ColorAccent)
+                            .size(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "${uiState.user?.newNotifications}",
+                            style = text10NoLines,
+                            color = Color.White,
+                            modifier = Modifier
+                                .paddingTop(1.5)
+                                .align(Alignment.Center)
+                        )
+                    }
                 }
+
             }
 
         }

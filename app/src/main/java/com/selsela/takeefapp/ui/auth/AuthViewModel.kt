@@ -43,6 +43,7 @@ data class AuthUiState(
     val responseMessage: String = "",
     val user: User? = LocalData.user,
     val onSuccess: StateEventWithContent<String> = consumed(),
+    val onResend: StateEventWithContent<String> = consumed(),
     val onDeleteAccount: StateEventWithContent<String> = consumed(),
     val isLoading: Boolean = false,
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),
@@ -306,7 +307,7 @@ class AuthViewModel @Inject constructor(
                         Status.SUCCESS -> {
                             AuthUiState(
                                 responseMessage = result.message ?: "",
-                                onSuccess = triggered(result.data?.status ?: ""),
+                                onResend = triggered(result.data?.status ?: ""),
                             )
                         }
 
@@ -669,6 +670,9 @@ class AuthViewModel @Inject constructor(
     fun onSuccess() {
         state = state.copy(onSuccess = consumed())
         walletState = walletState.copy(onSuccess = consumed)
+    }
+    fun onResend() {
+        state = state.copy(onResend = consumed())
     }
 
     fun onFailure() {

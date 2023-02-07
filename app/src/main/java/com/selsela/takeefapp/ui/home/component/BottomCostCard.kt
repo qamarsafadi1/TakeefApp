@@ -69,7 +69,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
                     ),
                 )
                 .fillMaxWidth()
-                .fillMaxHeight(0.14f)
+                .fillMaxHeight(0.17f)
                 .background(TextColor, RoundedCornerShape(topEnd = 45.dp, topStart = 45.dp))
                 .padding(horizontal = 20.dp, vertical = 22.dp)
         ) {

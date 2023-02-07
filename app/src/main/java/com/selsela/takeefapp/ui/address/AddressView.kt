@@ -211,7 +211,7 @@ fun BottomSheetLayout(
                         Modifier
                             .paddingTop(16)
                             .fillMaxWidth()
-                            .fillMaxHeight(0.47f)
+                            .fillMaxHeight(0.50f)
                             .align(Alignment.BottomCenter),
                         addressVisible
                     ) {
@@ -227,7 +227,7 @@ fun BottomSheetLayout(
                         modifier = Modifier
                             .paddingTop(16)
                             .fillMaxWidth()
-                            .fillMaxHeight(0.37f)
+                            .fillMaxHeight(0.40f)
                             .align(Alignment.BottomCenter)
                     ) {
                         Card(

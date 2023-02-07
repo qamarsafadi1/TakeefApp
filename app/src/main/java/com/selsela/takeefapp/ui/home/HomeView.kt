@@ -70,8 +70,8 @@ fun HomeView(
     goToNotification: () -> Unit,
     goToLogin: () -> Unit,
 ) {
-    Color.Transparent.ChangeStatusBarColor()
-    Color.White.ChangeNavigationBarColor()
+    Color.Transparent.ChangeStatusBarColor(true)
+    Color.White.ChangeNavigationBarColor(true)
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()

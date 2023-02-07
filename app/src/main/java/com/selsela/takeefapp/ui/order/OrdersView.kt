@@ -49,6 +49,7 @@ import com.selsela.takeefapp.ui.common.components.EmptyView
 import com.selsela.takeefapp.ui.common.components.LoadingView
 import com.selsela.takeefapp.ui.order.item.OrderItem
 import com.selsela.takeefapp.ui.order.rate.RateSheet
+import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
 import com.selsela.takeefapp.ui.theme.Bg
 import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.utils.Constants
@@ -66,6 +67,7 @@ fun OrdersView(
     goToDetails: (Int) -> Unit,
     goToOrderRoute: (LatLng,LatLng) -> Unit
 ) {
+    Color.Transparent.ChangeStatusBarColor(true)
     val context = LocalContext.current
     val lazyColumnListState = rememberLazyListState()
     val rateSheetState = rememberModalBottomSheetState(
@@ -164,7 +166,8 @@ private fun OrderListContent(
           Header(caseID) {
               onBack()
           }
-          Box(modifier = Modifier.fillMaxSize()
+          Box(modifier = Modifier
+              .fillMaxSize()
               .padding(horizontal = 19.dp)
           ){
               when (viewModel.listState) {

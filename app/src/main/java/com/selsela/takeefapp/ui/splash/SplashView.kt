@@ -125,7 +125,7 @@ fun Color.ChangeStatusBarColor(
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
         color = this,
-        darkIcons = false
+        darkIcons = isDark
     )
     systemUiController.setNavigationBarColor(
         color = this,
@@ -134,22 +134,24 @@ fun Color.ChangeStatusBarColor(
 }
 
 @Composable
-fun Color.ChangeNavigationBarColor() {
+fun Color.ChangeNavigationBarColor(
+    isDark: Boolean = false
+) {
     val systemUiController = rememberSystemUiController()
     //  SideEffect {
     systemUiController.setNavigationBarColor(
         color = this,
-        darkIcons = false
+        darkIcons = isDark
     )
     //}
 }
 
 @Composable
-fun Color.ChangeStatusBarOnlyColor() {
+fun Color.ChangeStatusBarOnlyColor(isDark: Boolean = false) {
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
         color = this,
-        darkIcons = false
+        darkIcons = isDark
     )
 }
 

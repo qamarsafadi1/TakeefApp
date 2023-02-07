@@ -118,7 +118,7 @@ fun IntroView(
                 Box(
                     modifier = modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.95f)
+                        .fillMaxHeight(0.99f)
                         .background(
                             color = backgroundColor,
                             shape = RoundedCornerShape(

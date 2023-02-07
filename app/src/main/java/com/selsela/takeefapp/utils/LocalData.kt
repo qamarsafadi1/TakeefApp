@@ -22,7 +22,6 @@ open class LocalData {
             user = null
             userWallet = null
         }
-
         var appLocal: String = Hawk.get("appLocal", "ar")
             set(value) {
                 field = value

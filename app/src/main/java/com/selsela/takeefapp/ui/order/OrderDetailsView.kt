@@ -59,6 +59,7 @@ import com.selsela.takeefapp.ui.order.componenets.ServiceItem
 import com.selsela.takeefapp.ui.order.componenets.VisitDateView
 import com.selsela.takeefapp.ui.order.item.DateView
 import com.selsela.takeefapp.ui.order.rate.RateSheet
+import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.theme.Bg
 import com.selsela.takeefapp.ui.theme.DividerColor
@@ -88,6 +89,8 @@ fun OrderDetailsView(
     viewModel: OrderViewModel = hiltViewModel(),
     onBack: () -> Unit
 ) {
+    Color.White.ChangeStatusBarColor(true)
+
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val viewState: OrderUiState by viewModel.uiState.collectAsStateLifecycleAware(
@@ -193,7 +196,7 @@ private fun OrderDetailsContent(
     viewState: OrderUiState,
     onReject: (Int) -> Unit
 ) {
-    Color.Transparent.ChangeStatusBarOnlyColor()
+    Color.Transparent.ChangeStatusBarOnlyColor(true)
     val coroutineScope = rememberCoroutineScope()
 
     Box(

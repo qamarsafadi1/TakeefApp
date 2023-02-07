@@ -134,7 +134,7 @@ fun OrderItem(
                 modifier = Modifier
                     .paddingTop(10)
                     .fillMaxWidth()
-                    .requiredHeight(63.dp)
+                    .defaultMinSize(minHeight = 63.dp)
                     .background(
                         LightBlue.copy(0.10f),
                         shape = RoundedCornerShape(8.dp)

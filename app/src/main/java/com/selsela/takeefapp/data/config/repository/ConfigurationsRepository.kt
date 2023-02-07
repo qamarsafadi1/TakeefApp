@@ -108,7 +108,7 @@ class ConfigurationsRepository @Inject constructor(
         }
         data
     }
-    private suspend fun getPayments(): Flow<Resource<List<Payment>>> = withContext(Dispatchers.IO) {
+    suspend fun getPayments(): Flow<Resource<List<Payment>>> = withContext(Dispatchers.IO) {
         val data: Flow<Resource<List<Payment>>> = try {
             val response = api.getPayments()
             if (response.isSuccessful) {

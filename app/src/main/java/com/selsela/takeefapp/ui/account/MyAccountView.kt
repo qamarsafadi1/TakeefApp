@@ -70,7 +70,8 @@ fun MyAccountView(
     goToOrder: (Int) -> Unit
 ) {
     Color.Transparent.ChangeStatusBarOnlyColor()
-    Color.White.ChangeNavigationBarColor()
+    Color.White.ChangeNavigationBarColor(true)
+
     val coroutineScope = rememberCoroutineScope()
     val languageSheet = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,

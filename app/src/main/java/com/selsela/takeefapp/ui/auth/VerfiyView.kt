@@ -36,6 +36,7 @@ import com.selsela.takeefapp.ui.common.Countdown
 import com.selsela.takeefapp.ui.common.ElasticButton
 import com.selsela.takeefapp.ui.common.LottieAnimationView
 import com.selsela.takeefapp.ui.common.OtpTextField
+import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
 import com.selsela.takeefapp.ui.theme.BorderColor
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
@@ -47,6 +48,7 @@ import com.selsela.takeefapp.ui.theme.text12Meduim
 import com.selsela.takeefapp.ui.theme.text18
 import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
+import com.selsela.takeefapp.utils.Extensions.Companion.showSuccess
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import de.palm.composestateevents.EventEffect
@@ -81,6 +83,13 @@ fun VerifyView(
     }
 
     EventEffect(
+        event = viewState.onResend,
+        onConsumed = viewModel::onResend
+    ) {
+       context.showSuccess(it)
+    }
+
+    EventEffect(
         event = viewState.onFailure,
         onConsumed = viewModel::onFailure
     ) { error ->
@@ -100,6 +109,7 @@ private fun VerifyCodeContent(
     goToWhatsapp: () -> Unit,
     viewModel: AuthViewModel
 ) {
+    TextColor.ChangeStatusBarColor(false)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -125,7 +135,7 @@ private fun VerifyCodeContent(
                         .padding(top = 0.dp)
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
-                        .defaultMinSize(minHeight = 350.dp)
+                        .defaultMinSize(minHeight = 370.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -236,7 +246,8 @@ private fun VerifyCodeContent(
                     text = stringResource(R.string.support_lbl),
                     style = text12Meduim,
                     color = LightBlue,
-                    modifier = Modifier.padding(start = 6.dp)
+                    modifier = Modifier
+                        .padding(start = 6.dp)
                         .clickable { goToWhatsapp() }
                 )
             }

@@ -35,6 +35,7 @@ import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.auth.component.EditTextView
 import com.selsela.takeefapp.ui.common.LottieAnimationView
 import com.selsela.takeefapp.ui.common.NextPageButton
+import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
 import com.selsela.takeefapp.ui.theme.TextColor
@@ -104,6 +105,7 @@ private fun LoginContent(
     goToTerms: () -> Unit,
     goToSupport: () -> Unit
 ) {
+    Color.White.ChangeStatusBarColor(true)
     Box(
         modifier = Modifier
             .fillMaxSize()

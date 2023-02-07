@@ -236,6 +236,8 @@ private fun ReviewOrderContent(viewState: OrderUiState, vm: HomeViewModel, place
 
             }
 
+
+
             if (LocalData.userWallet?.balance != 0.0)
                 WalletItemView(vm)
             if (vm.isWalletEnough().not()) {

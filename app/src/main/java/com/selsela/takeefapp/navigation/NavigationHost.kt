@@ -38,6 +38,7 @@ import com.selsela.takeefapp.ui.splash.SplashView
 import com.selsela.takeefapp.ui.support.SupportScreen
 import com.selsela.takeefapp.ui.terms.TermsView
 import com.selsela.takeefapp.ui.wallet.WalletScreen
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.showError
 import com.selsela.takeefapp.utils.Extensions.Companion.whatsappContact
 import com.selsela.takeefapp.utils.LocalData
@@ -64,6 +65,9 @@ fun NavigationHost(
             IntroView(goToHome = navActions::navigateToHome)
         }
         composable(Destinations.HOME_SCREEN) {
+            val isFromHome =
+                navController.previousBackStackEntry?.arguments?.getBoolean("fromHome") ?: false
+            isFromHome.log("isFromHome")
             val viewModel = hiltViewModel<HomeViewModel>()
             HomeView(
                 viewModel,
@@ -72,25 +76,33 @@ fun NavigationHost(
                 goToNotification = navActions::navigateToNotification
             ) {
                 if (LocalData.accessToken.isNullOrEmpty()) {
-                    navActions.navigateToLogin()
+                    navActions.navigateToLogin(true)
                 } else navActions.navigateToAddress()
             }
         }
         composable(Destinations.LOGIN_SCREEN) {
             val context = LocalContext.current
+
             LoginView(
                 goToTerms = navActions::navigateToTermsScreen,
                 goToSupport = {
                     context.whatsappContact(LocalData.configurations?.whatsapp ?: "")
                 },
-                goToHome = navActions::navigateToHome,
+                goToHome = {
+                    val isFromHome =
+                        navController.previousBackStackEntry?.arguments?.getBoolean("fromHome") ?: false
+                    navActions.navigateToHome(isFromHome)
+                },
                 goToVerify = navActions::navigateToVerify
             )
         }
         composable(Destinations.VERIFY_SCREEN) {
             val context = LocalContext.current
             VerifyView(
-                goToAddress = navActions::navigateToHome,
+                goToAddress = {
+                    val isFromHome = navController.previousBackStackEntry?.arguments?.getBoolean("fromHome") ?: false
+                    navActions.navigateToHome(isFromHome)
+               },
                 goToWhatsapp = {
                     context.whatsappContact(LocalData.configurations?.whatsapp ?: "")
                 }

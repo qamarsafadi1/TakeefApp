@@ -638,7 +638,7 @@ fun InputEditText(
         textStyle = textStyle,
         decorationBox = { innerTextField ->
             Box(
-                modifier =modifier.then(
+                modifier = modifier.then(
                     Modifier
                         .background(TextFieldBg, shape = RoundedCornerShape(cornerRaduis))
                         .border(1.dp, color = color, RoundedCornerShape(cornerRaduis))
@@ -1043,11 +1043,17 @@ fun Countdown(
     )
 
     if (isFinish) {
-        ElasticView(onClick = { resend() }) {
+        ElasticView(onClick = {
+            resend()
+            isFinish = false
+            timeData = millisInFuture
+            countDownTimer.start()
+        },
+        modifier = Modifier.padding(vertical = 15.dp)) {
             Text(
                 text = stringResource(id = R.string.resend),
                 style = text11Meduim,
-                color = Color.White,
+                color = Color.White
             )
         }
     }
@@ -1251,7 +1257,7 @@ fun LanguageSheet(
                     LanguageItem(check) {
                         check = it
                         LocalData.appLocal = if (check == 0) "ar" else "end"
-                       // viewModel.getConfig()
+                        // viewModel.getConfig()
                     }
                     val coroutineScope = rememberCoroutineScope()
 

@@ -307,7 +307,7 @@ class AuthViewModel @Inject constructor(
                         Status.SUCCESS -> {
                             AuthUiState(
                                 responseMessage = result.message ?: "",
-                                onResend = triggered(result.data?.status ?: ""),
+                                onResend = triggered(result.message ?: ""),
                             )
                         }
 

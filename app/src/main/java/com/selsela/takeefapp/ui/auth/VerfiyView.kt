@@ -60,7 +60,7 @@ fun VerifyView(
     goToAddress: () -> Unit
 ) {
     val viewState: AuthUiState by viewModel.uiState.collectAsStateLifecycleAware(AuthUiState())
-    val context =  LocalContext.current
+    val context = LocalContext.current
 
     VerifyCodeContent(
         uiState = viewState,
@@ -86,7 +86,7 @@ fun VerifyView(
         event = viewState.onResend,
         onConsumed = viewModel::onResend
     ) {
-       context.showSuccess(it)
+        context.showSuccess(it)
     }
 
     EventEffect(
@@ -121,7 +121,7 @@ private fun VerifyCodeContent(
                 .fillMaxHeight()
         ) {
             Column(
-                modifier = Modifier.padding(top = 151.dp),
+                modifier = Modifier.padding(top = 131.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -135,7 +135,7 @@ private fun VerifyCodeContent(
                         .padding(top = 0.dp)
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
-                        .defaultMinSize(minHeight = 370.dp)
+                        .defaultMinSize(minHeight = 360.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -155,7 +155,7 @@ private fun VerifyCodeContent(
                             modifier = Modifier.paddingTop(20)
                         )
                         Text(
-                            text = LocalData.user?.mobile ?: "",
+                            text = "+${LocalData.user?.country?.prefix}${LocalData.user?.mobile}",
                             style = text18,
                             color = Purple40,
                             modifier = Modifier.paddingTop(17)
@@ -184,7 +184,7 @@ private fun VerifyCodeContent(
                         Countdown(
                             30,
                             modifier = Modifier.paddingTop(8)
-                        ){
+                        ) {
                             resend()
                         }
 
@@ -208,19 +208,20 @@ private fun VerifyCodeContent(
             LottieAnimationView(
                 raw = R.raw.waiting,
                 modifier = Modifier
+                    .padding(bottom = 15.dp)
                     .align(Alignment.TopCenter)
                     .width(250.dp)
                     .height(250.dp)
+
 
             )
         }
 
         // Footer
-        Row(
-            modifier = Modifier
+        Row(modifier = Modifier
                 .wrapContentSize()
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 43.dp),
+                .padding(bottom = 23.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(

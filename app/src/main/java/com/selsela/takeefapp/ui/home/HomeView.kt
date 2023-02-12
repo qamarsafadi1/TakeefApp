@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -167,7 +168,7 @@ private fun HomeContent(
                 )
                 TitleView()
                 // Services List
-                LazyColumn(modifier = Modifier.padding(top = 24.dp)) {
+                LazyColumn(modifier = Modifier.padding(top = 14.dp)) {
                     items(
                         viewModel.getServicesList().value ?: listOf(),
                         key = { it.id }) {
@@ -181,24 +182,28 @@ private fun HomeContent(
                         ) {
                         }
                     }
+
+                    item{
+                        Spacer(modifier = Modifier.weight(1f))
+                        Row(
+                            modifier = Modifier
+                                .padding(bottom = 25.dp)
+                                .fillMaxWidth()
+                                .height(68.dp),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            ElasticButton(
+                                onClick = {
+                                    if (LocalData.accessToken.isNullOrEmpty().not())
+                                        goToSpecialOrder()
+                                    else goToLogin()
+                                },
+                                title = stringResource(R.string.special_order_add),
+                            )
+                        }
+                    }
                 }
-                Spacer(modifier = Modifier.weight(1f))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 25.dp),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    ElasticButton(
-                        onClick = {
-                            if (LocalData.accessToken.isNullOrEmpty().not())
-                                goToSpecialOrder()
-                            else goToLogin()
-                        },
-                        title = stringResource(R.string.special_order_add),
-                    )
-                }
-                Spacer(modifier = Modifier.height(10.dp))
             }
 
             // Bottom Cost Card

@@ -1,7 +1,6 @@
 package com.selsela.takeefapp.navigation
 
 import androidx.navigation.NavController
-import com.selsela.takeefapp.data.config.model.Case
 import com.selsela.takeefapp.navigation.Navigation.navigateWithClearBackStack
 import com.selsela.takeefapp.utils.Constants.NEW_ORDER
 
@@ -48,11 +47,29 @@ class NavigationActions(private val navController: NavController) {
         }
     }
 
-    fun navigateToLogin() {
+    fun navigateToHome(isFromHome: Boolean = false) {
+        if (isFromHome) {
+            navController.currentBackStackEntry?.arguments?.apply {
+                putBoolean("fromHome", isFromHome)
+            }
+        }
+        navController.popBackStack(Destinations.HOME_SCREEN,false)
+    }
+    fun navigateToLogin(fromHome: Boolean? = false) {
+        if (fromHome == true) {
+            navController.currentBackStackEntry?.arguments?.apply {
+                putBoolean("fromHome", fromHome)
+            }
+        }
         navController.navigate(Destinations.LOGIN_SCREEN)
     }
 
-    fun navigateToVerify() {
+    fun navigateToVerify(fromHome: Boolean = false) {
+        if (fromHome) {
+            navController.currentBackStackEntry?.arguments?.apply {
+                putBoolean("fromHome", fromHome)
+            }
+        }
         navController.navigate(Destinations.VERIFY_SCREEN)
     }
 

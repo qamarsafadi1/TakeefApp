@@ -95,7 +95,6 @@ class AuthRepository @Inject constructor(
             body["country_id"] = "1"
             val response = api.resendCode(body)
             if (response.isSuccessful) {
-                LocalData.accessToken = response.body()?.user?.accessToken ?: ""
                 LocalData.user = response.body()?.user
                 handleSuccess(
                     response.body()?.user,

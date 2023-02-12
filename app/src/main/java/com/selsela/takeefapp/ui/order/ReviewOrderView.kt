@@ -452,7 +452,7 @@ private fun ServiceItem(
     isNotMaintinance: Boolean = false,
     vm: HomeViewModel,
 ) {
-
+    selectedService.find { it.serviceId == MAINTENANCE }?.servicePrice?.log("servicePrice")
     Row(
         modifier = Modifier
             .padding(bottom = 5.dp)
@@ -522,13 +522,15 @@ private fun ServiceItem(
             Text(
                 text = "${
                     if (isNotMaintinance) {
-                        selectedService.sumOf {
-                            if (it.serviceId != MAINTENANCE)
-                                it.servicePrice.times(it.count)
-                            else 0.0
+                        if (selectedService.first().serviceId == MAINTENANCE) selectedService.find { it.serviceId == MAINTENANCE }?.servicePrice ?: 0.0
+                        else {
+                            selectedService.sumOf {
+                                if (it.serviceId != MAINTENANCE)
+                                    it.servicePrice.times(it.count)
+                                else 0.0
+                            }
                         }
                     } else selectedService.find { it.serviceId == MAINTENANCE }?.servicePrice ?: 0.0
-
                 }",
                 style = if (isNotMaintinance && selectedService.first().serviceId == MAINTENANCE) text14Strike else text14,
                 color = TextColor,

@@ -312,6 +312,9 @@ class HomeViewModel @Inject constructor(
             favAddress.getFullAddress(),
             LatLng(favAddress.latitude, favAddress.longitude)
         )
+        currentLocation.value = LatLng(favAddress.latitude, favAddress.longitude)
+
+
     }
 
     fun selectAddressFromFav(favAddress: Place, isFav: Int) {
@@ -323,10 +326,10 @@ class HomeViewModel @Inject constructor(
         val area = LocalData.ciites?.find {
             favAddress.address.contains(it.name)
         }
-        val city = area?.cities?.find {
+        val city = area?.cities?.findLast {
             favAddress.address.contains(it.name)
         }
-        val district = city?.children?.find {
+        val district = city?.children?.findLast {
             favAddress.address.contains(it.name)
         }
 
@@ -348,6 +351,8 @@ class HomeViewModel @Inject constructor(
             favAddress.address,
             LatLng(favAddress.latLng.latitude, favAddress.latLng.longitude)
         )
+        currentLocation.value = LatLng(favAddress.latLng.latitude, favAddress.latLng.longitude)
+
     }
 
     fun getCost(service: Service): String {

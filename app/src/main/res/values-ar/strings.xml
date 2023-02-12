@@ -209,5 +209,6 @@
     <string name="conditinar">مكيف</string>
     <string name="plaese_selecte_visit_time">الرجاء اختيار وقت الزيارة</string>
     <string name="canceled">ملغي</string>
+    <string name="district_name">اسم الحي</string>
 
 </resources>

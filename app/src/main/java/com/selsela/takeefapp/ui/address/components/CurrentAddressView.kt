@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -75,7 +76,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
                         .padding(horizontal = 32.dp, vertical = 25.dp)
                         .align(Alignment.TopStart)
                         .fillMaxWidth()
-                        .requiredHeight(56.dp),
+                        .defaultMinSize(minHeight = 56.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(

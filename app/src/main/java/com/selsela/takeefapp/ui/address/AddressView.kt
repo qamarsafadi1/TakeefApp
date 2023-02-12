@@ -64,6 +64,8 @@ import com.selsela.takeefapp.ui.splash.ChangeStatusBarOnlyColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
+import com.selsela.takeefapp.utils.Extensions
+import com.selsela.takeefapp.utils.Extensions.Companion.RequestPermission
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.showError
 import com.selsela.takeefapp.utils.Extensions.Companion.withDelay
@@ -173,6 +175,7 @@ fun BottomSheetLayout(
     BackHandler(districtSheetState.isVisible) {
         coroutineScope.launch { districtSheetState.hide() }
     }
+
     val context = LocalContext.current
     Box {
         ModalBottomSheetLayout(
@@ -184,9 +187,9 @@ fun BottomSheetLayout(
                     DatePickerView(
                         viewModel = parentViewModel,
                         onBack = {
-                           coroutineScope.launch {
-                               modalSheetState.hide()
-                           }
+                            coroutineScope.launch {
+                                modalSheetState.hide()
+                            }
                         }
                     ) {
                         goToReviewOrder()
@@ -202,7 +205,7 @@ fun BottomSheetLayout(
                 )
                 {
 
-                    GoogleMapView(viewModel = parentViewModel,addressViewModel)
+                    GoogleMapView(viewModel = parentViewModel, addressViewModel)
                     Headerview(onBack = { onBack() }) {
                         onSearch(it)
                     }
@@ -211,7 +214,7 @@ fun BottomSheetLayout(
                         Modifier
                             .paddingTop(16)
                             .fillMaxWidth()
-                            .fillMaxHeight(0.50f)
+                            .fillMaxHeight(0.51f)
                             .align(Alignment.BottomCenter),
                         addressVisible
                     ) {
@@ -298,7 +301,8 @@ fun BottomSheetLayout(
                                             }
                                         }.withDelay(100)
                                     } else {
-                                        context.showError("لا يوجد احياء لهذه المدينة")
+                                        if (addressViewModel.areaId != -1 && addressViewModel.cityId != -1)
+                                            context.showError("لا يوجد احياء لهذه المدينة")
                                     }
                                 }
                                 EditTextAddress(
@@ -354,6 +358,7 @@ fun BottomSheetLayout(
         }
         ListedBottomSheet(
             addressViewModel,
+            title = stringResource(id = R.string.city_name),
             sheetState = areaSheetState,
             ciites = addressViewModel.getCitiesOfAreas(),
             onSelectedItem = addressViewModel::setSelectedCity
@@ -372,6 +377,8 @@ fun BottomSheetLayout(
         ListedBottomSheet(
             addressViewModel,
             sheetState = districtSheetState,
+            title = stringResource(id = R.string.district_name),
+
             ciites = addressViewModel.getDistrictOfCities(),
             onSelectedItem = addressViewModel::setSelectedDistrict
         ) {
@@ -387,6 +394,7 @@ fun BottomSheetLayout(
         }
 
     }
+
 
 }
 

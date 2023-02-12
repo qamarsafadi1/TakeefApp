@@ -190,10 +190,10 @@ class AddressViewModel @Inject constructor(
         val area = LocalData.ciites?.find {
             address.address.contains(it.name)
         }
-        val city = area?.cities?.find {
+        val city = area?.cities?.findLast {
             address.address.contains(it.name)
         }
-        val district = city?.children?.find {
+        val district = city?.children?.findLast {
             address.address.contains(it.name)
         }
 

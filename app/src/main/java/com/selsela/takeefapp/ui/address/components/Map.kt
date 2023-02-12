@@ -5,9 +5,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,6 +36,7 @@ import com.selsela.takeefapp.ui.address.AddressViewModel
 import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.Extensions.Companion.RequestPermission
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.GetLocationDetail
 
 
@@ -44,75 +47,80 @@ fun GoogleMapView(
     @DrawableRes markerDrawable: Int = R.drawable.marker,
 ) {
     val context = LocalContext.current
-    var permissionIsGranted by remember {
+    val permissionIsGranted = remember {
         mutableStateOf(false)
     }
+    viewModel.currentLocation.value.log("currentLocation")
+
     // To control and observe the map camera
-    val cameraPositionState = rememberCameraPositionState()
-    val markerState = MarkerState(position = LatLng(0.0, 0.0))
-
-    context.RequestPermission(
-        permission = android.Manifest.permission.ACCESS_FINE_LOCATION,
-    ) {
-        permissionIsGranted = it
-        if (it) {
-            Extensions.getMyLocation(context = context) {
-                cameraPositionState.position =
-                    CameraPosition.fromLatLngZoom(viewModel.currentLocation.value, 15f)
-                markerState.position = it
-                addressViewModel.lat = viewModel.currentLocation.value.latitude
-                addressViewModel.lng = viewModel.currentLocation.value.longitude
-            }
+    val cameraPositionState = rememberCameraPositionState(
+        init = {
+            position = CameraPosition.fromLatLngZoom(viewModel.currentLocation.value, 19f)
         }
-    }
+    )
+    cameraPositionState.position =
+        CameraPosition.fromLatLngZoom(viewModel.currentLocation.value, 19f)
 
-    if (permissionIsGranted) {
+    val markerState = MarkerState(position = cameraPositionState.position.target)
+    markerState.position =  cameraPositionState.position.target
+    val mapStyleOptions: MapStyleOptions = MapStyleOptions.loadRawResourceStyle(
+        context,
+        R.raw.styledark
+    )
+    GoogleMap(
+        modifier = Modifier.fillMaxSize(),
+        cameraPositionState = cameraPositionState,
+        properties = MapProperties(
+            isMyLocationEnabled = false,
+            mapStyleOptions = mapStyleOptions
+        ),
+        uiSettings = MapUiSettings(
+            compassEnabled = false,
+            zoomControlsEnabled = false
+        )
+    )
+    Box(
+        modifier = Modifier
+            .padding(bottom = 35.dp)
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
 
-        val mapStyleOptions: MapStyleOptions = MapStyleOptions.loadRawResourceStyle(
-            context,
-            R.raw.styledark
-        )
-        GoogleMap(
-            modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState,
-            properties = MapProperties(
-                isMyLocationEnabled = false,
-                mapStyleOptions = mapStyleOptions
-            ),
-            uiSettings = MapUiSettings(
-                compassEnabled = false,
-                zoomControlsEnabled = false
-            )
-        )
-        Box(
-            modifier = Modifier
-                .padding(bottom = 35.dp)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
+        Column(
+            Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = markerDrawable),
-                contentDescription = ""
-            )
-
-            IconButton(
-                modifier = Modifier.align(Alignment.CenterStart),
-                onClick = {
-                    Extensions.getMyLocation(context = context) {
-                        cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 15f)
-                        markerState.position = it
-
-                    }
-                }) {
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
                 Image(
-                    painter = painterResource(id = R.drawable.mylocation),
+                    painter = painterResource(id = markerDrawable),
                     contentDescription = "",
+                    modifier = Modifier.align(Alignment.BottomCenter)
                 )
             }
-        };
+            Spacer(modifier = Modifier.weight(2f))
+
+        }
+        IconButton(
+            modifier = Modifier.align(Alignment.CenterStart),
+            onClick = {
+                Extensions.getMyLocation(context = context) {
+                    cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 15f)
+                    markerState.position = it
+
+                }
+            }) {
+            Image(
+                painter = painterResource(id = R.drawable.mylocation),
+                contentDescription = "",
+            )
+        }
+    };
 
 
-    }
+
     UpdateSelectedAddress(
         cameraPositionState,
         addressViewModel,

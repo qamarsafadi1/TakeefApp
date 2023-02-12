@@ -53,6 +53,7 @@ import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
 import com.selsela.takeefapp.ui.theme.NoRippleTheme
 import com.selsela.takeefapp.utils.Extensions
+import com.selsela.takeefapp.utils.Extensions.Companion.RequestPermission
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.showSuccess
@@ -118,13 +119,15 @@ fun HomeView(
         else -> {}
     }
 
-    Extensions.getMyLocation(context = context) {
-        viewModel.selectedAddress.value =
-            GetLocationDetail(context).getCurrentAddress(it.latitude, it.longitude) ?: ""
-        viewModel.currentLocation.value = it
-        "getMyLocation:${viewModel.selectedAddress.value}".log()
+    context.RequestPermission(
+        permission = android.Manifest.permission.ACCESS_FINE_LOCATION,
+    ) {
+        if (it) {
+            Extensions.getMyLocation(context = context) {
+                viewModel.currentLocation.value = it
+              }
+        }
     }
-
 }
 
 @Composable

@@ -66,7 +66,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 fun PaySheet(
     sheetState: ModalBottomSheetState,
     viewState: OrderUiState,
-    onPay: (Int, Int,Int) -> Unit
+    onPay: (Int, Int, Int) -> Unit
 ) {
     Box() {
         ModalBottomSheetLayout(
@@ -90,7 +90,7 @@ fun PaySheet(
 private fun PaySheetContent(
     vm: HomeViewModel = hiltViewModel(),
     viewState: OrderUiState,
-    order: Order?, onPay: (Int, Int,Int) -> Unit
+    order: Order?, onPay: (Int, Int, Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -153,7 +153,8 @@ private fun PaySheetContent(
                     color = Color.White,
                 )
                 Text(
-                    text =stringResource(id = R.string.currency_1, Extensions.getCurrency()), style = text12,
+                    text = stringResource(id = R.string.currency_1, Extensions.getCurrency()),
+                    style = text12,
                     color = SecondaryColor,
                 )
             }
@@ -172,7 +173,7 @@ private fun PaySheetContent(
 
         var selectedPayment = -1
         if (LocalData.userWallet?.balance != 0.0)
-            WalletItemView(vm,order)
+            WalletItemView(vm, order)
         if (vm.isWalletEnough(order?.price?.additionalCost ?: 0.0).not()) {
             PaymentViewDark() {
                 selectedPayment = it
@@ -180,7 +181,7 @@ private fun PaySheetContent(
         }
 
         ElasticButton(
-            onClick = { onPay(selectedPayment,order?.id ?: -1, vm.useWallet, ) },
+            onClick = { onPay(selectedPayment, order?.id ?: -1, vm.useWallet) },
             title = stringResource(R.string.pay_noew),
             modifier = Modifier
                 .padding(top = 21.dp)
@@ -370,7 +371,9 @@ fun PaymentViewDark(
         var selectedPayment by remember {
             mutableStateOf(0)
         }
-        repeat(LocalData.paymentsType?.size ?: 0) {
+        repeat(LocalData.paymentsType?.filter {
+            it.id != 3
+        }?.size ?: 0) {
             PaymentItemDark(
                 LocalData.paymentsType!![it],
                 selectedPayment == LocalData.paymentsType!![it].id

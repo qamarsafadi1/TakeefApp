@@ -60,6 +60,7 @@ import com.selsela.takeefapp.ui.home.OrderUiState
 import com.selsela.takeefapp.ui.theme.text14Strike
 import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Constants.CLEANING
+import com.selsela.takeefapp.utils.Constants.COD
 import com.selsela.takeefapp.utils.Constants.INSTALLATION
 import com.selsela.takeefapp.utils.Constants.MAINTENANCE
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
@@ -374,7 +375,9 @@ fun PaymentView(vm: HomeViewModel) {
             .paddingTop(18)
             .fillMaxWidth()
     ) {
-        repeat(LocalData.paymentsType?.size ?: 0) {
+        repeat(LocalData.paymentsType?.filter {
+            it.id != COD && it.id != 3
+        }?.size ?: 0) {
             PaymentItem(
                 vm,
                 LocalData.paymentsType?.get(it)!!,
@@ -535,6 +538,7 @@ private fun ServiceItem(
                 style = if (isNotMaintinance && selectedService.first().serviceId == MAINTENANCE) text14Strike else text14,
                 color = TextColor,
             )
+            Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = stringResource(id = R.string.currency_1, getCurrency()),
                 style = if (isNotMaintinance && selectedService.first().serviceId == MAINTENANCE) text14Strike else text14,

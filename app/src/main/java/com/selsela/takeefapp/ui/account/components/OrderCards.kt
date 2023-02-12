@@ -16,6 +16,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -49,6 +50,7 @@ fun OrderCards(
                 .fillMaxWidth()
                 .weight(1f)
                 .requiredHeight(88.dp)
+                .clip(RoundedCornerShape(13.dp))
                 .clickable {
                     goToOrder(NEW_ORDER)
                 },
@@ -79,6 +81,7 @@ fun OrderCards(
                 .fillMaxWidth()
                 .weight(1f)
                 .requiredHeight(88.dp)
+                .clip(RoundedCornerShape(13.dp))
                 .clickable {
                     goToSpecialOrder()
                 },
@@ -109,6 +112,7 @@ fun OrderCards(
                 .fillMaxWidth()
                 .weight(1f)
                 .requiredHeight(88.dp)
+                .clip(RoundedCornerShape(13.dp))
                 .clickable {
                     goToOrder(UPCOMING_ORDERS)
                 },

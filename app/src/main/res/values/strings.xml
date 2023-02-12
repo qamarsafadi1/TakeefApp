@@ -208,6 +208,6 @@
     <string name="service_cost_dot">Service Cost :</string>
     <string name="conditinar">Conditioner</string>
     <string name="plaese_selecte_visit_time">Please select visit time</string>
-    <string name="canceled">ملغي</string>
+    <string name="canceled">Cancelled</string>
 
 </resources>

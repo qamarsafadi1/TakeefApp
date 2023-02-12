@@ -52,7 +52,7 @@ fun GoogleMapView(
     val markerState = MarkerState(position = LatLng(0.0, 0.0))
 
     context.RequestPermission(
-        permission = android.Manifest.permission.ACCESS_COARSE_LOCATION,
+        permission = android.Manifest.permission.ACCESS_FINE_LOCATION,
     ) {
         permissionIsGranted = it
         if (it) {

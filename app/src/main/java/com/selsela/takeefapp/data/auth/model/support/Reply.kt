@@ -15,7 +15,7 @@ data class Reply(
     @SerializedName("created_at")
     val createdAt: String? = "",
     @SerializedName("id")
-    val id: Int? = 0,
+    var id: Int? = 0,
     @SerializedName("message")
     val message: String? = "",
     @SerializedName("updated_at")

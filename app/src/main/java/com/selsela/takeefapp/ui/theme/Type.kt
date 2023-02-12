@@ -110,7 +110,13 @@ val text14WhiteLines = TextStyle(
     fontWeight = FontWeight.SemiBold,
     fontSize = 14.sp,
     color = Color.White,
-    textAlign = TextAlign.Start
+    textAlign = TextAlign.Start,
+    lineHeight = 25.sp,
+    letterSpacing = 0.5.sp,
+    lineHeightStyle = LineHeightStyle(
+        alignment = LineHeightStyle.Alignment.Center,
+        trim = LineHeightStyle.Trim.Both
+    )
 )
 val text14WhiteCenter = TextStyle(
     fontFamily = fonts,

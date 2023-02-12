@@ -12,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -21,8 +22,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.intro.intro.model.Intro
 import com.selsela.takeefapp.ui.splash.ConfigViewModel
+import com.selsela.takeefapp.ui.theme.text18
 import com.selsela.takeefapp.ui.theme.textBodyStyle
 import com.selsela.takeefapp.ui.theme.textTitleStyle
+import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.LocalUtils.setLocale
 
 
@@ -42,14 +45,17 @@ fun IntroItem(intro: Intro, viewModel: ConfigViewModel = hiltViewModel()) {
                     .wrapContentSize()
                     .padding(bottom = 60.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.en),
-                    contentDescription = "en",
+                Text(
+                    text = if (LocalData.appLocal == "ar") "EN" else "ع",
+                    style = text18,
+                    color = Color.White,
                     modifier = Modifier
                         .padding(top = 54.dp, start = 24.dp, end = 24.dp)
                         .align(Alignment.TopEnd)
                         .clickable {
-                            context.setLocale("en")
+                            if (LocalData.appLocal == "ar")
+                                context.setLocale("en")
+                            else context.setLocale("ar")
                             viewModel.getConfig()
                         }
                 )

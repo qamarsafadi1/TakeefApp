@@ -53,6 +53,7 @@ import com.selsela.takeefapp.ui.intro.componenets.IntroItem
 import com.selsela.takeefapp.ui.intro.componenets.SkipButton
 import com.selsela.takeefapp.ui.intro.componenets.StartNowButton
 import com.selsela.takeefapp.ui.intro.intro.model.Intro
+import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
 import com.selsela.takeefapp.ui.splash.ConfigViewModel
 import com.selsela.takeefapp.ui.theme.LightBlue
 import com.selsela.takeefapp.ui.theme.Purple40
@@ -98,7 +99,6 @@ fun IntroView(
                     else -> Purple40
                 }
                 selectedPage = page
-                page.log("paaaage")
             }
     }
     Column(
@@ -161,6 +161,7 @@ fun IntroView(
             }
         }
         backgroundColor.ChangeStatusBarColorWhiteNav()
+        Color.White.ChangeNavigationBarColor(true)
     }
 }
 

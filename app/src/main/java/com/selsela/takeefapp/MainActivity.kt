@@ -7,11 +7,13 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -88,7 +90,10 @@ class MainActivity : AppCompatActivity() {
                                     initial = navController.currentBackStackEntry
                                 )
                             FitSystemWindow(currentRoute)
-                            Box(Modifier.fillMaxSize()) {
+                            Box(Modifier.fillMaxSize()
+                                .background(
+                                    color = androidx.compose.material3.MaterialTheme.colorScheme.background
+                                )) {
                                 Scaffold(
                                     topBar = {
                                         if (currentRoute.value?.destination?.route != Destinations.HOME_SCREEN && currentRoute.value?.destination?.route != Destinations.SPLASH_SCREEN

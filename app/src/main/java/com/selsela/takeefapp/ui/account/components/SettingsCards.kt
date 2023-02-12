@@ -84,6 +84,7 @@ fun SettingsCards(
                 .fillMaxWidth()
                 .weight(1f)
                 .requiredHeight(88.dp)
+
                 .clickable {
                     goToProfile()
                 },

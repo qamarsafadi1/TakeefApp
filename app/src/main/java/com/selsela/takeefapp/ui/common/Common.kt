@@ -119,6 +119,7 @@ import com.selsela.takeefapp.ui.address.AddressViewModel
 import com.selsela.takeefapp.ui.splash.ConfigViewModel
 import com.selsela.takeefapp.ui.theme.text11Meduim
 import com.selsela.takeefapp.ui.theme.text12Meduim
+import com.selsela.takeefapp.ui.theme.text14WhiteLines
 import kotlinx.coroutines.launch
 
 @Composable
@@ -707,7 +708,7 @@ fun EditTextMutltLine(
                 .requiredHeight(115.dp)
                 .border(1.dp, color = color, RoundedCornerShape(8.dp))
         ),
-        textStyle = text14White,
+        textStyle = text14WhiteLines,
         shape = RoundedCornerShape(8.dp),
         colors = TextFieldDefaults.textFieldColors(
             Color.White,

@@ -221,7 +221,7 @@ fun OrderItem(
                                 modifier = Modifier
                                     .paddingTop(13)
                                     .requiredHeight(36.dp)
-                                    .width(if (LocalData.appLocal == "ar") 137.dp else 157.dp),
+                                    .defaultMinSize(minWidth = if (LocalData.appLocal == "ar") 137.dp else 157.dp),
                                 buttonBg = LightBlue
                             )
                         }

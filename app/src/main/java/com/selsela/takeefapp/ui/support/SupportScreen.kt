@@ -1,5 +1,7 @@
 package com.selsela.takeefapp.ui.support
 
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -132,18 +134,23 @@ private fun SupportContent(
                     .padding(start = 29.dp, end = 20.dp),
                 state = listState
             ) {
-                items(messages) {
+                items(messages,
+                key = {
+                  it.id ?: 0
+                }) {
                     if (it.adminId != 1)
                         MeItem(
                             Modifier
-                                .fillMaxWidth()
-                                .animateItemPlacement(),
+                                .animateItemPlacement(
+
+                                )
+                                .fillMaxWidth(),
                             it
                         )
                     else AdminItem(
                         Modifier
-                            .fillMaxWidth()
-                            .animateItemPlacement(),
+                            .animateItemPlacement()
+                            .fillMaxWidth(),
                         it
                     )
                 }
@@ -188,10 +195,9 @@ private fun SupportContent(
                                     val reply =
                                         Reply(adminId = 0, message = viewModel.message.value)
                                     if (supportUiState.contactReplay != null) {
-                                        messages.clear()
+                                        reply.id = (supportUiState.contactReplay.replies?.last()?.id ?: 0)+1
                                         supportUiState.contactReplay.replies?.add(reply)
                                     } else messages.add(reply)
-
                                     sendMessage(viewModel.message.value)
                                     viewModel.message.value = ""
                                 }

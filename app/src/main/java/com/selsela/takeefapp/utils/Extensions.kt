@@ -57,6 +57,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.muddzdev.styleabletoast.StyleableToast
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.utils.Extensions.Companion.getActivity
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.FileHelper.Companion.absoulutePath
 import com.selsela.takeefapp.utils.FileHelper.Companion.compressImage
@@ -470,44 +471,48 @@ class Extensions {
 //    permissionsBuilder(
 //        Manifest.permission.READ_EXTERNAL_STORAGE
 //    ).build().send {
-            kotlin.run {
-                // if (it.allGranted()) {
-                absoulutePath = null
+            mActivity.getActivity()?.permissionsBuilder(
+                Manifest.permission.CAMERA
+            )?.build()?.send {
+                kotlin.run {
+                    // if (it.allGranted()) {
+                    absoulutePath = null
 
-                try {
-                    val cameraIntent =
-                        Intent(
-                            Intent.ACTION_PICK,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                    try {
+                        val cameraIntent =
+                            Intent(
+                                Intent.ACTION_PICK,
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                            )
+
+                        cameraIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, isMultiple);
+                        val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        // takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getFileDirectory())
+                        takePhotoIntent.putExtra("android.intent.extras.CAMERA_FACING", 1)
+                        // Create the File where the photo should go
+
+                        val photoFile: File =
+                            mActivity.createFullImageFile()
+
+                        // Continue only if the File was successfully created
+                        val photoURI: Uri = FileProvider.getUriForFile(
+                            mActivity,
+                            "com.selsela.airconditioner.fileprovider",
+                            photoFile
                         )
 
-                    cameraIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, isMultiple);
-                    val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    // takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getFileDirectory())
-                    takePhotoIntent.putExtra("android.intent.extras.CAMERA_FACING", 1)
-                    // Create the File where the photo should go
-
-                    val photoFile: File =
-                        mActivity.createFullImageFile()
-
-                    // Continue only if the File was successfully created
-                    val photoURI: Uri = FileProvider.getUriForFile(
-                        mActivity,
-                        "com.selsela.airconditioner.fileprovider",
-                        photoFile
-                    )
-
-                    takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    val pickTitle = "Select or take a new Picture"
-                    val chooserIntent = Intent.createChooser(cameraIntent, pickTitle)
-                    chooserIntent.putExtra(
-                        Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePhotoIntent)
-                    )
-                    images.launch(chooserIntent)
+                        takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                        val pickTitle = "Select or take a new Picture"
+                        val chooserIntent = Intent.createChooser(cameraIntent, pickTitle)
+                        chooserIntent.putExtra(
+                            Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePhotoIntent)
+                        )
+                        images.launch(chooserIntent)
 
 
-                } catch (ex: IOException) {
-                    ex.printStackTrace()
+                    } catch (ex: IOException) {
+                        ex.printStackTrace()
+                    }
                 }
             }
         }

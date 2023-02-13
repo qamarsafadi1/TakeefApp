@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.auth.model.support.ContactReplies
 import com.selsela.takeefapp.data.auth.model.support.Reply
 import com.selsela.takeefapp.data.notification.NotificationReceiver
 import com.selsela.takeefapp.ui.auth.AuthViewModel
@@ -129,7 +130,7 @@ private fun SupportContent(
     val messages = mutableListOf<Reply>().toMutableStateList()
     if (supportUiState.contactReplay != null) {
         messages.clear()
-        supportUiState.contactReplay.replies?.forEach {
+        supportUiState.contactReplay!!.replies?.forEach {
             messages.add(it)
         }
     }
@@ -209,12 +210,17 @@ private fun SupportContent(
                                     val reply =
                                         Reply(adminId = 0, message = viewModel.message.value)
                                     if (supportUiState.contactReplay != null) {
-                                        reply.id = (supportUiState.contactReplay.replies?.last()?.id
+                                        reply.id = (supportUiState.contactReplay?.replies?.last()?.id
                                             ?: 0) + 1
-                                        supportUiState.contactReplay.replies?.add(reply)
-                                    } else messages.add(reply)
+                                        supportUiState.contactReplay?.replies?.add(reply)
+                                    } else {
+                                        val replais = ContactReplies()
+                                        replais.replies?.add(reply)
+                                        supportUiState.contactReplay = replais
+                                    }
                                     sendMessage(viewModel.message.value)
                                     viewModel.message.value = ""
+                                    viewModel.getContacts()
                                 }
                             })
 

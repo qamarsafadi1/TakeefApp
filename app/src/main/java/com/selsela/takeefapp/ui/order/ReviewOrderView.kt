@@ -655,7 +655,7 @@ private fun VisitDateView(selectedPeriodId: MutableState<WorkPeriod>,
         }
 
         Column(
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.End
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),

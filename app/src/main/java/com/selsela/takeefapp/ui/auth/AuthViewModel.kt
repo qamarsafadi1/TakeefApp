@@ -65,7 +65,7 @@ data class NotificationUiState(
 
 data class SupportUiState(
     val contacts: List<ContactReplies>? = listOf(),
-    val contactReplay: ContactReplies? = null,
+    var contactReplay: ContactReplies? = null,
     val isLoading: Boolean = false,
     val onSuccess: StateEventWithContent<Int> = consumed(),
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),

@@ -1,6 +1,8 @@
 package com.selsela.takeefapp.ui.account
 
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,7 +32,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.notification.NotificationReceiver
 import com.selsela.takeefapp.ui.account.components.Header
 import com.selsela.takeefapp.ui.account.components.OrderCards
 import com.selsela.takeefapp.ui.account.components.SettingsCards
@@ -53,6 +57,7 @@ import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import de.palm.composestateevents.EventEffect
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -120,6 +125,11 @@ fun MyAccountView(
             error.errors,
             context
         )
+    }
+    BrodcastRevicer(context = context){
+        if (LocalData.accessToken.isNullOrEmpty().not()) {
+                viewModel.me()
+        }
     }
 }
 
@@ -247,7 +257,25 @@ private fun AccountViewContent(
         }
 
         LanguageSheet(languageSheet) {
+            coroutineScope.launch { languageSheet.hide() }
             configViewModel.getConfig()
+            onBack()
         }
     }
+}
+
+
+@Composable
+private fun BrodcastRevicer(
+    context: Context,
+    onReceived: () -> Unit
+) {
+    val receiver: NotificationReceiver = object : NotificationReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            onReceived()
+        }
+    }
+    LocalBroadcastManager.getInstance(context).registerReceiver(
+        receiver, IntentFilter(Constants.ORDER_STATUS_CHANGED)
+    )
 }

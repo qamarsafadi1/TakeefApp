@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -43,6 +44,7 @@ import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.selsela.takeefapp.navigation.Destinations
 import com.selsela.takeefapp.navigation.Navigation.bindToolbarTitle
 import com.selsela.takeefapp.navigation.Navigation.showingBackButton
+import com.selsela.takeefapp.navigation.NavigationActions
 import com.selsela.takeefapp.navigation.NavigationHost
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
 import com.selsela.takeefapp.ui.splash.ConfigViewModel
@@ -84,16 +86,19 @@ class MainActivity : AppCompatActivity() {
                                     else LayoutDirection.Ltr
                         ) {
                             val navController = rememberNavController()
-                            val  context = LocalContext.current
+                            val context = LocalContext.current
                             val currentRoute =
                                 navController.currentBackStackEntryFlow.collectAsState(
                                     initial = navController.currentBackStackEntry
                                 )
                             FitSystemWindow(currentRoute)
-                            Box(Modifier.fillMaxSize()
-                                .background(
-                                    color = androidx.compose.material3.MaterialTheme.colorScheme.background
-                                )) {
+                            Box(
+                                Modifier
+                                    .fillMaxSize()
+                                    .background(
+                                        color = androidx.compose.material3.MaterialTheme.colorScheme.background
+                                    )
+                            ) {
                                 Scaffold(
                                     topBar = {
                                         if (currentRoute.value?.destination?.route != Destinations.HOME_SCREEN && currentRoute.value?.destination?.route != Destinations.SPLASH_SCREEN
@@ -130,12 +135,13 @@ class MainActivity : AppCompatActivity() {
                                                             )
                                                         if (isShowing) {
                                                             IconButton(onClick = {
-                                                                navController.navigateUp()
+                                                                if (navController.previousBackStackEntry?.destination?.route != Destinations.SPLASH_SCREEN)
+                                                                    navController.navigateUp()
+                                                                else NavigationActions(navController = navController).navigateToHome()
                                                             }) {
                                                                 Icon(
                                                                     painter = painterResource(id = R.drawable.backbutton),
                                                                     contentDescription = "",
-
                                                                     tint =
                                                                     SecondaryColor
                                                                 )

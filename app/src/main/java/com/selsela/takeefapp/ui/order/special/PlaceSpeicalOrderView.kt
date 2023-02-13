@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -124,41 +125,45 @@ private fun PlaceSpecialOrderContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(Color.White),
+        verticalArrangement = Arrangement.Center
     ) {
-
         Box(
             modifier = Modifier
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
+            Column() {
+                if (isAnimated.not()) {
+                    AppLogoImage(
+                        modifier = Modifier
+                            .size(
+                                width = 138.05.dp,
+                                height = 39.34.dp
+                            )
+                    )
+                }
 
-            if (isAnimated.not()) {
-                AppLogoImage(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .size(
-                            width = 138.05.dp,
-                            height = 39.34.dp
-                        )
-                )
             }
             Box(
                 Modifier
                     .paddingTop(15)
                     .align(Alignment.Center),
-                contentAlignment = Alignment.TopCenter
+                contentAlignment = Alignment.Center
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(bottom = 21.dp, top = 44.dp)
+                        .padding(bottom = 21.dp, top = 22.dp)
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
+                        .wrapContentHeight(Alignment.CenterVertically)
                         .background(TextColor, RoundedCornerShape(33.dp))
                         .padding(horizontal = 24.dp)
-                        .animateContentSize(tween(600)),
+                        .animateContentSize(tween(600))
+                        .align(Alignment.BottomCenter),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+
                     if (isAnimated.not()) {
                         SpecialOrderFormView(viewModel)
                     } else {
@@ -172,7 +177,9 @@ private fun PlaceSpecialOrderContent(
                     LottieAnimationView(
                         raw = R.raw.send,
                         modifier = Modifier
+                            .padding(bottom = 15.dp)
                             .size(126.dp)
+                            .align(Alignment.TopCenter)
                     )
                 }
             }

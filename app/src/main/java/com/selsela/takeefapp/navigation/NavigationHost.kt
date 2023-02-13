@@ -2,9 +2,11 @@ package com.selsela.takeefapp.navigation
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -28,6 +30,7 @@ import com.selsela.takeefapp.ui.intro.IntroView
 import com.selsela.takeefapp.ui.notification.NotificationView
 import com.selsela.takeefapp.ui.order.OrderDetailsView
 import com.selsela.takeefapp.ui.order.OrderRouteView
+import com.selsela.takeefapp.ui.order.OrderViewModel
 import com.selsela.takeefapp.ui.order.OrdersView
 import com.selsela.takeefapp.ui.order.ReviewOrderView
 import com.selsela.takeefapp.ui.order.special.PlaceSpecialOrderView
@@ -213,9 +216,26 @@ fun NavigationHost(
             deepLinks = listOf(navDeepLink { uriPattern = "$uri/id={id}" })
         ) {
             val id = it.arguments?.getString("id") ?: ""
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(navController.previousBackStackEntry?.destination?.route!!).destination.route?.log("test")
+
+                when (navController.previousBackStackEntry?.destination?.route) {
+                    Destinations.ORDERS_SCREEN_ARGS -> navController.getBackStackEntry(navController.previousBackStackEntry?.destination?.route!!)
+                    else  -> navController.getBackStackEntry(navController.previousBackStackEntry?.destination?.route!!)
+                }
+            }
+
+            val parentViewModel = hiltViewModel<OrderViewModel>(parentEntry)
+            parentViewModel.uiState.log("parentViewModel")
+            it.destination.hasDeepLink("$uri/id={id}".toUri()).log("DEEPLINK")
             OrderDetailsView(
                 id.toInt(),
-                onBack = navController::navigateUp
+                parentViewModel,
+                onBack = {
+                    if (navController.previousBackStackEntry?.destination?.route == Destinations.SPLASH_SCREEN)
+                        navActions.navigateToHome()
+                   else navController.navigateUp()
+                }
             )
         }
         composable(Destinations.SPECIAL_ORDERS) {
@@ -234,8 +254,15 @@ fun NavigationHost(
         composable(Destinations.TERMS) {
             TermsView()
         }
-        composable(Destinations.TECHNICAL_SUPPORT) {
+        composable(Destinations.TECHNICAL_SUPPORT,
+            deepLinks = listOf(navDeepLink { uriPattern = "$uri/support" })
+        ) {
             SupportScreen()
+            BackHandler {
+                if (navController.previousBackStackEntry?.destination?.route != Destinations.SPLASH_SCREEN)
+                    navController.navigateUp()
+                else navActions.navigateToHome()
+            }
         }
         composable(Destinations.PROFILE_SCREEN) {
             ProfileScreen(
@@ -243,8 +270,15 @@ fun NavigationHost(
                 onBack = navController::navigateUp
             )
         }
-        composable(Destinations.WALLET_SCREEN) {
+        composable(Destinations.WALLET_SCREEN,
+            deepLinks = listOf(navDeepLink { uriPattern = "$uri/wallet" })
+        ) {
             WalletScreen()
+            BackHandler {
+                if (navController.previousBackStackEntry?.destination?.route != Destinations.SPLASH_SCREEN)
+                    navController.navigateUp()
+                else navActions.navigateToHome()
+            }
         }
     }
 }

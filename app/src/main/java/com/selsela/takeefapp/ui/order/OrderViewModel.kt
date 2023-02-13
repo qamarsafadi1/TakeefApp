@@ -16,9 +16,13 @@ import de.palm.composestateevents.triggered
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.compose.runtime.*
+import com.selsela.takeefapp.data.config.model.RateProperitiesSupervisor
+import com.selsela.takeefapp.data.config.model.RateProperitiesUser
 import com.selsela.takeefapp.ui.common.State
 import com.selsela.takeefapp.ui.order.rate.Rate
+import com.selsela.takeefapp.utils.Constants.FINISHED
 import com.selsela.takeefapp.utils.Extensions.Companion.log
+import com.selsela.takeefapp.utils.LocalData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,6 +58,9 @@ class OrderViewModel @Inject constructor(
 
     val orderList = mutableStateListOf<Order>()
     var rateArray = mutableStateListOf<List<Rate>>()
+    var note by mutableStateOf("")
+    var rateItemArray = mutableStateOf(listOf<RateProperitiesSupervisor>())
+    var isDetailsLoaded = false
     var isLoaded = false
     private var page by mutableStateOf(1)
     var canPaginate by mutableStateOf(false)
@@ -71,6 +78,11 @@ class OrderViewModel @Inject constructor(
         set(newState) {
             _uiState.update { newState }
         }
+
+    fun getRateItem(){
+        rateItemArray.value = LocalData.rateItems!!
+    }
+
 
     fun getNewOrders(caseID: Int) = viewModelScope.launch {
         if (page == 1 || (page != 1 && canPaginate) && listState == OrderState.IDLE) {
@@ -112,6 +124,7 @@ class OrderViewModel @Inject constructor(
     }
 
     fun getOrderDetails(id: Int) {
+        isDetailsLoaded = false
         viewModelScope.launch {
             state = state.copy(
                 state = State.LOADING
@@ -120,6 +133,7 @@ class OrderViewModel @Inject constructor(
                 .collect { result ->
                     val orderStateUi = when (result.status) {
                         Status.SUCCESS -> {
+                            isDetailsLoaded = true
                             isLoaded = true
                             OrderUiState(
                                 order = result.data?.order,
@@ -207,7 +221,7 @@ class OrderViewModel @Inject constructor(
                     .collect { result ->
                         val orderStateUi = when (result.status) {
                             Status.SUCCESS -> {
-                                isLoaded = true
+                                onRefresh(FINISHED)
                                 OrderUiState(
                                     order = result.data?.order,
                                     state = State.SUCCESS,

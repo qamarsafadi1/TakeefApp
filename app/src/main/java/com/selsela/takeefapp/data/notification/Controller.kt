@@ -17,6 +17,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.selsela.takeefapp.MainActivity
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.utils.Constants.ADMIN_REPLIED
 import com.selsela.takeefapp.utils.Constants.ORDER_ADDITIONAL_COST
 import com.selsela.takeefapp.utils.Constants.ORDER_STATUS_CHANGED
 import com.selsela.takeefapp.utils.Constants.VERIFY_CODE
@@ -96,7 +97,18 @@ class Controller : FirebaseMessagingService() {
                         sendNotification(
                             remoteMessage.notification?.title ?: "",
                             remoteMessage.notification?.body ?: "",
-                            MainActivity::class.java.simpleName,
+                            "Wallet",
+                        )
+                    }
+
+                    ADMIN_REPLIED -> {
+                        val localIntent = Intent(ADMIN_REPLIED)
+                        val manager = LocalBroadcastManager.getInstance(this)
+                        manager.sendBroadcast(localIntent)
+                        sendNotification(
+                            remoteMessage.notification?.title ?: "",
+                            remoteMessage.notification?.body ?: "",
+                            "Support",
                         )
                     }
 
@@ -138,7 +150,22 @@ class Controller : FirebaseMessagingService() {
                 applicationContext,
                 MainActivity::class.java
             )
-        } else Intent(this, MainActivity::class.java)
+        } else if (className == "Support") {
+            Intent(
+                Intent.ACTION_VIEW,
+                "https://airconditioner.com/support".toUri(),
+                applicationContext,
+                MainActivity::class.java
+            )
+        } else if(className == "Wallet"){
+            Intent(
+                Intent.ACTION_VIEW,
+                "https://airconditioner.com/wallet".toUri(),
+                applicationContext,
+                MainActivity::class.java
+            )
+        }
+        else Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         contentIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             TaskStackBuilder.create(applicationContext).run {

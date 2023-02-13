@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.ui.general
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,6 +47,10 @@ fun SuccessView(
             .fillMaxSize()
             .background(Color.White)
     ) {
+        BackHandler() {
+            goHome()
+        }
+
         Column(
             Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,

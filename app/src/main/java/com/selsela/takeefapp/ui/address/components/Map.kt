@@ -149,6 +149,7 @@ private fun UpdateSelectedAddress(
 
             addressViewModel.lat = cameraPositionState.position.target.latitude
             addressViewModel.lng = cameraPositionState.position.target.longitude
+            addressViewModel.note.value = newAddress
             updateSelectedAddress(newAddress, cameraPositionState.position.target)
         }
     }

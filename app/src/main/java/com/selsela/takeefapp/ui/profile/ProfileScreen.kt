@@ -78,7 +78,7 @@ fun ProfileScreen(
     goToLogin: () -> Unit,
     onBack: () -> Unit
 ) {
-    Color.Transparent.ChangeStatusBarOnlyColor()
+    Color.Transparent.ChangeStatusBarOnlyColor(true)
     val coroutineScope = rememberCoroutineScope()
     val paySheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,

@@ -23,6 +23,7 @@ object Constants {
     // Support Constants
     const val REPLY = "reply"
     const val CONTACT = "contact"
+    const val ADMIN_REPLIED = "UserContactReplay"
 
     // Order Constants
     const val NEW_ORDER = 1

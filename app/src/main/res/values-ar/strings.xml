@@ -51,7 +51,7 @@
     <string name="please_select_payment_1">الرجاء تحديد وسيلة دفع اخرى</string>
     <string name="pay_noew">دفع الان</string>
     <string name="operation_success">نجاح العملية</string>
-    <string name="success_lbl">"تم اسال طلبك بنجاح وسيتم العمل علي تنفيذه \nيمكنك متابعة حالة الطلب من قائمة طلباتي "</string>
+    <string name="success_lbl">"تم ارسال طلبك بنجاح وسيتم العمل علي تنفيذه \nيمكنك متابعة حالة الطلب من قائمة طلباتي "</string>
     <string name="order_list">قائمة طلباتي</string>
     <string name="home">الرئيسية</string>
     <string name="operation_failed">فشل العملية</string>
@@ -137,16 +137,17 @@
     <string name="device">جهاز</string>
     <string name="reject_1">رفض</string>
     <string name="acccept_pay">قبول ودفع</string>
-    <string name="extra_cost">" يوجد تكلفة اضافية للصيانة في حال القبول\n والدفع"</string>
+    <string name="extra_cost">يوجد تكلفة اضافية للصيانة في حال القبول والدفع
+سيتم اكمال الخدمة </string>
     <string name="maintinance_supervisor">مشرف الصيانة</string>
     <string name="arrive_within">الوصول خلال</string>
     <string name="mintues">دقائق</string>
     <string name="pay_lbl">دفع</string>
     <string name="extra_cost_maintincance">التكلفة الإضافية للصيانة</string>
     <string name="payment_method">طريقة الدفع</string>
-    <string name="confirm_lbl_1">تاكيد</string>
+    <string name="confirm_lbl_1">تأكيد</string>
     <string name="delete_account">حذف الحساب</string>
-    <string name="delete_account_lbl">لن تمكن من الوصول الي بياناتك لاحقا في حالة حذف الحساب</string>
+    <string name="delete_account_lbl">لن تتمكن من الوصول الي بياناتك لاحقا في حالة حذف الحساب</string>
     <string name="delete_confirmation">تأكيد الحذف؟</string>
     <string name="cancel_lbl">الغاء</string>
     <string name="delete_account_lbl_1">لن تتمكن من استعادة بياناتك مرة اخرى</string>
@@ -210,5 +211,6 @@
     <string name="plaese_selecte_visit_time">الرجاء اختيار وقت الزيارة</string>
     <string name="canceled">ملغي</string>
     <string name="district_name">اسم الحي</string>
+    <string name="please_rate_at_least">الرجاء اضافة تقييم واحد على الاقل</string>
 
 </resources>

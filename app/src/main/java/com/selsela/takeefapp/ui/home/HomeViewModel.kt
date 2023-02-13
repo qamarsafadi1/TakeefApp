@@ -290,7 +290,8 @@ class HomeViewModel @Inject constructor(
         selectedAddress.value = ""
         selectedPeriodId.value = WorkPeriod()
         selectedPaymentId.value = -1
-        onCleared()
+        acyTypes.clear()
+
     }
 
     fun onFailure() {

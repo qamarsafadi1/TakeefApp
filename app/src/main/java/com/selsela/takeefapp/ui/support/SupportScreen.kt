@@ -1,5 +1,8 @@
 package com.selsela.takeefapp.ui.support
 
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -39,8 +42,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.auth.model.support.Reply
+import com.selsela.takeefapp.data.notification.NotificationReceiver
 import com.selsela.takeefapp.ui.auth.AuthViewModel
 import com.selsela.takeefapp.ui.auth.SupportUiState
 import com.selsela.takeefapp.ui.common.InputEditText
@@ -55,6 +60,7 @@ import com.selsela.takeefapp.ui.theme.text10
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text12White
 import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.Extensions.Companion.rememberMutableStateListOf
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
@@ -101,6 +107,10 @@ fun SupportScreen(
         onConsumed = viewModel::onSuccess
     ) { contactId ->
         viewModel.contactId = contactId
+    }
+
+    BrodcastRevicer(context = context){
+        viewModel.getContacts()
     }
 
 }
@@ -327,5 +337,21 @@ private fun MessageEditText(viewModel: AuthViewModel, modifier: Modifier) {
         fillMax = 0.5f,
         hintColor = SecondaryColor2.copy(0.67f)
 
+    )
+}
+
+
+@Composable
+private fun BrodcastRevicer(
+    context: Context,
+    onReceived: () -> Unit
+) {
+    val receiver: NotificationReceiver = object : NotificationReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            onReceived()
+        }
+    }
+    LocalBroadcastManager.getInstance(context).registerReceiver(
+        receiver, IntentFilter(Constants.ADMIN_REPLIED)
     )
 }

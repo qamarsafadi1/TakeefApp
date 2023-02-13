@@ -44,6 +44,7 @@ import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.notification.NotificationReceiver
 import com.selsela.takeefapp.data.order.model.order.Order
 import com.selsela.takeefapp.data.order.model.order.Price
+import com.selsela.takeefapp.ui.auth.AuthViewModel
 import com.selsela.takeefapp.ui.common.State
 import com.selsela.takeefapp.ui.common.components.EmptyView
 import com.selsela.takeefapp.ui.common.components.LoadingView
@@ -63,6 +64,7 @@ import kotlinx.coroutines.launch
 fun OrdersView(
     caseID: Int,
     viewModel: OrderViewModel = hiltViewModel(),
+    viewModelAuth: AuthViewModel = hiltViewModel(),
     onBack: () -> Unit,
     goToDetails: (Int) -> Unit,
     goToOrderRoute: (LatLng,LatLng) -> Unit
@@ -95,6 +97,7 @@ fun OrdersView(
         onBack,
         goToDetails, goToOrderRoute
     ) {
+        viewModel.getRateItem()
         viewState.order = Order(id = it)
         coroutineScope.launch {
             if (rateSheetState.isVisible)
@@ -109,6 +112,7 @@ fun OrdersView(
     }
     BrodcastRevicer(context = context){
         viewModel.getNewOrders(caseID)
+        viewModelAuth.me()
     }
 
     // check if need pagination

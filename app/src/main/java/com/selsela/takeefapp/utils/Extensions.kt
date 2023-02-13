@@ -47,6 +47,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
+import com.fondesa.kpermissions.extension.permissionsBuilder
+import com.fondesa.kpermissions.extension.send
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -420,6 +422,7 @@ class Extensions {
             return rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult(),
                 onResult = { result ->
+                    result.data?.log("intent")
                     if (result.data?.clipData != null) {
                         val count =
                             result.data?.clipData!!.itemCount; //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
@@ -436,7 +439,8 @@ class Extensions {
                                 imges?.size?.log("viewModel.photosImg")
                             }
                         }
-                    } else if (result.data!!.data != null) {
+                    } else if (result.data?.data != null) {
+                        "hey intent data".log()
                         context.let {
                             result.data?.data.let {
                                 val selectedImage =
@@ -445,7 +449,6 @@ class Extensions {
                                 val image = FileHandler.getImage(it, context)
 
                                 image?.let { it1 -> imges?.add(it1) }
-                                imges?.size?.log("viewModel.photosImg")
                             }
                         }
                     }
@@ -458,9 +461,9 @@ class Extensions {
             images: ActivityResultLauncher<Intent>,
             isMultiple: Boolean
         ) {
-//    permissionsBuilder(
-//        Manifest.permission.READ_EXTERNAL_STORAGE
-//    ).build().send {
+            context.getActivity()?.permissionsBuilder(
+        Manifest.permission.CAMERA
+    )?.build()?.send {
             kotlin.run {
                 // if (it.allGranted()) {
                 absoulutePath = null
@@ -468,41 +471,47 @@ class Extensions {
                 try {
                     val cameraIntent =
                         Intent(
-                            Intent.ACTION_PICK,
+                            Intent.ACTION_GET_CONTENT,
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                         )
 
                     cameraIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, isMultiple);
                     val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                     // takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getFileDirectory())
-                    takePhotoIntent.putExtra("android.intent.extras.CAMERA_FACING", 1)
+                  //  takePhotoIntent.putExtra("android.intent.extras.CAMERA_FACING", 1)
                     // Create the File where the photo should go
 
                     val photoFile: File =
                         context.createFullImageFile()
 
                     // Continue only if the File was successfully created
-                    val photoURI: Uri = FileProvider.getUriForFile(
-                        context,
-                        "com.selsela.airconditioner.fileprovider",
-                        photoFile
-                    )
+                    val photoURI =
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+                        FileProvider.getUriForFile(
+                            context,
+                            "com.selsela.airconditioner.fileprovider",
+                            photoFile
+                        )
+                    } else {
+                        Uri.fromFile(photoFile);
+                    }
+
 
                     takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     val pickTitle = "Select or take a new Picture"
                     val chooserIntent = Intent.createChooser(cameraIntent, pickTitle)
+                    chooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, isMultiple);
+
                     chooserIntent.putExtra(
                         Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePhotoIntent)
                     )
                     images.launch(chooserIntent)
 
-
                 } catch (ex: IOException) {
                     ex.printStackTrace()
                 }
             }
-            //   }
-            //  }
+               }
         }
 
         fun Context.createFullImageFile(): File {

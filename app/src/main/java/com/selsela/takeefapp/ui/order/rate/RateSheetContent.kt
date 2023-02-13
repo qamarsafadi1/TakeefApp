@@ -88,8 +88,8 @@ fun RateSheetContent(
         val rateArray = mutableListOf<List<Rate>>()
 
         Column {
-            repeat(LocalData.rateItems?.size ?: 0) {
-                QualityRating(LocalData.rateItems?.get(it) ?: RateProperitiesSupervisor()) {
+            repeat(viewModel.rateItemArray.value.size ?: 0) {
+                QualityRating(viewModel.rateItemArray.value.get(it)) {
                     //[[rate_properity_id,rate]]
                     val foundedItem = rateArray.find { rateItem ->
                         it.id == rateItem.find { rate -> rate.id == it.id }?.id
@@ -109,9 +109,8 @@ fun RateSheetContent(
 
             }
         }
-        var note = ""
-        NoteView() {
-            note = it
+        NoteView(viewModel) {
+            viewModel.note = it
         }
         Column(
             Modifier
@@ -134,10 +133,17 @@ fun RateSheetContent(
         val context = LocalContext.current
         ElasticButton(
             onClick = {
-                if (note.isEmpty().not()) {
-                    onConfirm(viewState.order?.id!!,  viewModel.rateArray, note)
+                viewModel.rateArray.size.log(" rateArray ")
+                if (viewModel.rateArray.isEmpty().not()) {
+                    if (viewModel.note.isEmpty().not()) {
+                        onConfirm(viewState.order?.id!!, viewModel.rateArray, viewModel.note)
+                        viewModel.note = ""
+                        viewModel.rateItemArray.value = listOf()
+                    } else {
+                        context.showError(context.getString(R.string.please_enter_note))
+                    }
                 } else {
-                    context.showError(context.getString(R.string.please_enter_note))
+                    context.showError(context.getString(R.string.please_rate_at_least))
                 }
             }, title = stringResource(R.string.send_rate),
             modifier = Modifier
@@ -151,11 +157,12 @@ fun RateSheetContent(
 
 @Composable
 private fun NoteView(
+    viewModel: OrderViewModel,
     onValueChange: (String) -> Unit
 ) {
     var note by remember { mutableStateOf("") }
     InputEditText(
-        text = note,
+        text =  viewModel.note,
         hint = stringResource(R.string.write_note),
         modifier = Modifier.padding(top = 34.dp),
         onValueChange = {
@@ -171,6 +178,7 @@ private fun QualityRating(
     rateItem: RateProperitiesSupervisor,
     qualityRate: (RateProperitiesSupervisor) -> Unit
 ) {
+    rateItem.rate.log("rateItem.rate")
     Row(
         modifier = Modifier
             .paddingTop(46.3)
@@ -184,9 +192,11 @@ private fun QualityRating(
             style = text14,
             color = SecondaryColor2
         )
-        var rating by remember { mutableStateOf(rateItem.rate) }
+        var ratring by remember {
+            mutableStateOf(0f)
+        }
         RatingBar(
-            rating = rating,
+            rating = ratring,
             space = 2.dp,
             imageVectorEmpty = ImageVector.vectorResource(R.drawable.staricon),
             imageVectorFFilled = ImageVector.vectorResource(R.drawable.starfill),
@@ -196,10 +206,8 @@ private fun QualityRating(
             gestureEnabled = true,
             itemSize = 25.dp
         ) {
-            rating = it
-            rateItem.rate = rating
-            rateItem.rate.log(" rateItem.rate")
-            qualityRate(rateItem)
+            ratring = 0f
+            qualityRate(rateItem.copy(rate = it))
         }
     }
 }

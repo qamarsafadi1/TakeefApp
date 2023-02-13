@@ -68,7 +68,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
                 )
                 {
                     Text(
-                        text = address.getFullAddress(),
+                        text = address.note,
                         style = text12,
                         color = TextColor,
                     )

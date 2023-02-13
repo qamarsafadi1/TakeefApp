@@ -180,6 +180,8 @@ class AddressViewModel @Inject constructor(
         areaId = address.area.id
         cityId = address.city.id
         districtId = address.district.id
+        note.value = address.note
+
     }
 
     fun updateSelectAddress(address: Place, isFav: Int) {
@@ -197,6 +199,7 @@ class AddressViewModel @Inject constructor(
             address.address.contains(it.name)
         }
 
+        note.value = address.address
         areaName = area?.name ?: ""
         cityName = city?.name ?: ""
         districtName = district?.name ?: ""

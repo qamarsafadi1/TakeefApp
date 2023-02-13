@@ -180,7 +180,7 @@ fun SelectedAddressView(address: Address) {
                 color = SecondaryColor
             )
             Text(
-                text = "${address.area.name}-${address.city.name}-${address.district.name}",
+                text = address.note,
                 style = text14,
                 color = TextColor,
                 modifier = Modifier.paddingTop(11)

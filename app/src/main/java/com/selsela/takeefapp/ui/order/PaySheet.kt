@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
@@ -95,7 +96,7 @@ private fun PaySheetContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.7f)
+            .fillMaxHeight(0.9f)
             .padding(
                 horizontal = 24.dp,
                 vertical = 10.dp
@@ -203,8 +204,7 @@ fun WalletItemView(vm: HomeViewModel, order: Order?) {
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
+                .wrapContentWidth()
         ) {
             androidx.compose.material3.Text(
                 text = stringResource(R.string.wallet_balance),
@@ -229,19 +229,16 @@ fun WalletItemView(vm: HomeViewModel, order: Order?) {
                 }
             }
         }
+        Spacer(modifier = Modifier.weight(1f))
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End
+            modifier = Modifier.wrapContentWidth(Alignment.End),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             androidx.compose.material3.Text(
                 text = "${LocalData.userWallet?.balance}",
                 style = text14Meduim,
                 color = Color.White
             )
-            Spacer(modifier = Modifier.width(5.dp))
             androidx.compose.material3.Text(
                 text = stringResource(id = R.string.currency_1, Extensions.getCurrency()),
                 style = text13,
@@ -374,13 +371,19 @@ fun PaymentViewDark(
         repeat(LocalData.paymentsType?.filter {
             it.id != 3
         }?.size ?: 0) {
-            PaymentItemDark(
-                LocalData.paymentsType!![it],
-                selectedPayment == LocalData.paymentsType!![it].id
-            ) {
-                selectedPayment = LocalData.paymentsType!![it].id
-                onSelectPayment(selectedPayment)
-            }
+            LocalData.paymentsType?.find { item -> item.id == LocalData.paymentsType!![it].id }
+                .let {
+                    if (it != null) {
+                        PaymentItemDark(
+                            it,
+                            selectedPayment == it.id
+                        ) {
+                            selectedPayment = it.id
+                            onSelectPayment(selectedPayment)
+                        }
+                    }
+                }
+
         }
 
     }

@@ -3,6 +3,7 @@ package com.selsela.takeefapp.ui.order
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -75,6 +76,7 @@ import com.selsela.takeefapp.ui.theme.text14Meduim
 import com.selsela.takeefapp.ui.theme.text16Bold
 import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Constants
+import com.selsela.takeefapp.utils.Constants.FINISHED
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.Extensions.Companion.showSuccess
 import com.selsela.takeefapp.utils.LocalData
@@ -107,6 +109,9 @@ fun OrderDetailsView(
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true
     )
+    BackHandler {
+        onBack()
+    }
 
     when (viewState.state) {
         State.SUCCESS -> {
@@ -139,8 +144,21 @@ fun OrderDetailsView(
         }
 
         State.LOADING -> {
-            if (rateSheetState.isVisible.not())
+            if (!viewModel.isDetailsLoaded)
                 LoadingView()
+            else {
+                viewState.order?.let {
+                    OrderDetailsContent(
+                        onBack,
+                        onCancel = viewModel::cancelOrder,
+                        it,
+                        rateSheetState,
+                        paySheetState,
+                        viewState,
+                        onReject = viewModel::rejectAdditionalCost
+                    )
+                }
+            }
         }
 
         else -> {}
@@ -152,7 +170,6 @@ fun OrderDetailsView(
      */
 
     LaunchedEffect(Unit) {
-        if (!viewModel.isLoaded)
             viewModel.getOrderDetails(orderId)
     }
 
@@ -168,6 +185,7 @@ fun OrderDetailsView(
         viewModel.getOrderDetails(orderId)
     }
 
+    viewModel.getRateItem()
     PaySheet(
         sheetState = paySheetState,
         viewState,
@@ -278,7 +296,7 @@ private fun OrderDetailsContent(
 
                     }
                     AdditionalCostView(
-                        isVisible = order.needAdditionalCost == 1 && order.additional_cost_status == "waiting",
+                        isVisible = order.case.id != FINISHED && order.needAdditionalCost == 1 && order.additional_cost_status == "waiting",
                         coroutineScope,
                         paySheetState,
                         viewState,

@@ -60,5 +60,10 @@ object Navigation {
             inclusive = true
         }
     }
+    fun NavOptionsBuilder.navigateToHomeClearBackStack(navController: NavController) {
+        popUpTo(Destinations.HOME_SCREEN) {
+            inclusive = false
+        }
+    }
 
 }

@@ -54,7 +54,8 @@ fun WalletCard(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.weight(1f)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.wallet),
@@ -70,7 +71,8 @@ fun WalletCard(
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.weight(2f)
             ) {
                 Text(
                     text = "${uiState.user?.balance}",

@@ -589,6 +589,7 @@ class AuthViewModel @Inject constructor(
                                     null
                                 }
                             if (contactReplay != null) {
+                                contactId = contactReplay.id ?: -1
                                 contactReplay.replies?.add(
                                     0, Reply(
                                         message = contactReplay.message,
@@ -644,6 +645,7 @@ class AuthViewModel @Inject constructor(
                     Status.SUCCESS -> {
                         isLoaded = true
                         val contactReplay = result.data?.contactReplies
+                        contactId = contactReplay?.id  ?: -1
                         contactReplay?.replies?.add(
                             0, Reply(
                                 message = contactReplay.message,

@@ -207,21 +207,18 @@ private fun SupportContent(
                                         .isEmpty()
                                         .not()
                                 ) {
-                                    val reply =
-                                        Reply(adminId = 0, message = viewModel.message.value)
+                                    val reply = Reply(adminId = 0, message = viewModel.message.value)
                                     if (supportUiState.contactReplay != null) {
                                         reply.id = (supportUiState.contactReplay?.replies?.last()?.id
                                             ?: 0) + 1
                                         supportUiState.contactReplay?.replies?.add(reply)
                                     } else {
-                                        val replais = ContactReplies()
-                                        replais.replies?.add(reply)
-                                        supportUiState.contactReplay = replais
+                                        reply.id = 1
+                                        messages.add(reply)
+                                        viewModel.getContacts()
                                     }
                                     sendMessage(viewModel.message.value)
-                                    viewModel.message.value = ""
-                                    viewModel.getContacts()
-                                }
+                                    viewModel.message.value = "" }
                             })
 
 

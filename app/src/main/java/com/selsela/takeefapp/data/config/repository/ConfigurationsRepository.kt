@@ -39,6 +39,7 @@ class ConfigurationsRepository @Inject constructor(
             } else {
                 val gson = Gson()
                 val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
                 handleExceptions(errorBase)
             }
 
@@ -60,6 +61,7 @@ class ConfigurationsRepository @Inject constructor(
             } else {
                 val gson = Gson()
                 val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
                 handleExceptions(errorBase)
             }
         } catch (e: Exception) {
@@ -80,6 +82,7 @@ class ConfigurationsRepository @Inject constructor(
             } else {
                 val gson = Gson()
                 val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
                 handleExceptions(errorBase)
             }
         } catch (e: Exception) {
@@ -100,6 +103,7 @@ class ConfigurationsRepository @Inject constructor(
             } else {
                 val gson = Gson()
                 val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
                 handleExceptions(errorBase)
             }
         } catch (e: Exception) {
@@ -120,6 +124,7 @@ class ConfigurationsRepository @Inject constructor(
             } else {
                 val gson = Gson()
                 val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
                 handleExceptions(errorBase)
             }
         } catch (e: Exception) {

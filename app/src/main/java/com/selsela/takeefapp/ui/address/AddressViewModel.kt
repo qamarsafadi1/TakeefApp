@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
@@ -18,7 +18,6 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.selsela.takeefapp.data.address.GooglePlacesRepository
-import com.selsela.takeefapp.data.auth.model.address.District
 import com.selsela.takeefapp.data.auth.model.address.FavouriteAddresse
 import com.selsela.takeefapp.data.auth.repository.AuthRepository
 import com.selsela.takeefapp.data.config.model.city.Area
@@ -39,6 +38,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Arrays
 import javax.inject.Inject
+import kotlin.math.ln
 
 
 /**
@@ -72,6 +72,7 @@ class AddressViewModel @Inject constructor(
     var isLoaded = false
     var placesClient: PlacesClient
     var token: AutocompleteSessionToken
+    var isOutOfBoundaries = mutableStateOf(false)
     private var mResult: StringBuilder? = null
 
     var searchAddress = mutableStateListOf<Place>()
@@ -139,6 +140,12 @@ class AddressViewModel @Inject constructor(
         return areas?.find {
             it.id == areaId
         }?.cities ?: listOf()
+    }
+
+    fun checkIfLocationWithinBoundaries(){
+         val saudiArabiaBoundaries =  LatLngBounds(LatLng(16.3478913436,34.6323360532 ),
+             LatLng(32.161008816,55.6666593769) )
+        isOutOfBoundaries.value = saudiArabiaBoundaries.contains(LatLng(lat,lng)).not()
     }
 
     fun getDistrictOfCities(): List<Children> {

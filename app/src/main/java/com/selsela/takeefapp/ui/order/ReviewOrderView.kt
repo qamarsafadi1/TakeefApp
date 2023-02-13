@@ -65,6 +65,7 @@ import com.selsela.takeefapp.utils.Constants.CLEANING
 import com.selsela.takeefapp.utils.Constants.COD
 import com.selsela.takeefapp.utils.Constants.INSTALLATION
 import com.selsela.takeefapp.utils.Constants.MAINTENANCE
+import com.selsela.takeefapp.utils.DateHelper
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.Extensions.Companion.getCurrency
 import com.selsela.takeefapp.utils.Extensions.Companion.log
@@ -101,6 +102,9 @@ fun ReviewOrderView(
         event = viewState.onFailure,
         onConsumed = vm::onFailure
     ) { error ->
+        if (error.status == 403)
+            LocalData.clearData()
+        else
         Common.handleErrors(
             error.responseMessage,
             error.errors,
@@ -625,14 +629,16 @@ private fun TaxItem(tax: String) {
 }
 
 @Composable
-private fun VisitDateView(selectedPeriodId: MutableState<WorkPeriod>) {
+private fun VisitDateView(selectedPeriodId: MutableState<WorkPeriod>,
+                          date: String = "") {
+    val orderDate = if (date != "") DateHelper.getOrderDateNoraml(date) else listOf()
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = Modifier.weight(1.5f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
@@ -649,7 +655,6 @@ private fun VisitDateView(selectedPeriodId: MutableState<WorkPeriod>) {
         }
 
         Column(
-            modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.Start
         ) {
             Row(
@@ -662,14 +667,32 @@ private fun VisitDateView(selectedPeriodId: MutableState<WorkPeriod>) {
                     color = TextColor
                 )
             }
-            Text(
-                text = "${selectedPeriodId.value.getTimeFromFormatted()} - ${selectedPeriodId.value.getTimeToFormatted()}",
-                style = text12,
-                color = SecondaryColor,
+            Row(
                 modifier = Modifier.paddingTop(
                     7
+                ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                androidx.compose.material.Text(
+                    text = DateHelper.getTodayFormatedDate(),
+                    style = text12,
+                    color = SecondaryColor
                 )
-            )
+                Spacer(modifier = Modifier.width(3.dp))
+                androidx.compose.material.Text(
+                    text = ".",
+                    style = text12,
+                    color = SecondaryColor
+                )
+                Spacer(modifier = Modifier.width(3.dp))
+                Text(
+                    text = "${selectedPeriodId.value.getTimeFromFormatted()} - ${selectedPeriodId.value.getTimeToFormatted()}",
+                    style = text12,
+                    color = SecondaryColor,
+
+                    )
+            }
+
         }
     }
 }

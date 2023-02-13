@@ -37,6 +37,8 @@ class GooglePlacesRepository @Inject constructor(
             } else {
                 val gson = Gson()
                 val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
+
                 Extensions.Companion.handleExceptions(errorBase)
             }
         } catch (e: Exception) {

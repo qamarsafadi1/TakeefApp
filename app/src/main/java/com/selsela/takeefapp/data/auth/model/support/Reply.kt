@@ -2,6 +2,7 @@ package com.selsela.takeefapp.data.auth.model.support
 
 
 import com.google.gson.annotations.SerializedName
+import com.selsela.takeefapp.utils.DateHelper
 
 data class Reply(
     @SerializedName("actor_id")
@@ -21,4 +22,10 @@ data class Reply(
     @SerializedName("updated_at")
     val updatedAt: String? = "",
     var type: String? = "admin"
-)
+) {
+    fun showTime(): String {
+        return if (createdAt.isNullOrEmpty().not())
+            DateHelper.formatTime(DateHelper.getTimeStamp(createdAt ?: ""))
+        else ""
+    }
+}

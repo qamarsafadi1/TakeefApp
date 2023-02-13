@@ -56,6 +56,7 @@ class SpecialOrderRepository @Inject constructor(
                 val gson = Gson()
                 val errorBase =
                     gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
                 handleExceptions(errorBase)
             }
         } catch (e: Exception) {
@@ -78,6 +79,8 @@ class SpecialOrderRepository @Inject constructor(
                     val gson = Gson()
                     val errorBase =
                         gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    errorBase.statusCode = response.code()
+
                     handleExceptions(errorBase)
                 }
             } catch (e: Exception) {
@@ -100,6 +103,7 @@ class SpecialOrderRepository @Inject constructor(
                     val gson = Gson()
                     val errorBase =
                         gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    errorBase.statusCode = response.code()
                     handleExceptions(errorBase)
                 }
             } catch (e: Exception) {

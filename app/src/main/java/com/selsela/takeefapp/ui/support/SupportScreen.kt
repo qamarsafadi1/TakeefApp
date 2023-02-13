@@ -63,6 +63,7 @@ import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.Extensions.Companion.rememberMutableStateListOf
+import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import de.palm.composestateevents.EventEffect
 
@@ -96,11 +97,14 @@ fun SupportScreen(
         event = viewState.onFailure,
         onConsumed = viewModel::onFailure
     ) { error ->
-        Common.handleErrors(
-            error.responseMessage,
-            error.errors,
-            context
-        )
+        if (error.status == 403)
+            LocalData.clearData()
+
+            Common.handleErrors(
+                error.responseMessage,
+                error.errors,
+                context
+            )
     }
     EventEffect(
         event = viewState.onSuccess,
@@ -205,7 +209,8 @@ private fun SupportContent(
                                     val reply =
                                         Reply(adminId = 0, message = viewModel.message.value)
                                     if (supportUiState.contactReplay != null) {
-                                        reply.id = (supportUiState.contactReplay.replies?.last()?.id ?: 0)+1
+                                        reply.id = (supportUiState.contactReplay.replies?.last()?.id
+                                            ?: 0) + 1
                                         supportUiState.contactReplay.replies?.add(reply)
                                     } else messages.add(reply)
                                     sendMessage(viewModel.message.value)
@@ -269,24 +274,35 @@ fun AdminItem(modifier: Modifier, reply: Reply) {
 
         }
         Spacer(modifier = Modifier.width(17.dp))
-        Box(
-            modifier = Modifier
-                .wrapContentWidth()
-                .background(
-                    LightBlue.copy(0.10f), RoundedCornerShape(
-                        topEnd = 23.dp, topStart = 23.dp,
-                        bottomEnd = 23.dp, bottomStart = 0.dp
-                    )
-                )
-                .padding(horizontal = 18.dp, vertical = 24.dp)
-        ) {
-            Text(
-                text = reply.message ?: "",
-                style = text12,
-                color = TextColor,
 
-                )
-        }
+       Column {
+           Box(
+               modifier = Modifier
+                   .wrapContentWidth()
+                   .background(
+                       LightBlue.copy(0.10f), RoundedCornerShape(
+                           topEnd = 23.dp, topStart = 23.dp,
+                           bottomEnd = 23.dp, bottomStart = 0.dp
+                       )
+                   )
+                   .padding(horizontal = 18.dp, vertical = 24.dp)
+           ) {
+               Text(
+                   text = reply.message ?: "",
+                   style = text12,
+                   color = TextColor,
+
+                   )
+           }
+           Spacer(modifier = Modifier.height(2.dp))
+           Text(
+               text = reply.showTime(),
+               style = text10,
+               color = TextColor,
+               modifier = Modifier.paddingTop(6)
+           )
+       }
+
     }
 
 }
@@ -300,24 +316,36 @@ fun MeItem(modifier: Modifier, reply: Reply) {
         horizontalArrangement = Arrangement.End
     ) {
         Spacer(modifier = Modifier.width(17.dp))
-        Box(
-            modifier = Modifier
-                .wrapContentWidth()
-                .background(
-                    Purple40.copy(0.10f), RoundedCornerShape(
-                        topEnd = 23.dp, topStart = 23.dp,
-                        bottomEnd = 0.dp, bottomStart = 23.dp
-                    )
-                )
-                .padding(horizontal = 18.dp, vertical = 24.dp)
+        Column(
+            horizontalAlignment = Alignment.End
         ) {
-            Text(
-                text = reply.message ?: "",
-                style = text12,
-                color = TextColor,
+            Box(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .background(
+                        Purple40.copy(0.10f), RoundedCornerShape(
+                            topEnd = 23.dp, topStart = 23.dp,
+                            bottomEnd = 0.dp, bottomStart = 23.dp
+                        )
+                    )
+                    .padding(horizontal = 18.dp, vertical = 24.dp)
+            ) {
+                Text(
+                    text = reply.message ?: "",
+                    style = text12,
+                    color = TextColor,
 
-                )
+                    )
+            }
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = reply.showTime(),
+                style = text10,
+                color = TextColor,
+                modifier = Modifier.paddingTop(6)
+            )
         }
+
     }
 
 }

@@ -123,11 +123,16 @@ fun ProfileScreen(
         event = viewState.onFailure,
         onConsumed = viewModel::onFailure
     ) { error ->
-        Common.handleErrors(
-            error.responseMessage,
-            error.errors,
-            context
-        )
+        if (error.status == 403) {
+            LocalData.clearData()
+            goToLogin()
+        }
+
+            Common.handleErrors(
+                error.responseMessage,
+                error.errors,
+                context
+            )
     }
 
 }

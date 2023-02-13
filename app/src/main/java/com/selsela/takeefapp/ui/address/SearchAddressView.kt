@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.auth.model.address.FavouriteAddresse
@@ -154,6 +155,7 @@ private fun SearchAddressContent(
                             updateSheetSelected = vm::updateSelectAddress
                         ) {
                             onSelect()
+                            sharedVm.currentLocation.value = LatLng( it.latitude, it.longitude)
                         }
                     } else {
                         AddressItem(
@@ -162,6 +164,7 @@ private fun SearchAddressContent(
                             updateSheetSelected = vm::updateSelectAddress
                         ) {
                             onSelect()
+                            sharedVm.currentLocation.value = it.latLng as LatLng
                         }
                     }
                 }

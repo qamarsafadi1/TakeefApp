@@ -98,6 +98,7 @@ class AuthViewModel @Inject constructor(
     var contactId = -1
     val userLoggedIn = mutableStateOf(LocalData.accessToken.isNullOrEmpty().not())
     val user = mutableStateOf(LocalData.user)
+    val newNotification = mutableStateOf(LocalData.user?.newNotifications)
 
     /**
      * State Subscribers
@@ -248,6 +249,7 @@ class AuthViewModel @Inject constructor(
                                     ErrorsData(
                                         result.errors,
                                         result.message,
+                                        result.statusCode
                                     )
                                 ),
                                 responseMessage = result.message ?: "",
@@ -285,6 +287,7 @@ class AuthViewModel @Inject constructor(
                                     ErrorsData(
                                         result.errors,
                                         result.message,
+                                        result.statusCode
                                     )
                                 ),
                                 responseMessage = result.message ?: "",
@@ -321,6 +324,7 @@ class AuthViewModel @Inject constructor(
                                 ErrorsData(
                                     result.errors,
                                     result.message,
+                                    result.statusCode
                                 )
                             ),
                             responseMessage = result.message ?: "",
@@ -341,6 +345,7 @@ class AuthViewModel @Inject constructor(
                     val authUiState = when (result.status) {
                         Status.SUCCESS -> {
                             isLoaded = true
+                            newNotification.value = result.data?.newNotifications
                             AuthUiState(
                                 responseMessage = result.message ?: "",
                                 onSuccess = triggered(result.data?.status ?: ""),
@@ -352,16 +357,22 @@ class AuthViewModel @Inject constructor(
                             AuthUiState(
                                 isLoading = true
                             )
+                        Status.ERROR -> {
+                            if (result.statusCode == 403)
+                                LocalData.clearData()
+                            userLoggedIn.value = false
+                            AuthUiState(
+                                onFailure = triggered(
+                                    ErrorsData(
+                                        result.errors,
+                                        result.message,
+                                        result.statusCode
+                                    )
+                                ),
+                                responseMessage = result.message ?: "",
+                            )
+                        }
 
-                        Status.ERROR -> AuthUiState(
-                            onFailure = triggered(
-                                ErrorsData(
-                                    result.errors,
-                                    result.message,
-                                )
-                            ),
-                            responseMessage = result.message ?: "",
-                        )
                     }
                     state = authUiState
                 }
@@ -441,6 +452,7 @@ class AuthViewModel @Inject constructor(
                                 ErrorsData(
                                     result.errors,
                                     result.message,
+                                    result.statusCode
                                 )
                             ),
                             responseMessage = result.message ?: "",
@@ -655,6 +667,7 @@ class AuthViewModel @Inject constructor(
                                 ErrorsData(
                                     result.errors,
                                     result.message,
+                                    result.statusCode
                                 )
                             )
                         )
@@ -671,6 +684,7 @@ class AuthViewModel @Inject constructor(
         state = state.copy(onSuccess = consumed())
         walletState = walletState.copy(onSuccess = consumed)
     }
+
     fun onResend() {
         state = state.copy(onResend = consumed())
     }

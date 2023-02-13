@@ -42,6 +42,7 @@ import com.selsela.takeefapp.ui.theme.text22Book
 import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Extensions.Companion.bindHtml
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
+import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import de.palm.composestateevents.EventEffect
 
@@ -69,6 +70,9 @@ fun AboutAppView(
         event = viewState.onFailure,
         onConsumed = viewModel::onFailure
     ) { error ->
+        if (error.status == 403)
+            LocalData.clearData()
+        else
         Common.handleErrors(
             error.responseMessage,
             error.errors,

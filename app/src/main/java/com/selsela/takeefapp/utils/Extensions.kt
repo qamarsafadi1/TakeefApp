@@ -36,6 +36,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -43,6 +44,7 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -55,6 +57,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.muddzdev.styleabletoast.StyleableToast
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.FileHelper.Companion.absoulutePath
 import com.selsela.takeefapp.utils.FileHelper.Companion.compressImage
 import com.selsela.takeefapp.utils.FileHelper.Companion.scaleBitmap
@@ -207,7 +210,8 @@ class Extensions {
                 Resource.error(
                     null,
                     errorBase.responseMessage,
-                    errorBase.errors
+                    errorBase.errors,
+                    errorBase.statusCode
                 )
             )
         }
@@ -422,11 +426,11 @@ class Extensions {
             return rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult(),
                 onResult = { result ->
-                    result.data?.log("intent")
+                    result.log("intent")
                     if (result.data?.clipData != null) {
                         val count =
                             result.data?.clipData!!.itemCount; //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
-                        count.log("count")
+                        count.log("")
                         for (i in 0 until count) {
                             val imageUri = result.data?.clipData?.getItemAt(i)?.uri
                             imageUri?.let { it1 ->
@@ -451,19 +455,21 @@ class Extensions {
                                 image?.let { it1 -> imges?.add(it1) }
                             }
                         }
+                    }else if (result.data?.extras != null){
+                        result.data?.extras?.log("extras")
                     }
                     lambda(imges)
                 })
         }
 
         fun uploadImages(
-            context: Context,
+            mActivity: Context,
             images: ActivityResultLauncher<Intent>,
             isMultiple: Boolean
         ) {
-            context.getActivity()?.permissionsBuilder(
-        Manifest.permission.CAMERA
-    )?.build()?.send {
+//    permissionsBuilder(
+//        Manifest.permission.READ_EXTERNAL_STORAGE
+//    ).build().send {
             kotlin.run {
                 // if (it.allGranted()) {
                 absoulutePath = null
@@ -471,49 +477,155 @@ class Extensions {
                 try {
                     val cameraIntent =
                         Intent(
-                            Intent.ACTION_GET_CONTENT,
+                            Intent.ACTION_PICK,
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                         )
 
                     cameraIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, isMultiple);
                     val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                     // takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getFileDirectory())
-                  //  takePhotoIntent.putExtra("android.intent.extras.CAMERA_FACING", 1)
+                    takePhotoIntent.putExtra("android.intent.extras.CAMERA_FACING", 1)
                     // Create the File where the photo should go
 
                     val photoFile: File =
-                        context.createFullImageFile()
+                        mActivity.createFullImageFile()
 
                     // Continue only if the File was successfully created
-                    val photoURI =
-                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-                        FileProvider.getUriForFile(
-                            context,
-                            "com.selsela.airconditioner.fileprovider",
-                            photoFile
-                        )
-                    } else {
-                        Uri.fromFile(photoFile);
-                    }
-
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        mActivity,
+                        "com.selsela.airconditioner.fileprovider",
+                        photoFile
+                    )
 
                     takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     val pickTitle = "Select or take a new Picture"
                     val chooserIntent = Intent.createChooser(cameraIntent, pickTitle)
-                    chooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, isMultiple);
-
                     chooserIntent.putExtra(
                         Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePhotoIntent)
                     )
                     images.launch(chooserIntent)
 
+
                 } catch (ex: IOException) {
                     ex.printStackTrace()
                 }
             }
-               }
+        }
+        @Composable
+        fun OnLifecycleEvent(onEvent: (owner: LifecycleOwner, event: Lifecycle.Event) -> Unit) {
+            val eventHandler = rememberUpdatedState(onEvent)
+            val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
+
+            DisposableEffect(lifecycleOwner.value) {
+                val lifecycle = lifecycleOwner.value.lifecycle
+                val observer = LifecycleEventObserver { owner, event ->
+                    eventHandler.value(owner, event)
+                }
+
+                lifecycle.addObserver(observer)
+                onDispose {
+                    lifecycle.removeObserver(observer)
+                }
+            }
         }
 
+        @Composable
+        fun mStartActivityForResultMutlipaale(
+            context: Context,
+            lambda: (List<File>?) -> Unit
+        ): ActivityResultLauncher<Intent> {
+            val imges: MutableList<File>? = mutableListOf()
+
+            return rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                "heeere".log("absoulutePath")
+                val data = result.data
+                if (result.resultCode == Activity.RESULT_OK) {
+                    try {
+                        if (data != null && data.data != null) {
+                            val image = FileHelper.getImage(data.data, context)
+                            image?.let { it1 -> imges?.add(it1) }
+                            lambda(imges)
+
+                            /*   if (bitmap != null && Common.validImageSize(
+                                       FileUtils.getFile(
+                                           requireContext(),
+                                           data.data!!
+                                       )
+                                   )
+                               ) {
+                                   lambda(image, bitmap)
+                                   *//*  viewModel.file = image
+                       binding?.imageIv?.setImageBitmap(bitmap)*//*
+                        //   viewModel.bitmaps.add(bitmap)
+                    } else {
+                        context?.showError(getString(R.string.msg_size_exced_max))
+
+                    }*/
+                        } else if (data != null && data.clipData != null) {
+
+                            val mClipData: ClipData? = data.clipData
+                            var imageValidSize = true
+
+                            val count = mClipData?.itemCount ?: 0
+                            if (mClipData != null)
+                                for (i in 0 until count) {
+                                    val imageUri = result.data?.clipData?.getItemAt(i)?.uri
+                                    imageUri?.let { it1 ->
+                                        val selectedImage = FileHandler.decodeBitmap(context, it1)
+                                        selectedImage?.log()
+                                        val filename = FileUtils.getFileName(context, imageUri)
+                                        val file = FileUtils.createFile(context, imageUri, filename)
+                                        file.let { it1 -> imges?.add(it1) }
+                                        imges?.size?.log("viewModel.photosImg")
+                                    }
+                                }
+                            lambda(imges)
+                            /*                    if (imageValidSize.not()) {
+                                                    context?.showError(getString(R.string.msg_size_exced_max))
+
+                                                }*/
+
+                        } else if (absoulutePath != null) {
+                            BitmapFactory.Options().apply {
+                                // Get the dimensions of the bitmap
+                                inJustDecodeBounds = true
+                                var bitmap = compressImage(context, Uri.fromFile(File(absoulutePath!!)))
+                                bitmap = scaleBitmap(bitmap!!, 2000 * 1000)
+                                val image = FileHelper.getBitmapImage(
+                                    bitmap!!,
+                                   context
+                                )
+                                image.let { it1 ->
+                                    if (it1 != null) {
+                                        imges?.add(it1)
+                                    }
+                                }
+                            }
+                            lambda(imges)
+                        }
+
+
+                        /* else if (data.extras?.get("data") != null) {
+                                val image = FileHelper.getBitmapImage(
+                                    mActivity,
+                                    data.extras?.get("data")!! as Bitmap,
+                                    requireContext()
+                                )
+                                val bitmap = data.extras?.get("data")!! as Bitmap
+                                if (Common.validImageSize(bitmap)) {
+                                    lambda(image, bitmap)
+                                    //   viewModel.bitmaps.add(bitmap)
+                                } else {
+                                    context?.showError(getString(R.string.msg_size_exced_max))
+
+                                }
+                            } */
+                    } catch (ex: Exception) {
+                        ex.printStackTrace()
+                    }
+                }
+            }
+        }
         fun Context.createFullImageFile(): File {
             // Create an image file name
             val timeStamp: String =

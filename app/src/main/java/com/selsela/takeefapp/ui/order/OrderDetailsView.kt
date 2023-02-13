@@ -78,6 +78,7 @@ import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Constants.FINISHED
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
+import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.showSuccess
 import com.selsela.takeefapp.utils.LocalData
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
@@ -177,6 +178,9 @@ fun OrderDetailsView(
         event = viewState.onFailure,
         onConsumed = viewModel::onFailure
     ) { error ->
+        if (error.status == 403) {
+            LocalData.clearData()
+        }
         Common.handleErrors(
             error.responseMessage,
             error.errors,
@@ -329,7 +333,8 @@ private fun OrderDetailsContent(
                         color = DividerColor,
                         modifier = Modifier.padding(top = 27.6.dp)
                     )
-                    VisitDateView(order.workPeriod)
+                    order.orderDate.log("order.orderDate")
+                    VisitDateView(order.workPeriod,order.orderDate)
                     Divider(
                         thickness = 1.dp,
                         color = DividerColor,

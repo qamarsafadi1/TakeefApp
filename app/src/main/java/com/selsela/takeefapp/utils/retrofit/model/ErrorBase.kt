@@ -9,5 +9,7 @@ data class ErrorBase(
         val responseMessage: String? =null,
         val count_error: String?=null,
         val error_type: String?=null,
-        val status: Boolean
-)
+        val status: Boolean,
+        var statusCode: Int = 0,
+
+        )

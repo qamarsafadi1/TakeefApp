@@ -1,6 +1,8 @@
 package com.selsela.takeefapp.ui.home
 
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +37,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.data.notification.NotificationReceiver
 import com.selsela.takeefapp.data.order.model.order.Order
 import com.selsela.takeefapp.ui.auth.AuthViewModel
 import com.selsela.takeefapp.ui.common.ElasticButton
@@ -52,13 +57,17 @@ import com.selsela.takeefapp.ui.order.OrderViewModel
 import com.selsela.takeefapp.ui.splash.ChangeNavigationBarColor
 import com.selsela.takeefapp.ui.splash.ChangeStatusBarColor
 import com.selsela.takeefapp.ui.theme.NoRippleTheme
+import com.selsela.takeefapp.utils.Common
+import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Extensions
+import com.selsela.takeefapp.utils.Extensions.Companion.OnLifecycleEvent
 import com.selsela.takeefapp.utils.Extensions.Companion.RequestPermission
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.Extensions.Companion.showSuccess
 import com.selsela.takeefapp.utils.GetLocationDetail
 import com.selsela.takeefapp.utils.LocalData
+import de.palm.composestateevents.EventEffect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -116,6 +125,7 @@ fun HomeView(
                 viewState.responseMessage = ""
             }
         }
+
         else -> {}
     }
 
@@ -125,9 +135,55 @@ fun HomeView(
         if (it) {
             Extensions.getMyLocation(context = context) {
                 viewModel.currentLocation.value = it
-              }
+
+            }
         }
     }
+    BrodcastRevicer(context) {
+        walletViewModel.me()
+    }
+
+    OnLifecycleEvent { _, event ->
+        // do stuff on event
+        when (event) {
+            Lifecycle.Event.ON_RESUME -> {
+                walletViewModel.me()
+            }
+
+            else -> {}
+        }
+    }
+
+
+    EventEffect(
+        event = viewState.onFailure,
+        onConsumed = viewModel::onFailure
+    ) { error ->
+        if (error.status == 403)
+            LocalData.clearData()
+    }
+}
+
+
+@Composable
+private fun BrodcastRevicer(
+    context: Context,
+    onReceived: () -> Unit
+) {
+    val receiver: NotificationReceiver = object : NotificationReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            onReceived()
+        }
+    }
+    LocalBroadcastManager.getInstance(context).registerReceiver(
+        receiver, IntentFilter(Constants.ORDER_STATUS_CHANGED)
+    )
+    LocalBroadcastManager.getInstance(context).registerReceiver(
+        receiver, IntentFilter(Constants.WALLET_CHANGED)
+    )
+    LocalBroadcastManager.getInstance(context).registerReceiver(
+        receiver, IntentFilter(Constants.ORDER_ADDITIONAL_COST)
+    )
 }
 
 @Composable
@@ -166,6 +222,7 @@ private fun HomeContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Header(
+                    walletViewModel.newNotification.value ?: 0,
                     goToNotification,
                     goToMyAccount
                 )
@@ -186,7 +243,7 @@ private fun HomeContent(
                         }
                     }
 
-                    item{
+                    item {
                         Spacer(modifier = Modifier.weight(1f))
                         Row(
                             modifier = Modifier

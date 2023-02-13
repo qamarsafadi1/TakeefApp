@@ -197,6 +197,7 @@ class SpecialOrderViewModel @Inject constructor(
                                     ErrorsData(
                                         result.errors,
                                         result.message,
+                                        result.statusCode
                                     )
                                 ),
                             )
@@ -232,6 +233,7 @@ class SpecialOrderViewModel @Inject constructor(
                                 ErrorsData(
                                     result.errors,
                                     result.message,
+                                    result.statusCode
                                 )
                             ),
                         )
@@ -266,6 +268,7 @@ class SpecialOrderViewModel @Inject constructor(
                                 ErrorsData(
                                     result.errors,
                                     result.message,
+                                    result.statusCode
                                 )
                             ),
                         )

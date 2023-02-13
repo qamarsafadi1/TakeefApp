@@ -107,6 +107,7 @@ class MainActivity : AppCompatActivity() {
                                             && currentRoute.value?.destination?.route != Destinations.MY_ACCOUNT
                                             && currentRoute.value?.destination?.route != Destinations.ORDER_DETAILS_ARGS
                                             && currentRoute.value?.destination?.route != Destinations.ORDERS_SCREEN_ARGS
+                                            && currentRoute.value?.destination?.route != Destinations.SPECIAL_ORDERS_ARGS
                                             && currentRoute.value?.destination?.route != Destinations.PROFILE_SCREEN
                                         ) {
                                             Color.White.ChangeStatusBarColor(true)
@@ -215,6 +216,7 @@ class MainActivity : AppCompatActivity() {
             || currentRoute.value?.destination?.route == Destinations.ADDRESS_SCREEN
             || currentRoute.value?.destination?.route == Destinations.ORDER_DETAILS_ARGS
             || currentRoute.value?.destination?.route == Destinations.ORDERS_SCREEN_ARGS
+            || currentRoute.value?.destination?.route == Destinations.SPECIAL_ORDERS_ARGS
             || currentRoute.value?.destination?.route == Destinations.PROFILE_SCREEN
         ) {
             WindowCompat.setDecorFitsSystemWindows(window, false)

@@ -243,7 +243,8 @@ fun NavigationHost(
         }
         composable(Destinations.SPECIAL_ORDERS_ARGS) {
             val id = it.arguments?.getString("id") ?: ""
-            SpecialOrderDetailsView(id.toInt())
+            SpecialOrderDetailsView(id.toInt(),
+            onBack = navController::navigateUp)
         }
         composable(Destinations.NOTIFICATION_SCREEN) {
             NotificationView()

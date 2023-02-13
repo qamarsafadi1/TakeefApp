@@ -31,19 +31,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.ui.home.HomeViewModel
+import com.selsela.takeefapp.ui.theme.Red
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text12
+import com.selsela.takeefapp.ui.theme.text14
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 
 
 @Composable
 @OptIn(ExperimentalAnimationApi::class)
- fun CurrentAddressView(
+fun CurrentAddressView(
     viewModel: HomeViewModel,
     modifier: Modifier, addressVisible: Boolean,
+    isOutOfBounds: Boolean = false,
     onFav: (Boolean) -> Unit
 ) {
     AnimatedVisibility(
@@ -58,12 +61,12 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
                     // Slide in/out the inner box.
                     enter = slideInVertically(
                         initialOffsetY = {
-                            it / 2
+                            it/2
                         },
                     ),
                     exit = slideOutVertically(
                         targetOffsetY = {
-                            it / 2
+                            it/2
                         },
                     ),
                 ),
@@ -71,50 +74,59 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
             shape = RoundedCornerShape(topStart = 45.dp, topEnd = 45.dp)
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-                Row(
-                    modifier = Modifier
-                        .padding(horizontal = 32.dp, vertical = 25.dp)
-                        .align(Alignment.TopStart)
-                        .fillMaxWidth()
-                        .defaultMinSize(minHeight = 56.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.location),
-                        contentDescription = "",
-                        modifier = Modifier.padding(end = 6.6.dp)
-                    )
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    )
-                    {
-                        Text(
-                            text = stringResource(R.string.current_location),
-                            style = text11,
-                            color = SecondaryColor
-                        )
-                        Text(
-                            text = viewModel.selectedAddress.value,
-                            style = text12,
-                            color = TextColor,
-                            modifier = Modifier.paddingTop(3)
-                        )
-                    }
-                    var isFav by remember {
-                        mutableStateOf(viewModel.address?.isFav == 1)
-                    }
-                    IconButton(onClick = { isFav = !isFav
-                        onFav(isFav)}) {
+                if (isOutOfBounds.not()) {
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp, vertical = 25.dp)
+                            .align(Alignment.TopStart)
+                            .fillMaxWidth()
+                            .defaultMinSize(minHeight = 56.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Image(
-                            painter = painterResource(
-                                id =
-                                if (isFav.not()) R.drawable.unfav else R.drawable.fav
-                            ),
-                            contentDescription = ""
+                            painter = painterResource(id = R.drawable.location),
+                            contentDescription = "",
+                            modifier = Modifier.padding(end = 6.6.dp)
                         )
-                    }
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        )
+                        {
+                            Text(
+                                text = stringResource(R.string.current_location),
+                                style = text11,
+                                color = SecondaryColor
+                            )
+                            Text(
+                                text = viewModel.selectedAddress.value,
+                                style = text12,
+                                color = TextColor,
+                                modifier = Modifier.paddingTop(3)
+                            )
+                        }
+                        var isFav by remember {
+                            mutableStateOf(viewModel.address?.isFav == 1)
+                        }
+                        IconButton(onClick = {
+                            isFav = !isFav
+                            onFav(isFav)
+                        }) {
+                            Image(
+                                painter = painterResource(
+                                    id =
+                                    if (isFav.not()) R.drawable.unfav else R.drawable.fav
+                                ),
+                                contentDescription = ""
+                            )
+                        }
 
-                }
+                    }
+                } else Text(
+                    modifier = Modifier.padding(horizontal = 32.dp, vertical = 25.dp),
+                    text = stringResource(R.string.app_not_working_in_your_country),
+                    style = text14,
+                    color = Red
+                )
             }
         }
     }

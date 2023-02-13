@@ -267,6 +267,7 @@ class HomeViewModel @Inject constructor(
                             ErrorsData(
                                 result.errors,
                                 result.message,
+                                result.statusCode
                             )
                         ),
                     )

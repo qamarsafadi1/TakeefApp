@@ -212,5 +212,6 @@
     <string name="district_name">Neighborhood name</string>
     <string name="please_rate_at_least">Please rate at least one item</string>
     <string name="select_cancel">Cancel selection</string>
+    <string name="app_not_working_in_your_country">App is not working in your country</string>
 
 </resources>

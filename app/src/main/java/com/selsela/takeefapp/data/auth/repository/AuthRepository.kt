@@ -48,6 +48,7 @@ class AuthRepository @Inject constructor(
                 val gson = Gson()
                 val errorBase =
                     gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
                 handleExceptions(errorBase)
             }
         } catch (e: Exception) {
@@ -78,6 +79,7 @@ class AuthRepository @Inject constructor(
                 val gson = Gson()
                 val errorBase =
                     gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
                 errorBase.log("errorBase")
                 handleExceptions(errorBase)
             }
@@ -104,6 +106,7 @@ class AuthRepository @Inject constructor(
                 val gson = Gson()
                 val errorBase =
                     gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
                 errorBase.log("errorBase")
                 handleExceptions(errorBase)
             }
@@ -129,6 +132,7 @@ class AuthRepository @Inject constructor(
                 val gson = Gson()
                 val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
                 errorBase.log("errorBase")
+                errorBase.statusCode = response.code()
                 handleExceptions(errorBase)
             }
         } catch (e: Exception) {
@@ -176,6 +180,7 @@ class AuthRepository @Inject constructor(
                     val gson = Gson()
                     val errorBase =
                         gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    errorBase.statusCode = response.code()
                     handleExceptions(errorBase)
                 }
             } catch (e: Exception) {
@@ -200,6 +205,7 @@ class AuthRepository @Inject constructor(
                     val gson = Gson()
                     val errorBase =
                         gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    errorBase.statusCode = response.code()
                     handleExceptions(errorBase)
                 }
             } catch (e: Exception) {
@@ -240,6 +246,7 @@ class AuthRepository @Inject constructor(
                     val gson = Gson()
                     val errorBase =
                         gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    errorBase.statusCode = response.code()
                     handleExceptions(errorBase)
                 } else {
                     val responseUser: AuthResponse? = Gson().fromJson(
@@ -270,6 +277,7 @@ class AuthRepository @Inject constructor(
             } else {
                 val gson = Gson()
                 val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
                 handleExceptions(errorBase)
             }
         } catch (e: Exception) {
@@ -289,6 +297,7 @@ class AuthRepository @Inject constructor(
             } else {
                 val gson = Gson()
                 val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
                 handleExceptions(errorBase)
             }
         } catch (e: Exception) {
@@ -310,6 +319,7 @@ class AuthRepository @Inject constructor(
             } else {
                 val gson = Gson()
                 val errorBase = gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                errorBase.statusCode = response.code()
                 handleExceptions(errorBase)
             }
         } catch (e: Exception) {
@@ -333,6 +343,7 @@ class AuthRepository @Inject constructor(
                     val gson = Gson()
                     val errorBase =
                         gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    errorBase.statusCode = response.code()
                     handleExceptions(errorBase)
                 }
             } catch (e: Exception) {
@@ -365,6 +376,7 @@ class AuthRepository @Inject constructor(
                     val gson = Gson()
                     val errorBase =
                         gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    errorBase.statusCode = response.code()
                     handleExceptions(errorBase)
                 }
             } catch (e: Exception) {
@@ -399,6 +411,7 @@ class AuthRepository @Inject constructor(
                     val gson = Gson()
                     val errorBase =
                         gson.fromJson(response.errorBody()?.string(), ErrorBase::class.java)
+                    errorBase.statusCode = response.code()
                     handleExceptions(errorBase)
                 }
             } catch (e: Exception) {

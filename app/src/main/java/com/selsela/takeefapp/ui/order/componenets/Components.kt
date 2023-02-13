@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -44,6 +45,7 @@ import com.selsela.takeefapp.ui.theme.Red
 import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.ui.theme.SecondaryColor2
 import com.selsela.takeefapp.ui.theme.TextColor
+import com.selsela.takeefapp.ui.theme.text11
 import com.selsela.takeefapp.ui.theme.text11NoLines
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text12Meduim
@@ -55,6 +57,7 @@ import com.selsela.takeefapp.ui.theme.text16Medium
 import com.selsela.takeefapp.ui.theme.text16MediumStrike
 import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Constants.WALLET
+import com.selsela.takeefapp.utils.DateHelper
 import com.selsela.takeefapp.utils.Extensions.Companion.getCurrency
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.CoroutineScope
@@ -192,7 +195,9 @@ fun SelectedAddressView(address: Address) {
 }
 
 @Composable
-fun VisitDateView(workPeriod: WorkPeriod) {
+fun VisitDateView(workPeriod: WorkPeriod,date: String = "") {
+    val orderDate = if (date != "") DateHelper.getOrderDateNoraml(date) else listOf()
+
     Row(
         modifier = Modifier
             .padding(top = 13.dp)
@@ -202,7 +207,6 @@ fun VisitDateView(workPeriod: WorkPeriod) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
@@ -219,12 +223,11 @@ fun VisitDateView(workPeriod: WorkPeriod) {
         }
 
         Column(
-            modifier = Modifier.weight(1.5f),
             horizontalAlignment = Alignment.End
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.End
             ) {
                 Spacer(modifier = Modifier.width(25.dp))
                 androidx.compose.material3.Text(
@@ -232,17 +235,37 @@ fun VisitDateView(workPeriod: WorkPeriod) {
                     style = text14,
                     color = TextColor,
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.End
                 )
             }
-            androidx.compose.material3.Text(
-                text = "${workPeriod.getTimeFromFormatted()} - ${workPeriod.getTimeToFormatted()}",
-                style = text12,
-                color = SecondaryColor,
-                modifier = Modifier.paddingTop(
+            Row(
+                Modifier.paddingTop(
                     7
+                ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = if (orderDate.isEmpty().not())
+                        "${orderDate[0]}-${orderDate[1]}-${orderDate[2]}"
+                    else "",
+                    style = text12,
+                    color = SecondaryColor
                 )
-            )
+                Spacer(modifier = Modifier.width(3.dp))
+                Text(
+                    text = ".",
+                    style = text12,
+                    color = SecondaryColor
+                )
+                Spacer(modifier = Modifier.width(3.dp))
+                androidx.compose.material3.Text(
+                    text = "${workPeriod.getTimeFromFormatted()} - ${workPeriod.getTimeToFormatted()}",
+                    style = text12,
+                    color = SecondaryColor,
+                )
+
+            }
+
         }
     }
 

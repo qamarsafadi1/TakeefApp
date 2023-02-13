@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,19 +51,19 @@ fun GoogleMapView(
     val permissionIsGranted = remember {
         mutableStateOf(false)
     }
-    viewModel.currentLocation.value.log("currentLocation")
 
     // To control and observe the map camera
-    val cameraPositionState = rememberCameraPositionState(
-        init = {
-            position = CameraPosition.fromLatLngZoom(viewModel.currentLocation.value, 19f)
-        }
-    )
-    cameraPositionState.position =
-        CameraPosition.fromLatLngZoom(viewModel.currentLocation.value, 19f)
-
+    val cameraPositionState = rememberCameraPositionState()
+    LaunchedEffect(key1 = Unit) {
+        viewModel.currentLocation.value.log("currentLocation")
+        cameraPositionState.position =
+            CameraPosition.fromLatLngZoom(viewModel.currentLocation.value, 15f)
+        addressViewModel.lat = viewModel.currentLocation.value.latitude
+        addressViewModel.lng = viewModel.currentLocation.value.longitude
+        addressViewModel.checkIfLocationWithinBoundaries()
+    }
     val markerState = MarkerState(position = cameraPositionState.position.target)
-    markerState.position =  cameraPositionState.position.target
+
     val mapStyleOptions: MapStyleOptions = MapStyleOptions.loadRawResourceStyle(
         context,
         R.raw.styledark
@@ -109,7 +110,9 @@ fun GoogleMapView(
                 Extensions.getMyLocation(context = context) {
                     cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 15f)
                     markerState.position = it
-
+                    addressViewModel.lat = it.latitude
+                    addressViewModel.lng = it.longitude
+                    addressViewModel.checkIfLocationWithinBoundaries()
                 }
             }) {
             Image(
@@ -149,6 +152,7 @@ private fun UpdateSelectedAddress(
 
             addressViewModel.lat = cameraPositionState.position.target.latitude
             addressViewModel.lng = cameraPositionState.position.target.longitude
+            addressViewModel.checkIfLocationWithinBoundaries()
             addressViewModel.note.value = newAddress
             updateSelectedAddress(newAddress, cameraPositionState.position.target)
         }

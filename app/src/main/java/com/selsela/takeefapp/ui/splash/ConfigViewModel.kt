@@ -91,6 +91,7 @@ class ConfigViewModel @Inject constructor(
                                 ErrorsData(
                                     result.errors,
                                     result.message,
+                                    result.statusCode
                                 )
                             ),
                             responseMessage = result.message ?: "",
@@ -129,6 +130,7 @@ class ConfigViewModel @Inject constructor(
                                 ErrorsData(
                                     result.errors,
                                     result.message,
+                                    result.statusCode
                                 )
                             ),
                             responseMessage = result.message ?: "",

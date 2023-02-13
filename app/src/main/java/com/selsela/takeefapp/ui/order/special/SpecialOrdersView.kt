@@ -22,6 +22,7 @@ import com.selsela.takeefapp.ui.order.loading.SpecialOrderLoadingView
 import com.selsela.takeefapp.ui.theme.Bg
 import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Extensions.Companion.collectAsStateLifecycleAware
+import com.selsela.takeefapp.utils.LocalData
 import de.palm.composestateevents.EventEffect
 
 @Preview
@@ -52,6 +53,9 @@ fun SpecialOrders(
         event = viewState.onFailure,
         onConsumed = viewModel::onFailure
     ) { error ->
+        if (error.status == 403)
+            LocalData.clearData()
+
         Common.handleErrors(
             error.responseMessage,
             error.errors,

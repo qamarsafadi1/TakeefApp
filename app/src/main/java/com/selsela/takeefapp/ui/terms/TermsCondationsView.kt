@@ -26,6 +26,7 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import  androidx.compose.runtime.*
 import com.selsela.takeefapp.utils.Common
 import com.selsela.takeefapp.utils.Extensions.Companion.bindHtml
+import com.selsela.takeefapp.utils.LocalData
 import de.palm.composestateevents.EventEffect
 
 @Composable
@@ -51,6 +52,9 @@ fun TermsView(
         event = viewState.onFailure,
         onConsumed = viewModel::onFailure
     ) { error ->
+        if (error.status == 403)
+            LocalData.clearData()
+
         Common.handleErrors(
             error.responseMessage,
             error.errors,

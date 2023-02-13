@@ -209,6 +209,7 @@ fun BottomSheetLayout(
                     Headerview(onBack = { onBack() }) {
                         onSearch(it)
                     }
+
                     CurrentAddressView(
                         parentViewModel,
                         Modifier
@@ -216,7 +217,8 @@ fun BottomSheetLayout(
                             .fillMaxWidth()
                             .fillMaxHeight(0.51f)
                             .align(Alignment.BottomCenter),
-                        addressVisible
+                        addressVisible,
+                        addressViewModel.isOutOfBoundaries.value
                     ) {
                         if (it) addressViewModel.isFav = 1
                         else addressViewModel.isFav = 0

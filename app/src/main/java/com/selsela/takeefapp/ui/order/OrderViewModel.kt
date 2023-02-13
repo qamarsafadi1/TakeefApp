@@ -114,6 +114,7 @@ class OrderViewModel @Inject constructor(
                                 ErrorsData(
                                     result.errors,
                                     result.message,
+                                    result.statusCode
                                 ),
                             ),
                         )
@@ -151,6 +152,7 @@ class OrderViewModel @Inject constructor(
                                 ErrorsData(
                                     result.errors,
                                     result.message,
+                                    result.statusCode
                                 )
                             ),
                         )
@@ -186,6 +188,7 @@ class OrderViewModel @Inject constructor(
                                 ErrorsData(
                                     result.errors,
                                     result.message,
+                                    result.statusCode
                                 )
                             ),
                         )
@@ -239,6 +242,7 @@ class OrderViewModel @Inject constructor(
                                     ErrorsData(
                                         result.errors,
                                         result.message,
+                                        result.statusCode
                                     )
                                 ),
                             )
@@ -277,6 +281,7 @@ class OrderViewModel @Inject constructor(
                                 ErrorsData(
                                     result.errors,
                                     result.message,
+                                    result.statusCode
                                 )
                             ),
                         )
@@ -313,6 +318,7 @@ class OrderViewModel @Inject constructor(
                                 ErrorsData(
                                     result.errors,
                                     result.message,
+                                    result.statusCode
                                 )
                             ),
                         )

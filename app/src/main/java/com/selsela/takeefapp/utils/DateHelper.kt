@@ -5,14 +5,13 @@ import android.util.Log
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.absoluteValue
 
 class DateHelper {
     companion object {
         fun getLast30Dates(): List<Date> {
             val dates = arrayListOf<Date>()
             for (i in 0..30) {
-                dates.add(Date(Date().time.plus(i * 24 * 60 * 60 * 1000)))
+                dates.add(Date(Date().time.plus(i*24*60*60*1000)))
             }
             return dates
         }
@@ -25,14 +24,14 @@ class DateHelper {
                 val time1 = hh_mm.parse(startTime) ?: Date()
                 val time2 = hh_mm.parse(endTime) ?: Date()
                 if (time2.time < time1.time) {
-                    time2.time = time2.time.plus(24 * 60 * 60 * 1000)
+                    time2.time = time2.time.plus(24*60*60*1000)
                 }
                 val cal = Calendar.getInstance()
                 cal.time = time1
                 while (cal.time.time < time2.time) {
                     // add cal time to list
                     times.add(h_mm_a.format(cal.time))
-                    cal.timeInMillis = cal.timeInMillis.plus(duration * 60 * 1000)
+                    cal.timeInMillis = cal.timeInMillis.plus(duration*60*1000)
 
                 }
 
@@ -45,7 +44,7 @@ class DateHelper {
         }
 
         fun getTodayFormatedDate(): String {
-            val ddd = SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH)
+            val ddd = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             try {
                 Calendar.getInstance().time.log("Date()")
                 return ddd.format(Date())
@@ -142,13 +141,33 @@ class DateHelper {
             try {
                 val d1 = h_mm_ss.parse(createdAt)
                 d1?.let {
-                   val yearInt = year.format(d1)
-                   val dayInt = day.format(d1)
-                   val monthInt = month.format(d1)
-                   val hour = hh.format(d1)
-                   val min = mm.format(d1)
-                   val a = a.format(d1)
-                    return listOf(yearInt,dayInt,monthInt,hour,min,a)
+                    val yearInt = year.format(d1)
+                    val dayInt = day.format(d1)
+                    val monthInt = month.format(d1)
+                    val hour = hh.format(d1)
+                    val min = mm.format(d1)
+                    val a = a.format(d1)
+                    return listOf(yearInt, dayInt, monthInt, hour, min, a)
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+                return list
+            }
+            return list
+        }
+        fun getOrderDateNoraml(createdAt: String): List<String> {
+            var list = listOf<String>()
+            val h_mm_ss = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+            val year = SimpleDateFormat("yyyy", Locale.ENGLISH)
+            val day = SimpleDateFormat("dd", Locale.ENGLISH)
+            val month = SimpleDateFormat("MM", Locale.ENGLISH)
+            try {
+                val d1 = h_mm_ss.parse(createdAt)
+                d1?.let {
+                    val yearInt = year.format(d1)
+                    val dayInt = day.format(d1)
+                    val monthInt = month.format(d1)
+                    return listOf(yearInt, dayInt, monthInt)
                 }
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
@@ -157,19 +176,10 @@ class DateHelper {
             return list
         }
 
-        fun getTimeOnly(createdAt: String): String {
-            val h_mm_ss = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.ENGLISH)
-            val day = SimpleDateFormat("HH:mm a", Locale.ENGLISH)
-            try {
-                val d1 = h_mm_ss.parse(createdAt)
-                d1?.let {
-                    return day.format(d1)
-                }
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-                return ""
-            }
-            return ""
+        fun getTimeStamp(createdAt: String): Long {
+            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.ENGLISH)
+            val date = formatter.parse(createdAt) as Date
+            return date.time
         }
 
         fun getTimeAmPm(createdAt: String): String {
@@ -356,18 +366,18 @@ class DateHelper {
                 else
                     difference = date2.time - date1.time
 
-                val seconds = difference / 1000
-                val minutes = seconds / 60
-                val hours = minutes / 60
-                val days = hours / 24
+                val seconds = difference/1000
+                val minutes = seconds/60
+                val hours = minutes/60
+                val days = hours/24
 
                 Log.e("TAG_5", "CurrentDate is : $date1")
                 Log.e("TAG_5", "Final date is : $date2")
                 Log.e("TAG_5", "Day Difference: $days")
-                Log.e("TAG_5", "hours Difference: ${hours % 24}")
-                Log.e("TAG_5", "Minute Difference: ${minutes % 60}")
-                Log.e("TAG_5", "Seconds Difference: ${seconds % 60}")
-                return listOf(days, (hours % 24), (minutes % 60), (seconds % 60))
+                Log.e("TAG_5", "hours Difference: ${hours%24}")
+                Log.e("TAG_5", "Minute Difference: ${minutes%60}")
+                Log.e("TAG_5", "Seconds Difference: ${seconds%60}")
+                return listOf(days, (hours%24), (minutes%60), (seconds%60))
 
             } catch (exception: Exception) {
                 Log.e("TAG_5", "exception $exception")
@@ -375,7 +385,6 @@ class DateHelper {
 
             }
         }
-
 
 
         fun remainTimeFunctionFull(endDate: String): List<Long> {
@@ -389,18 +398,18 @@ class DateHelper {
                 else
                     difference = date2.time - date1.time
 
-                val seconds = difference / 1000
-                val minutes = seconds / 60
-                val hours = minutes / 60
-                val days = hours / 24
+                val seconds = difference/1000
+                val minutes = seconds/60
+                val hours = minutes/60
+                val days = hours/24
 
                 Log.e("TAG_5", "CurrentDate is : $date1")
                 Log.e("TAG_5", "Final date is : $date2")
                 Log.e("TAG_5", "Day Difference: $days")
-                Log.e("TAG_5", "hours Difference: ${hours % 24}")
-                Log.e("TAG_5", "Minute Difference: ${minutes % 60}")
-                Log.e("TAG_5", "Seconds Difference: ${seconds % 60}")
-                return listOf(days, (hours % 24), (minutes % 60), (seconds % 60))
+                Log.e("TAG_5", "hours Difference: ${hours%24}")
+                Log.e("TAG_5", "Minute Difference: ${minutes%60}")
+                Log.e("TAG_5", "Seconds Difference: ${seconds%60}")
+                return listOf(days, (hours%24), (minutes%60), (seconds%60))
 
             } catch (exception: Exception) {
                 Log.e("TAG_5", "exception $exception")

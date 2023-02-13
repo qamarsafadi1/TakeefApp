@@ -305,7 +305,7 @@ private fun ImagesChooser(viewModel: SpecialOrderViewModel) {
         mutableStateListOf<File>()
     }
     val context = LocalContext.current
-    val imagePicker = Extensions.mStartMultipaleActivityForResult(
+    val imagePicker = Extensions.mStartActivityForResultMutlipaale(
         context = context,
     ) { file ->
         if (file != null) {

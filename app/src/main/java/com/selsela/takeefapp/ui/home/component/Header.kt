@@ -16,6 +16,7 @@ import com.selsela.takeefapp.ui.common.AppLogoImage
 
 @Composable
  fun Header(
+    isNewNotification: Int,
     goToNotification: () -> Unit,
     goToMyAccount: () -> Unit
 ) {
@@ -31,7 +32,10 @@ import com.selsela.takeefapp.ui.common.AppLogoImage
         }
         ElasticView(onClick = { goToNotification() }) {
             Image(
-                painter = painterResource(id = R.drawable.notifiication),
+                painter = painterResource(id =
+
+                if (isNewNotification == 0) R.drawable.notifiication
+                else R.drawable.notificationnew),
                 contentDescription = ""
             )
         }

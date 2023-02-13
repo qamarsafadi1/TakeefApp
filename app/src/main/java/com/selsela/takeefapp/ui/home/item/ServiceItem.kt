@@ -28,6 +28,7 @@ import com.selsela.takeefapp.ui.theme.TextColor
 import com.selsela.takeefapp.ui.theme.text12
 import com.selsela.takeefapp.ui.theme.text20
 import androidx.compose.runtime.*
+import androidx.compose.ui.layout.ContentScale
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 
 @Composable
@@ -46,9 +47,11 @@ fun ServiceItem(
             modifier = Modifier
                 .background(service.imageBackgroundColor(), RoundedCornerShape(24.dp))
                 .size(100.dp),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.BottomCenter
         ) {
-            AsyncImage(imageUrl = service.imageUtl)
+            AsyncImage(imageUrl = service.imageUtl,
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.padding(horizontal = 5.dp))
         }
 
         Column(

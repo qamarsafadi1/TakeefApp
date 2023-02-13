@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.selsela.takeefapp.R
 import com.selsela.takeefapp.data.order.model.order.Address
@@ -201,7 +202,7 @@ fun VisitDateView(workPeriod: WorkPeriod) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = Modifier.weight(1.5f),
+            modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
@@ -218,18 +219,20 @@ fun VisitDateView(workPeriod: WorkPeriod) {
         }
 
         Column(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1.5f),
             horizontalAlignment = Alignment.End
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
+                horizontalArrangement = Arrangement.Center
             ) {
-                Spacer(modifier = Modifier.width(5.dp))
+                Spacer(modifier = Modifier.width(25.dp))
                 androidx.compose.material3.Text(
                     text = workPeriod.name,
                     style = text14,
-                    color = TextColor
+                    color = TextColor,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
             }
             androidx.compose.material3.Text(
@@ -392,15 +395,15 @@ fun CostView(price: Price, payment: Payment, useWallet: Int) {
         )
         when (payment.id) {
             WALLET -> {
-                WalletSection(false, price = price.paidWallet)
+                WalletSection(false, paidWallet = price.paidWallet, price = 0.0)
             }
-
             else -> {
                 if (useWallet == 1) {
                     WalletSection(
                         true,
                         price = price.grandTotal - price.paidWallet,
-                        payment = payment
+                        payment = payment,
+                        paidWallet = price.paidWallet
                     )
                 } else {
                     Row(
@@ -450,7 +453,8 @@ fun CostView(price: Price, payment: Payment, useWallet: Int) {
 @Composable
 private fun WalletSection(
     isPartition: Boolean = false, price: Double,
-    payment: Payment? = null
+    payment: Payment? = null,
+    paidWallet: Double? = 0.0
 ) {
 
 
@@ -475,7 +479,7 @@ private fun WalletSection(
             horizontalArrangement = Arrangement.End
         ) {
             androidx.compose.material3.Text(
-                text = "${price}",
+                text = "${paidWallet}",
                 style = text16Medium,
                 color = TextColor
             )

@@ -50,11 +50,13 @@ import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import androidx.compose.runtime.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.sp
 import com.selsela.takeefapp.data.config.model.WorkPeriod
 import com.selsela.takeefapp.data.config.model.payments.Payment
 import com.selsela.takeefapp.data.order.model.order.SelectedService
 import com.selsela.takeefapp.ui.common.AsyncImage
 import com.selsela.takeefapp.ui.common.ElasticButton
+import com.selsela.takeefapp.ui.common.components.AutoSizeText
 import com.selsela.takeefapp.ui.home.HomeViewModel
 import com.selsela.takeefapp.ui.home.OrderUiState
 import com.selsela.takeefapp.ui.theme.text14Strike
@@ -477,7 +479,7 @@ private fun ServiceItem(
                 .weight(1f),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
+            AutoSizeText(
                 modifier = Modifier.weight(2f),
                 text = stringResource(
                     id = R.string.maintinance_serivce,
@@ -486,10 +488,10 @@ private fun ServiceItem(
                     }?.name.toString()
                 ),
                 style = text12,
-                color = SecondaryColor
+                color = SecondaryColor,
+                minTextSize = 8.sp
             )
             Row(
-                modifier = Modifier.weight(1f),
                 horizontalArrangement = Arrangement.End
             ) {
                 Text(
@@ -498,10 +500,11 @@ private fun ServiceItem(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
 
-                Text(
+                AutoSizeText(
                     text = stringResource(id = R.string.device),
                     style = text12,
-                    color = SecondaryColor
+                    color = SecondaryColor,
+                    minTextSize = 8.sp
                 )
                 Spacer(modifier = Modifier.width(5.dp))
             }

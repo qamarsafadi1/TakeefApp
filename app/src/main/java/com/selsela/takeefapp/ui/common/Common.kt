@@ -1526,12 +1526,13 @@ fun SelectedServicesView(orderServices: List<OrderService>) {
     Row(
         modifier = Modifier
             .paddingTop(11)
-            .padding(horizontal = 34.dp)
+            .padding(horizontal = 24.dp)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.spacedBy(21.dp)
     ) {
         repeat(orderServices.size) {
-            Row {
+            Row(
+            ) {
                 Text(
                     text = "${orderServices[it].service.name} : ", style = text11,
                     color = SecondaryColor
@@ -1544,7 +1545,6 @@ fun SelectedServicesView(orderServices: List<OrderService>) {
                     color = TextColor
                 )
             }
-            Spacer(modifier = Modifier.width(41.1.dp))
         }
 
     }

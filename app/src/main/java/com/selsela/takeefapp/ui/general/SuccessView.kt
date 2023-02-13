@@ -76,7 +76,8 @@ fun SuccessView(
                 text = stringResource(R.string.success_lbl),
                 style = text14,
                 color = TextColor,
-                modifier = Modifier.paddingTop(22),
+                modifier = Modifier.paddingTop(22)
+                    .padding(16.dp),
                 textAlign = TextAlign.Center
             )
 

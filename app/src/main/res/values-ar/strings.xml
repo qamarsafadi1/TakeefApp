@@ -212,5 +212,6 @@
     <string name="canceled">ملغي</string>
     <string name="district_name">اسم الحي</string>
     <string name="please_rate_at_least">الرجاء اضافة تقييم واحد على الاقل</string>
+    <string name="select_cancel">الغاء التحديد</string>
 
 </resources>

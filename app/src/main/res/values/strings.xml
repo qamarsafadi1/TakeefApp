@@ -210,6 +210,7 @@
     <string name="plaese_selecte_visit_time">Please select visit time</string>
     <string name="canceled">Cancelled</string>
     <string name="district_name">Neighborhood name</string>
-    <string name="please_rate_at_least">الرجاء اضافة تقييم واحد على الاقل</string>
+    <string name="please_rate_at_least">Please rate at least one item</string>
+    <string name="select_cancel">Cancel selection</string>
 
 </resources>

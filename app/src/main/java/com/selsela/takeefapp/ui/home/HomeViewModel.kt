@@ -148,7 +148,7 @@ class HomeViewModel @Inject constructor(
 
     }
 
-    private fun removeItem(
+    fun removeItem(
         service: Service,
         count: Int,
         acyType: AcType

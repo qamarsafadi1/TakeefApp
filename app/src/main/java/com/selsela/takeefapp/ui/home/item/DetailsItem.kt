@@ -39,6 +39,7 @@ import com.selsela.takeefapp.ui.theme.text16Medium
 import com.selsela.takeefapp.utils.Constants.MAINTENANCE
 import com.selsela.takeefapp.utils.Extensions.Companion.getCurrency
 import com.selsela.takeefapp.utils.Extensions.Companion.log
+import kotlinx.coroutines.selects.select
 
 
 @Composable
@@ -201,10 +202,17 @@ fun DetailsView(
 
                 ElasticButton(
                     onClick = {
+                        if (isSelected == true) {
+                            viewModel.acyTypes.removeIf {
+                                it.serviceId == service.id
+                            }
+                        }
                         viewModel.updateServiceToOrderItem()
                         onCollapse()
                     },
-                    title = stringResource(R.string.select),
+                    title = if (isSelected == false) stringResource(R.string.select) else stringResource(
+                        R.string.select_cancel
+                    ),
                     modifier = Modifier
                         .width(167.dp)
                         .requiredHeight(48.dp)

@@ -58,6 +58,7 @@ import com.selsela.takeefapp.ui.theme.text16MediumStrike
 import com.selsela.takeefapp.utils.Constants
 import com.selsela.takeefapp.utils.Constants.WALLET
 import com.selsela.takeefapp.utils.DateHelper
+import com.selsela.takeefapp.utils.Extensions
 import com.selsela.takeefapp.utils.Extensions.Companion.getCurrency
 import com.selsela.takeefapp.utils.ModifiersExtension.paddingTop
 import kotlinx.coroutines.CoroutineScope
@@ -359,7 +360,9 @@ fun ServiceItem(orderService: OrderService) {
 }
 
 @Composable
-fun CostView(price: Price, payment: Payment, useWallet: Int) {
+fun CostView(price: Price, payment: Payment,
+             additional_payment_type: Payment? = null,
+             useWallet: Int) {
     Column(
         Modifier
             .padding(top = 21.dp)
@@ -397,7 +400,7 @@ fun CostView(price: Price, payment: Payment, useWallet: Int) {
                 horizontalArrangement = Arrangement.End
             ) {
                 androidx.compose.material3.Text(
-                    text = "${price.grandTotal}",
+                    text = "${price.grandTotal.plus(price.additionalCost)}",
                     style = text16Medium,
                     color = TextColor
                 )
@@ -467,6 +470,49 @@ fun CostView(price: Price, payment: Payment, useWallet: Int) {
 
                         }
                     }
+                }
+            }
+        }
+        if (price.additionalCost != 0.0){
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 14.dp)
+                    .padding(horizontal = 15.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row {
+                    Text(
+                        text = stringResource(id = R.string.maintinance_cost),
+                        style = text12,
+                        color = SecondaryColor,
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    AsyncImage(
+                        imageUrl = additional_payment_type?.iconUrl ?: "",
+                        modifier = Modifier.size(33.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    androidx.compose.material3.Text(
+                        text = "${price.additionalCost}",
+                        style = text16Medium,
+                        color = TextColor,
+                    )
+                    Spacer(modifier = Modifier.width(3.dp))
+                    androidx.compose.material3.Text(
+                        text = stringResource(
+                            id = R.string.currency_1,
+                            Extensions.getCurrency()
+                        ),
+                        style = text13,
+                        color = SecondaryColor
+                    )
+
                 }
             }
         }

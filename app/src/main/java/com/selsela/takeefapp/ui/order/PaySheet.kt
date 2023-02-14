@@ -371,7 +371,9 @@ fun PaymentViewDark(
         repeat(LocalData.paymentsType?.filter {
             it.id != 3
         }?.size ?: 0) {
-            LocalData.paymentsType?.find { item -> item.id == LocalData.paymentsType!![it].id }
+            LocalData.paymentsType?.find { item -> item.id == LocalData.paymentsType?.filter {
+                it.id != 3
+            }!![it].id }
                 .let {
                     if (it != null) {
                         PaymentItemDark(

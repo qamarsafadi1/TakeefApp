@@ -659,7 +659,7 @@ private fun VisitDateView(selectedPeriodId: MutableState<WorkPeriod>,
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
+                horizontalArrangement = Arrangement.End
             ) {
                 Text(
                     text = selectedPeriodId.value.name,

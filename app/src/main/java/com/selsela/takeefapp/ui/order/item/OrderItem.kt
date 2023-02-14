@@ -180,7 +180,7 @@ fun OrderItem(
 
                     Row {
                         Text(
-                            text = "${order.grandTotal}",
+                            text = "${order.grandTotal.plus(order.additionalCost)}",
                             style = text12Bold,
                             color = TextColor,
                             modifier = Modifier.padding(start = 4.dp)

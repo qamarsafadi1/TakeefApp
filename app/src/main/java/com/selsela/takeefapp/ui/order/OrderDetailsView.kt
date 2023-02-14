@@ -333,7 +333,6 @@ private fun OrderDetailsContent(
                         color = DividerColor,
                         modifier = Modifier.padding(top = 27.6.dp)
                     )
-                    order.orderDate.log("order.orderDate")
                     VisitDateView(order.workPeriod,order.orderDate)
                     Divider(
                         thickness = 1.dp,
@@ -341,7 +340,9 @@ private fun OrderDetailsContent(
                         modifier = Modifier.padding(top = 8.6.dp)
                     )
                     SelectedAddressView(order.address)
-                    CostView(order.price, order.payment, order.useWallet)
+                    CostView(order.price, order.payment,
+                        order.additional_payment_type,
+                        order.useWallet)
                     Box(
                         modifier = Modifier
                             .padding(top = 11.2.dp)

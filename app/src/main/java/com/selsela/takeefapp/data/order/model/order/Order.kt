@@ -11,6 +11,8 @@ data class Order(
     val createdAt: String = "",
     @SerializedName("grand_total")
     val grandTotal: Double = 0.0,
+    @SerializedName("additional_cost")
+    val additionalCost: Double = 0.0,
     @SerializedName("id")
     var id: Int = 0,
     @SerializedName("address")
@@ -43,4 +45,6 @@ data class Order(
     val price: Price = Price(),
     @SerializedName("payment")
     val payment: Payment = Payment(),
+    @SerializedName("additional_payment_type")
+    val additional_payment_type: Payment? = null,
 )

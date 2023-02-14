@@ -214,5 +214,6 @@
     <string name="please_rate_at_least">الرجاء اضافة تقييم واحد على الاقل</string>
     <string name="select_cancel">الغاء التحديد</string>
     <string name="app_not_working_in_your_country">التطبيق لا يعمل في دولتك</string>
+    <string name="maintinance_cost">تكلفة صيانة</string>
 
 </resources>

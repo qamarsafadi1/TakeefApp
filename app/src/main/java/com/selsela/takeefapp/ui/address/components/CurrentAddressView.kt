@@ -107,6 +107,7 @@ fun CurrentAddressView(
                         var isFav by remember {
                             mutableStateOf(viewModel.address?.isFav == 1)
                         }
+                        onFav(isFav)
                         IconButton(onClick = {
                             isFav = !isFav
                             onFav(isFav)

@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.data.order.model.order
 
+import androidx.annotation.Keep
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.selsela.takeefapp.utils.Constants.CLEANING
@@ -7,6 +8,7 @@ import com.selsela.takeefapp.utils.Constants.INSTALLATION
 import com.selsela.takeefapp.utils.Constants.MAINTENANCE
 import com.selsela.takeefapp.utils.Extensions.Companion.log
 
+@Keep
 data class SelectedServicesOrder(
     var services: List<SelectedService> = listOf(),
     val paymentId: Int = -1,
@@ -63,6 +65,7 @@ data class SelectedServicesOrder(
 
 }
 
+@Keep
 data class SelectedService(
     val serviceId: Int = -1,
     val servicePrice: Double = 0.0,

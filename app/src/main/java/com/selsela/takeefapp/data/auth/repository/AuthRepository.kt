@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.data.auth.repository
 
+import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.selsela.takeefapp.data.auth.model.address.AddressResponse
 import com.selsela.takeefapp.data.auth.model.auth.AuthResponse
@@ -27,6 +28,7 @@ import okhttp3.RequestBody
 import java.io.File
 import javax.inject.Inject
 
+@Keep
 class AuthRepository @Inject constructor(
     private val api: AuthApi
 ) {

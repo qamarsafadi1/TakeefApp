@@ -1,8 +1,10 @@
 package com.selsela.takeefapp.data.order.model.order
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class OrderResponse(
     @SerializedName("has_more_page")
     val hasMorePage: Boolean = false,

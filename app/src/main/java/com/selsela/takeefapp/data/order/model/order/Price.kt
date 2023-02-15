@@ -1,8 +1,10 @@
 package com.selsela.takeefapp.data.order.model.order
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class Price(
     @SerializedName("additional_cost")
     var additionalCost: Double = 0.0,

@@ -1,8 +1,11 @@
 package com.selsela.takeefapp.data.auth.model.auth
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+
+@Keep
 data class Country(
     @SerializedName("currency")
     val currency: String = "",

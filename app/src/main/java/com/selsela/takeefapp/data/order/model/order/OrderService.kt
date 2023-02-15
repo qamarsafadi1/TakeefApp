@@ -1,8 +1,10 @@
 package com.selsela.takeefapp.data.order.model.order
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class OrderService(
     @SerializedName("ac_types")
     val acType: List<AcTypes> = listOf(),
@@ -19,6 +21,7 @@ data class OrderService(
     val acTypes: MutableList<AcTypes> = mutableListOf()
 )
 
+@Keep
 data class OrderServiceItem(
     @SerializedName("service")
     val service: OrderService = OrderService(),
@@ -26,6 +29,8 @@ data class OrderServiceItem(
 ) {
 
 }
+
+@Keep
 data class AcTypes(
     @SerializedName("ac_type")
     val acType: AcType = AcType(),

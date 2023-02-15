@@ -1,8 +1,10 @@
 package com.selsela.takeefapp.data.order.model.special
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class SpecialOrderResponse(
     @SerializedName("response_message")
     val responseMessage: String = "",

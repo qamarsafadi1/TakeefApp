@@ -1,8 +1,10 @@
 package com.selsela.takeefapp.data.auth.model.address
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class AddressResponse(
     @SerializedName("addresses")
     val addresses: List<Addresse> = listOf(),

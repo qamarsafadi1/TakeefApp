@@ -1,8 +1,10 @@
 package com.selsela.takeefapp.data.auth.model.support.contacts
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class Reply(
     @SerializedName("actor_id")
     val actorId: Any? = Any(),

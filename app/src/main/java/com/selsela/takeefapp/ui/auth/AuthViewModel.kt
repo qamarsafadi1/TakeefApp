@@ -1,6 +1,7 @@
 package com.selsela.takeefapp.ui.auth
 
 import android.app.Application
+import androidx.annotation.Keep
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -39,6 +40,7 @@ import javax.inject.Inject
 /**
  * UiState for the Auth
  */
+@Keep
 data class AuthUiState(
     val responseMessage: String = "",
     val user: User? = LocalData.user,
@@ -49,6 +51,7 @@ data class AuthUiState(
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),
 )
 
+@Keep
 data class WalletUiState(
     val responseMessage: String = "",
     val wallet: WalletResponse? = LocalData.userWallet,
@@ -57,12 +60,14 @@ data class WalletUiState(
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),
 )
 
+@Keep
 data class NotificationUiState(
     val notifications: List<Notification>? = listOf(),
     val isLoading: Boolean = false,
     val onFailure: StateEventWithContent<ErrorsData> = consumed(),
 )
 
+@Keep
 data class SupportUiState(
     val contacts: List<ContactReplies>? = listOf(),
     var contactReplay: ContactReplies? = null,

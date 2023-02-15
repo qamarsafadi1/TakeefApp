@@ -1,8 +1,10 @@
 package com.selsela.takeefapp.data.order.model.order
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class Log(
     @SerializedName("case")
     val case: com.selsela.takeefapp.data.config.model.Case = com.selsela.takeefapp.data.config.model.Case(),

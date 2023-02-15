@@ -1,7 +1,9 @@
 package com.selsela.takeefapp.utils.retrofit.model
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class ErrorBase(
         val `data`: Any? = Any(),
         val errors: List<Errors>?= listOf(),

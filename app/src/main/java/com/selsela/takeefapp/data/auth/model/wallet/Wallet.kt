@@ -1,8 +1,10 @@
 package com.selsela.takeefapp.data.auth.model.wallet
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class Wallet(
     @SerializedName("action")
     val action: String = "",

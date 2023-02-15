@@ -1,7 +1,9 @@
 package com.selsela.takeefapp.data.config.model
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class ConfigResponse(
     @SerializedName("ac_types")
     val acTypes: List<AcType> = listOf(),

@@ -1,8 +1,10 @@
 package com.selsela.takeefapp.data.auth.model.address
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class Addresse(
     @SerializedName("area")
     val area: Area = Area(),

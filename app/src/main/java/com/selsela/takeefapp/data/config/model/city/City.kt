@@ -1,8 +1,10 @@
 package com.selsela.takeefapp.data.config.model.city
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class City(
     @SerializedName("children")
     val children: List<Children> = listOf(),

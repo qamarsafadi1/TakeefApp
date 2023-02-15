@@ -1,6 +1,7 @@
 package com.selsela.takeefapp.ui.address
 
 import android.content.Context
+import androidx.annotation.Keep
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +46,7 @@ import kotlin.math.ln
  * UiState for Addresses
  */
 
+@Keep
 data class AddressUiState(
     val state: State = State.IDLE,
     val addresses: List<FavouriteAddresse>? = null,

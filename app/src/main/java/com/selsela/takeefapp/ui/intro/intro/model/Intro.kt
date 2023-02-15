@@ -2,8 +2,10 @@ package com.selsela.takeefapp.ui.intro.intro.model
 
 import android.content.Context
 import androidx.annotation.DrawableRes
+import androidx.annotation.Keep
 import com.selsela.takeefapp.R
 
+@Keep
 data class Intro(
     val title: String = "",
     val text: String = "",

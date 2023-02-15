@@ -1,9 +1,11 @@
 package com.selsela.takeefapp.data.auth.model.support
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.selsela.takeefapp.utils.DateHelper
 
+@Keep
 data class Reply(
     @SerializedName("actor_id")
     val actorId: Any? = Any(),

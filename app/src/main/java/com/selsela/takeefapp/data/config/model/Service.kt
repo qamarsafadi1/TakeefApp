@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.data.config.model
 
+import androidx.annotation.Keep
 import androidx.compose.ui.graphics.Color
 import com.google.gson.annotations.SerializedName
 import com.selsela.takeefapp.ui.theme.LightBlue
@@ -8,6 +9,7 @@ import com.selsela.takeefapp.ui.theme.SecondaryColor
 import com.selsela.takeefapp.utils.Constants.CLEANING
 import com.selsela.takeefapp.utils.Constants.MAINTENANCE
 
+@Keep
 data class Service(
     val description: String = "",
     val id: Int = 0,

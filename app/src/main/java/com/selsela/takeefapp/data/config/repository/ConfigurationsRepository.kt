@@ -24,15 +24,16 @@ class ConfigurationsRepository @Inject constructor(
     suspend fun getConfigurations(): Flow<Resource<Configurations>> = withContext(Dispatchers.IO) {
         val data: Flow<Resource<Configurations>> = try {
             val response = api.getConfigurations()
+            response.body()?.log("ServicesBefore")
             if (response.isSuccessful) {
                 LocalData.configurations = response.body()?.configurations
                 LocalData.cases = response.body()?.cases
                 LocalData.acTypes = response.body()?.acTypes
+                LocalData.acTypes?.log("servicesAfter")
                 LocalData.services = response.body()?.services
-                LocalData.services?.log("services")
+                LocalData.services?.log("servicesAfter")
                 LocalData.workPeriods = response.body()?.workPeriod
                 LocalData.rateItems = response.body()?.rateProperitiesSupervisor
-              "${response.body()?.services}".log("Services")
                 handleSuccess(
                     response.body()?.configurations,
                     response.body()?.responseMessage ?: response.message()

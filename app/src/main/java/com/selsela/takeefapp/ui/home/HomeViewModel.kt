@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.ui.home
 
+import androidx.annotation.Keep
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -45,6 +46,7 @@ import javax.inject.Inject
 /**
  * UiState for the Special Order
  */
+@Keep
 data class OrderUiState(
     val onSuccess: StateEvent = consumed,
     val order: Order? = null,
@@ -375,7 +377,7 @@ class HomeViewModel @Inject constructor(
     }
 }
 
-
+@Keep
 data class Address(
     val areaId: Int,
     val cityId: Int,

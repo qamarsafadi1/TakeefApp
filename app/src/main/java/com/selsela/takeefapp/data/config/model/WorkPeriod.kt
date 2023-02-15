@@ -1,8 +1,10 @@
 package com.selsela.takeefapp.data.config.model
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.selsela.takeefapp.utils.DateHelper
 
+@Keep
 data class WorkPeriod(
     val id: Int = 0,
     val name: String = "",

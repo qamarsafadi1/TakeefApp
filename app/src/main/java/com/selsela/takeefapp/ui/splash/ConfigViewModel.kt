@@ -1,5 +1,6 @@
 package com.selsela.takeefapp.ui.splash
 
+import androidx.annotation.Keep
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+@Keep
 data class GeneralUiState(
     val responseMessage: String = "",
     val term: Page? = LocalData.terms,

@@ -1,6 +1,9 @@
 package com.selsela.takeefapp.utils.retrofit.model
 
+import androidx.annotation.Keep
 
+
+@Keep
 data class Resource<out T>(
     val status: Status,
     val data: T?,

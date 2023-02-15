@@ -1,7 +1,9 @@
 package com.selsela.takeefapp.data.config.model
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class Configurations(
     val address: String = "",
     val addressEn: String = "",

@@ -1,6 +1,7 @@
 package com.selsela.takeefapp.ui.order.special
 
 import android.app.Application
+import androidx.annotation.Keep
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -36,6 +37,8 @@ import javax.inject.Inject
 /**
  * UiState for the Special Order
  */
+
+@Keep
 data class SpecialOrderUiState(
     val onSuccess: StateEvent = consumed,
     val orders: List<SpecificOrder>? = null,

@@ -237,6 +237,11 @@ fun NavigationHost(
                    else navController.navigateUp()
                 }
             )
+            BackHandler() {
+                if (navController.previousBackStackEntry?.destination?.route == Destinations.SPLASH_SCREEN)
+                    navActions.navigateToHome()
+                else navController.navigateUp()
+            }
         }
         composable(Destinations.SPECIAL_ORDERS) {
             SpecialOrders(goToDetails = navActions::navigateToSpecialOrderDetails)

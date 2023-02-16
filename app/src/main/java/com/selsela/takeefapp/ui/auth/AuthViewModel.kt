@@ -117,6 +117,7 @@ class AuthViewModel @Inject constructor(
     private val _contactUiState = MutableStateFlow(SupportUiState())
     val contactUiState: StateFlow<SupportUiState> = _contactUiState.asStateFlow()
 
+
     private var state: AuthUiState
         get() = _uiState.value
         set(newState) {
@@ -153,7 +154,6 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun isCodeValid(): Boolean {
-        code.value.log("code.value")
         val message = code.value.validateRequired(
             application.applicationContext, application.getString(
                 R.string.verify_code

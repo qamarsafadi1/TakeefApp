@@ -54,8 +54,10 @@
             android:theme="@style/Theme.TakeefApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <data android:scheme="https" android:host="airconditioner.com" />
             </intent-filter>
         </activity>
     </application>

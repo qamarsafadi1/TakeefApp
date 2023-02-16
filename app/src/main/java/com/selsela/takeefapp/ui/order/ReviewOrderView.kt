@@ -281,6 +281,7 @@ private fun WalletItemView(vm: HomeViewModel) {
                 style = text14,
                 color = TextColor
             )
+            vm.isWalletEnough().log("Enough")
             if (vm.isWalletEnough().not()) {
                 Row(
                     Modifier.paddingTop(11),

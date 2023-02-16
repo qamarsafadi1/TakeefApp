@@ -195,7 +195,6 @@ class Extensions {
             )
         }
 
-
         fun <E> handleExceptions(errorBase: Exception): MutableStateFlow<Resource<E>> {
             return MutableStateFlow(
                 Resource.error(

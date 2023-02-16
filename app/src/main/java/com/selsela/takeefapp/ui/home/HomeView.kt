@@ -227,10 +227,12 @@ private fun HomeContent(
                     goToMyAccount
                 )
                 TitleView()
+                val list = remember {
+                    viewModel.getServicesList().value ?: listOf()
+                }
                 // Services List
                 LazyColumn(modifier = Modifier.padding(top = 14.dp)) {
-                    items(
-                        viewModel.getServicesList().value ?: listOf(),
+                    items(list,
                         key = { it.id }) {
                         AnimContent(
                             it,

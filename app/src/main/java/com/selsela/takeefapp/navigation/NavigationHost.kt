@@ -57,7 +57,9 @@ fun NavigationHost(
     val uri = "https://airconditioner.com"
 
     NavHost(navController = navController, startDestination = startDestination) {
-        composable(Destinations.SPLASH_SCREEN) {
+        composable(Destinations.SPLASH_SCREEN,
+            deepLinks = listOf(navDeepLink { uriPattern = uri })
+        ) {
             SplashView {
                 if (LocalData.firstLaunch)
                     navActions.navigateToIntro()
@@ -217,8 +219,6 @@ fun NavigationHost(
         ) {
             val id = it.arguments?.getString("id") ?: ""
             val parentEntry = remember(it) {
-                navController.getBackStackEntry(navController.previousBackStackEntry?.destination?.route!!).destination.route?.log("test")
-
                 when (navController.previousBackStackEntry?.destination?.route) {
                     Destinations.ORDERS_SCREEN_ARGS -> navController.getBackStackEntry(navController.previousBackStackEntry?.destination?.route!!)
                     else  -> navController.getBackStackEntry(navController.previousBackStackEntry?.destination?.route!!)

@@ -200,7 +200,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun isWalletEnough(): Boolean {
-        val isEnough = (LocalData.userWallet?.balance ?: 0.0) > getTotalPrice().toDouble()
+        getTotalPrice().toDouble().log("getTotalPrice")
+        LocalData.userWallet?.balance?.log("getTotalPrice")
+        val isEnough = (LocalData.userWallet?.balance ?: 0.0) >= getTotalPrice().toDouble()
         useWallet = if (isEnough) 1
         else if (LocalData.userWallet?.balance != 0.0) {
             1
@@ -209,7 +211,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun isWalletEnough(total: Double): Boolean {
-        val isEnough = (LocalData.userWallet?.balance ?: 0.0) > total
+        val isEnough = (LocalData.userWallet?.balance ?: 0.0) >= total
         useWallet = if (isEnough) 1
         else if (LocalData.userWallet?.balance != 0.0) {
             1
@@ -313,7 +315,7 @@ class HomeViewModel @Inject constructor(
         )
         address = selectAddress
         updateSelectedAddress(
-            favAddress.getFullAddress(),
+            favAddress.note,
             LatLng(favAddress.latitude, favAddress.longitude)
         )
         currentLocation.value = LatLng(favAddress.latitude, favAddress.longitude)
@@ -347,7 +349,7 @@ class HomeViewModel @Inject constructor(
             districtId = districtId,
             lat = favAddress.latLng.latitude,
             lng = favAddress.latLng.longitude,
-            note = "",
+            note = favAddress.address,
             isFav = isFav,
         )
         address = selectAddress

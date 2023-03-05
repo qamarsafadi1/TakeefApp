@@ -9,7 +9,7 @@ object LocalUtils {
 
     fun Context.setLocale(lang: String) {
         LocalData.appLocal = lang
-        Lingver.getInstance().setLocale(this, lang)
+     //   Lingver.getInstance().setLocale(this, lang)
         val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(LocalData.appLocal)
         AppCompatDelegate.setApplicationLocales(appLocale)
     }

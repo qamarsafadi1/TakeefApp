@@ -12,7 +12,6 @@ data class Intro(
     @DrawableRes val Image: Int = 0
 ) {
 
-
     fun listOfIntro(context: Context): List<Intro> {
         return listOf(
             Intro(

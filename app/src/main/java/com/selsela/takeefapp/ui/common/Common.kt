@@ -1553,8 +1553,7 @@ fun SelectedServicesView(orderServices: List<OrderService>) {
 @Composable
 fun AsyncImage(
     imageUrl: Any,
-    modifier: Modifier
-    = Modifier
+    modifier: Modifier = Modifier
         .size(90.dp)
         .padding(horizontal = 8.dp),
     contentScale: ContentScale = ContentScale.Fit

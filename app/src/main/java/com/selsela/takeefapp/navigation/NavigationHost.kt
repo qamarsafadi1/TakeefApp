@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.selsela.takeefapp.R
+import com.selsela.takeefapp.navigation.DeepLinkUri.URI
 import com.selsela.takeefapp.ui.aboutapp.AboutAppView
 import com.selsela.takeefapp.ui.account.MyAccountView
 import com.selsela.takeefapp.ui.address.AddressView
@@ -46,6 +47,11 @@ import com.selsela.takeefapp.utils.Extensions.Companion.showError
 import com.selsela.takeefapp.utils.Extensions.Companion.whatsappContact
 import com.selsela.takeefapp.utils.LocalData
 
+
+
+object DeepLinkUri {
+    const val URI = "https://airconditioner.com"
+}
 @Composable
 fun NavigationHost(
     navController: NavHostController = rememberNavController(),
@@ -54,11 +60,10 @@ fun NavigationHost(
         NavigationActions(navController)
     },
 ) {
-    val uri = "https://airconditioner.com"
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Destinations.SPLASH_SCREEN,
-            deepLinks = listOf(navDeepLink { uriPattern = uri })
+            deepLinks = listOf(navDeepLink { uriPattern = URI })
         ) {
             SplashView {
                 if (LocalData.firstLaunch)
@@ -215,7 +220,7 @@ fun NavigationHost(
         composable(
             Destinations.ORDER_DETAILS_ARGS,
             arguments = listOf(navArgument("id") { type = NavType.StringType }),
-            deepLinks = listOf(navDeepLink { uriPattern = "$uri/id={id}" })
+            deepLinks = listOf(navDeepLink { uriPattern = "$URI/id={id}" })
         ) {
             val id = it.arguments?.getString("id") ?: ""
             val parentEntry = remember(it) {
@@ -227,7 +232,7 @@ fun NavigationHost(
 
             val parentViewModel = hiltViewModel<OrderViewModel>(parentEntry)
             parentViewModel.uiState.log("parentViewModel")
-            it.destination.hasDeepLink("$uri/id={id}".toUri()).log("DEEPLINK")
+            it.destination.hasDeepLink("$URI/id={id}".toUri()).log("DEEPLINK")
             OrderDetailsView(
                 id.toInt(),
                 parentViewModel,
@@ -261,7 +266,7 @@ fun NavigationHost(
             TermsView()
         }
         composable(Destinations.TECHNICAL_SUPPORT,
-            deepLinks = listOf(navDeepLink { uriPattern = "$uri/support" })
+            deepLinks = listOf(navDeepLink { uriPattern = "$URI/support" })
         ) {
             SupportScreen()
             BackHandler {
@@ -277,7 +282,7 @@ fun NavigationHost(
             )
         }
         composable(Destinations.WALLET_SCREEN,
-            deepLinks = listOf(navDeepLink { uriPattern = "$uri/wallet" })
+            deepLinks = listOf(navDeepLink { uriPattern = "$URI/wallet" })
         ) {
             WalletScreen()
             BackHandler {

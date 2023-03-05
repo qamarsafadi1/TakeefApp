@@ -43,6 +43,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fondesa.kpermissions.extension.permissionsBuilder
+import com.selsela.takeefapp.navigation.DeepLinkUri
 import com.selsela.takeefapp.navigation.Destinations
 import com.selsela.takeefapp.navigation.Navigation.bindToolbarTitle
 import com.selsela.takeefapp.navigation.Navigation.showingBackButton
@@ -210,7 +211,7 @@ class MainActivity : AppCompatActivity() {
                         val orderID = bundle.getString("order_id")
                         Intent(
                             Intent.ACTION_VIEW,
-                            "https://airconditioner.com/id=${orderID}".toUri(),
+                            "${DeepLinkUri.URI}/id=${orderID}".toUri(),
                             applicationContext,
                             MainActivity::class.java
                         )
@@ -218,7 +219,7 @@ class MainActivity : AppCompatActivity() {
                     Constants.WALLET_CHANGED->{
                         Intent(
                             Intent.ACTION_VIEW,
-                            "https://airconditioner.com/wallet".toUri(),
+                            "${DeepLinkUri.URI}/wallet".toUri(),
                             applicationContext,
                             MainActivity::class.java
                         )
@@ -226,7 +227,7 @@ class MainActivity : AppCompatActivity() {
                     Constants.ADMIN_REPLIED ->{
                         Intent(
                             Intent.ACTION_VIEW,
-                            "https://airconditioner.com/support".toUri(),
+                            "${DeepLinkUri.URI}/support".toUri(),
                             applicationContext,
                             MainActivity::class.java
                         )

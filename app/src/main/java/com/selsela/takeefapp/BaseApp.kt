@@ -4,6 +4,7 @@ import android.app.Application
 import com.google.firebase.FirebaseApp
 import com.orhanobut.hawk.Hawk
 import com.selsela.takeefapp.utils.LocalData
+import com.selsela.takeefapp.utils.LocalUtils.setLocale
 import com.yariksoffice.lingver.Lingver
 import dagger.hilt.android.HiltAndroidApp
 
@@ -15,7 +16,10 @@ class BaseApp : Application() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
         Hawk.init(this).build()
-        Lingver.init(this, LocalData.appLocal)
-        Lingver.getInstance().setLocale(this, LocalData.appLocal)
+        if (LocalData.appLocal.isEmpty())
+            setLocale("ar")
+        else
+            setLocale(LocalData.appLocal)
+
     }
 }
